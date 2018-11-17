@@ -3,21 +3,22 @@
 PY = python
 SHELL = powershell.exe
 
-RARG = dev-debug
+RARG = 
 
 build : 
 	$(PY) setup.py sdist bdist_wheel
 
 run : 
-	(cd src | $(PY) -m ecr $(RARG))
+	-cd temp ; mkdir debug
+	cd src ; $(PY) -m ecr ../temp/debug $(RARG)
 
 test : 
 	pytest --html=./docs/dev/reports/test/index.html --self-contained-html
 
 cover : 
-	cd src | coverage run --source=ecr -m test
-	cd src | coverage report
-	cd src | coverage html -d ../docs/dev/reports/coverage/
+	cd src ; coverage run --source=ecr -m test
+	cd src ; coverage report
+	cd src ; coverage html -d ../docs/dev/reports/coverage/
 
 upload : 
 	twine upload ./dist/*
