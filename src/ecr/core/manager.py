@@ -13,24 +13,49 @@ except:
 CONST_tempFileFilter = "tempFileFilter"
 CONST_importedCommand = "importedCommand"
 CONST_defaultShell = "defaultShell"
+CONST_defaultIO = "defaultIO"
+CONST_defaultTimeLimit = "defaultTimeLimit"
+CIO_SISO = "ss"
+CIO_SIFO = "sf"
+CIO_FISO = "fs"
+CIO_FIFO = "ff"
+CIO_Types = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
 
 fileextToLanguage = {
     "c": "c",
     "cpp": "cpp",
     "py": "python",
     "java": "java",
+    "pas": "pascal",
+    "m": "objective-c",
+    "js": "javascript",
+    "rb": "ruby",
+    "go": "go",
+    "sh": "shellscript",
+    "ps1": "powershell",
 }
 
 languageToFileext = {v: k for k, v in fileextToLanguage.items()}
+
+defaultIO = CIO_SISO
+
+defaultTimeLimit = 5
 
 defaultExecutors = {
     "c": ["gcc {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "cpp": ["g++ {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "java": ["javac {fileName}", "java {fileNameWithoutExt}"],
     "python": ["python -u {fileName}"],
+    "pascal": ["fpc {fileName}", "./{fileNameWithoutExt}"],
+    "objective-c": ["gcc -framework Cocoa {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
+    "javascript": ["node {fileName}"],
+    "ruby": ["ruby {filename}"],
+    "go": ["go run {filename}"],
+    "shellscript": ["bash {filename}"],
+    "powershell": ["powershell -ExecutionPolicy ByPass -File {filename}"]
 }
 
-defaultTempFileFilter = ["exe", "o", "class"]
+defaultTempFileFilter = ["exe", "o", "class", "out"]
 
 
 defaultImportedCommand = {
@@ -54,7 +79,30 @@ int main()
 {
 
     return EXIT_SUCCESS;
-}""",
+} """,
+    "java": """import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        
+    }
+}
+""",
+    "python": """def main():
+
+    return 0
+
+if __name__ == "__main__":
+    exit(main())
+
+""",
+    "pascal": """program pro(Input, Output);
+var
+
+begin
+    
+end.
+""",
 }
 
 TEMPLATE_NAME = "base"
@@ -76,6 +124,14 @@ def getTemplatePath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "templates")
 
 
+def getFileInputPath(basepath: str) -> str:
+    return os.path.join(getMainPath(basepath), "input.data")
+
+
+def getFileOutputPath(basepath: str) -> str:
+    return os.path.join(getMainPath(basepath), "output.data")
+
+
 def hasInitialized(basepath: str)->bool:
     return os.path.exists(getMainPath(basepath))
 
@@ -91,7 +147,9 @@ class WorkManager:
         self.tempFileFilter: list = []
         self.currentFile: str = None
         self.importedCommand = {}
-        self.defauleShell = None
+        self.defaultShell = None
+        self.defaultIO = defaultIO
+        self.defaultTimeLimit = defaultTimeLimit
 
     def newCode(self, filename):
         lang = fileextToLanguage[getFileExt(filename)]
@@ -115,34 +173,61 @@ class WorkManager:
                 except:
                     pass
 
-    def execute(self):
+    def execute(self, io=None, file=None):
+        if io == None:
+            io = self.defaultIO
+        if file == None:
+            file = self.currentFile
         errf = color.useRed("×")
         passf = color.useGreen("√")
         try:
-            fileNameWithoutExt, fileext = os.path.splitext(self.currentFile)
-
+            fileNameWithoutExt, fileext = os.path.splitext(file)
             lang = fileextToLanguage[fileext[1:]]
             cmds = self.executorMap[lang]
             formats = {
-                "fileName": self.currentFile,
+                "fileName": file,
                 "fileNameWithoutExt": fileNameWithoutExt,
                 "dir": self.workingDirectory,
             }
             sumStep = len(cmds)
-            for ind, cmd in enumerate(cmds):
+            for ind, bcmd in enumerate(cmds):
+                cmd, timelimit = None, None
+                if not isinstance(bcmd, str):
+                    cmd, timelimit = bcmd
+                else:
+                    cmd, timelimit = bcmd, self.defaultTimeLimit
                 _cmd = cmd.format(**formats)
                 print(
                     f"({color.useCyan(str(ind+1))}/{sumStep})", _cmd)
-                proc = subprocess.Popen(_cmd, cwd=self.workingDirectory)
+                proc = None
+                if ind == sumStep - 1:  # last command
+                    print("-"*20)
+                    proc = subprocess.Popen(_cmd, cwd=self.workingDirectory,
+                                            stdin=None if io[0] == "s" else open(
+                                                getFileInputPath(self.workingDirectory), "r"),
+                                            stdout=None if io[1] == "s" else open(getFileOutputPath(self.workingDirectory), "w"))
+                else:
+                    proc = subprocess.Popen(_cmd, cwd=self.workingDirectory)
+
+                isTimeout = False
                 bg_time = time.time()
-                proc.communicate(timeout=5)
+                try:
+                    proc.communicate(timeout=timelimit)
+                except subprocess.TimeoutExpired:
+                    isTimeout = True
+                    proc.terminate()
                 ed_time = time.time()
+                if ind == sumStep - 1:  # last command
+                    print("-"*20)
+                print(
+                    f"   -> {passf if proc.returncode == 0 else errf} {round((ed_time-bg_time)*1000)/1000}s")
                 if proc.returncode != 0:
-                    print(f"{errf} ({ind+1}/{sumStep})",
-                          _cmd, "->", proc.returncode)
+                    print(
+                        f"({color.useRed(str(ind+1))}/{sumStep}) {_cmd} -> {proc.returncode}", end=" ")
+                    if isTimeout:
+                        print(color.useRed("Time out"))
                     return False
-                print(f"-> {passf} {round((ed_time-bg_time)*1000)/1000}s")
-        except Exception:
+        except BaseException:
             return False
         return True
 
@@ -158,7 +243,8 @@ def load(basepath: str) -> WorkManager:
         config = json.loads(f.read())
         ret.tempFileFilter = config[CONST_tempFileFilter]
         ret.importedCommand = config[CONST_importedCommand]
-        ret.defauleShell = config[CONST_defaultShell]
+        ret.defaultShell = config[CONST_defaultShell]
+        ret.defaultIO = config[CONST_defaultIO]
     return ret
 
 
@@ -183,9 +269,14 @@ def initialize(basepath: str):
     with open(getExecutorPath(basepath), "w", encoding='utf-8') as f:
         f.write(json.dumps(executors, indent=4))
 
+    open(getFileInputPath(basepath), "w").close()
+    open(getFileOutputPath(basepath), "w").close()
+
     config = {CONST_tempFileFilter: defaultTempFileFilter,
               CONST_importedCommand: defaultImportedCommand,
-              CONST_defaultShell : "powershell -c" if platform.system() == "Windows" else None}
+              CONST_defaultShell: "powershell -c" if platform.system() == "Windows" else None,
+              CONST_defaultIO: defaultIO,
+              CONST_defaultTimeLimit: defaultTimeLimit}
 
     with open(getConfigPath(basepath), "w", encoding='utf-8') as f:
         f.write(json.dumps(config, indent=4))

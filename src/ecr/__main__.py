@@ -3,6 +3,7 @@ import sys
 import io
 import os
 import platform
+import shlex
 
 try:  # for run with module
     from .core import manager
@@ -71,10 +72,19 @@ def new(args):
 def run(args):
     if not assertInited():
         return
-    if man.currentFile == None:
-        console.write("Please set current file first")
+
+    if args.file == None and man.currentFile == None:
+        console.write("Please set file first")
         return
-    if not man.execute():
+
+    if args.file != None:
+        console.info(f"Run {args.file}")
+
+    result = False
+
+    result = man.execute(io=args.io, file=args.file)
+
+    if not result:
         console.error("Running Failed")
 
 
@@ -143,7 +153,8 @@ def getITParser():
     cmd_new.set_defaults(func=new)
 
     cmd_now = subpars.add_parser("now", help="Change current file")
-    cmd_now.add_argument("path")
+    cmd_now.add_argument("path", nargs="?", default=None,
+                         help="Set current file (clear for none)")
     cmd_now.set_defaults(func=now)
 
     cmd_pwd = subpars.add_parser("pwd", help="Print working directory")
@@ -157,6 +168,10 @@ def getITParser():
     cmd_clear.set_defaults(func=clear)
 
     cmd_run = subpars.add_parser("run", help="run current code")
+    cmd_run.add_argument("-io", "--io", choices=manager.CIO_Types,
+                         default=None, help="Change input and output")
+    cmd_run.add_argument(
+        "file", nargs="?", default=None, help="File name (only for this command)")
     cmd_run.set_defaults(func=run)
 
     cmd_clean = subpars.add_parser("clean", help="clean temp files")
@@ -172,10 +187,10 @@ def getITParser():
 
 
 def callSysCommand(cmd):
-    if man == None or man.defauleShell == None:
+    if man == None or man.defaultShell == None:
         return os.system(cmd)
     else:
-        return os.system(" ".join([man.defauleShell, f'"{cmd}"']))
+        return os.system(" ".join([man.defaultShell, f'"{cmd}"']))
 
 
 def doSyscall(cmd, message):
@@ -198,15 +213,16 @@ def main():  # pragma: no cover
     itParser = getITParser()
     cwd = os.getcwd()
 
-    printHead()
     if manager.hasInitialized(cwd):
         loadMan()
+
+    printHead()
 
     while True:
         if man != None and man.currentFile != None:
             console.write(man.currentFile, end="")
         oricmd = str(console.read("> "))
-        cargs = oricmd.split()
+        cargs = shlex.split(oricmd)
         if len(cargs) == 0:
             continue
         if cargs[0].startswith(">"):
@@ -220,7 +236,7 @@ def main():  # pragma: no cover
                         man.importedCommand[cargs[0]], "Imported command:")
                 else:
                     console.warning("We can't recognize this command:")
-                    console.write(e)
+                    console.write(f"  {e}")
                     if console.confirm("Do you mean a system command?", [cli.SwitchState.Yes, cli.SwitchState.No]) == cli.SwitchState.Yes:
                         doSyscall(oricmd, "Call system command:")
             else:
