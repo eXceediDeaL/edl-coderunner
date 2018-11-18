@@ -4,6 +4,7 @@ import io
 import os
 import platform
 import shlex
+from enum import Enum
 
 try:  # for run with module
     from .core import manager
@@ -16,6 +17,11 @@ except:
     except:
         print("Import failed")
 
+class ReturnCode(Enum):
+    OK = 0
+    ERROR = -1
+    UNLOADED = 1
+    RUNERR = 2
 
 cwd = None
 
@@ -54,28 +60,31 @@ def init(args):
     manager.initialize(cwd)
     loadMan()
     printHead()
+    return ReturnCode.OK if man != None else ReturnCode.UNLOADED
 
 
 def now(args):
     if not assertInited():
-        return
+        return ReturnCode.UNLOADED
     man.currentFile = args.path
+    return ReturnCode.OK
 
 
 def new(args):
     if not assertInited():
-        return
+        return ReturnCode.UNLOADED
     man.newCode(args.filename)
     man.currentFile = args.filename
+    return ReturnCode.OK
 
 
 def run(args):
     if not assertInited():
-        return
+        return ReturnCode.UNLOADED
 
     if args.file == None and man.currentFile == None:
         console.write("Please set file first")
-        return
+        return ReturnCode.ERROR
 
     if args.file != None:
         console.info(f"Run {args.file}")
@@ -86,11 +95,13 @@ def run(args):
 
     if not result:
         console.error("Running Failed")
+        return ReturnCode.RUNERR
+    return ReturnCode.OK
 
 
 def clean(args):
     if not assertInited():
-        return
+        return ReturnCode.UNLOADED
     man.clean()
 
 
@@ -100,30 +111,35 @@ def shutdown(args):
 
 def pwd(args):
     print(cwd)
+    return ReturnCode.OK
 
 
 def cd(args):
     global man, cwd
     if not os.path.exists(args.path):
         console.error("No this directory")
+        return ReturnCode.ERROR
     os.chdir(args.path)
     cwd = os.getcwd()
     printHead()
     if manager.hasInitialized(cwd):
         loadMan()
+    return ReturnCode.OK
 
 
 def clear(args):
     global man
     if not assertInited():
-        return
+        return ReturnCode.UNLOADED
     if console.confirm("Do you want to clear ALL?", [cli.SwitchState.OK, cli.SwitchState.Cancel]) == cli.SwitchState.OK:
         manager.clear(man.workingDirectory)
         man = None
+    return ReturnCode.OK
 
 
 def gethelp(args):
     console.write(itParser.format_help())
+    return ReturnCode.OK
 
 
 class BasicError(Exception):
@@ -141,11 +157,11 @@ class ITParser(argparse.ArgumentParser):
 
 def getITParser():
     parser = ITParser(
-        prog="", description="Code Runner", add_help=False)
+        prog="", description="Code Runner", add_help=True)
 
     subpars = parser.add_subparsers()
 
-    cmd_init = subpars.add_parser("init", help="Initialize ecr")
+    cmd_init = subpars.add_parser("init", help="Initialize ECR data")
     cmd_init.set_defaults(func=init)
 
     cmd_new = subpars.add_parser("new", help="Create new code file")
@@ -164,23 +180,23 @@ def getITParser():
     cmd_cd.add_argument("path")
     cmd_cd.set_defaults(func=cd)
 
-    cmd_clear = subpars.add_parser("clear", help="Clear console")
+    cmd_clear = subpars.add_parser("clear", help="Clear ECR data")
     cmd_clear.set_defaults(func=clear)
 
-    cmd_run = subpars.add_parser("run", help="run current code")
+    cmd_run = subpars.add_parser("run", help="Run code file")
     cmd_run.add_argument("-io", "--io", choices=manager.CIO_Types,
                          default=None, help="Change input and output")
     cmd_run.add_argument(
         "file", nargs="?", default=None, help="File name (only for this command)")
     cmd_run.set_defaults(func=run)
 
-    cmd_clean = subpars.add_parser("clean", help="clean temp files")
+    cmd_clean = subpars.add_parser("clean", help="Clean temp files")
     cmd_clean.set_defaults(func=clean)
 
-    cmd_help = subpars.add_parser("help", help="Help")
-    cmd_help.set_defaults(func=gethelp)
+    # cmd_help = subpars.add_parser("help", help="Help")
+    # cmd_help.set_defaults(func=gethelp)
 
-    cmd_exit = subpars.add_parser("exit", help="Exit ecr")
+    cmd_exit = subpars.add_parser("exit", help="Exit")
     cmd_exit.set_defaults(func=shutdown)
 
     return parser
@@ -202,13 +218,43 @@ def doSyscall(cmd, message):
         console.write(retCode)
     else:
         console.error(retCode)
+    return retCode
+
+
+def executeCommand(oricmd):
+    cargs = shlex.split(oricmd)
+    if len(cargs) == 0:
+        return
+    if cargs[0].startswith(">"):
+        doSyscall(oricmd[1:], "Call system command:")
+    else:
+        try:
+            cmd = itParser.parse_args(cargs)
+        except BasicError as e:  # when parse failed, parser will call exit()
+            if man != None and cargs[0] in man.importedCommand:
+                return doSyscall(
+                    man.importedCommand[cargs[0]], "Imported command:")
+            else:
+                console.warning("We can't recognize this command:")
+                console.write(f"  {e}")
+                if console.confirm("Do you mean a system command?", [cli.SwitchState.Yes, cli.SwitchState.No]) == cli.SwitchState.Yes:
+                    return doSyscall(oricmd, "Call system command:")
+        else:
+            return cmd.func(cmd).value
 
 
 def main():  # pragma: no cover
     global man, cwd, itParser
 
-    if len(sys.argv) > 1:
-        os.chdir(sys.argv[-1])
+    baseParser = argparse.ArgumentParser(
+        prog="ecr", description="Code Runner")
+    baseParser.add_argument("-w", "--wdir", default=None,
+                            help="Set working directory")
+    baseParser.add_argument(
+        "-c", "--command", default=None,  help="Execute command")
+    baseCmd = baseParser.parse_args()
+    if baseCmd.wdir != None:
+        os.chdir(baseCmd.wdir)
 
     itParser = getITParser()
     cwd = os.getcwd()
@@ -216,32 +262,19 @@ def main():  # pragma: no cover
     if manager.hasInitialized(cwd):
         loadMan()
 
+    if baseCmd.command != None:
+        return executeCommand(baseCmd.command)
+
     printHead()
 
     while True:
         if man != None and man.currentFile != None:
             console.write(man.currentFile, end="")
         oricmd = str(console.read("> "))
-        cargs = shlex.split(oricmd)
-        if len(cargs) == 0:
-            continue
-        if cargs[0].startswith(">"):
-            doSyscall(oricmd[1:], "Call system command:")
-        else:
-            try:
-                cmd = itParser.parse_args(cargs)
-            except BasicError as e:  # when parse failed, parser will call exit()
-                if cargs[0] in man.importedCommand:
-                    doSyscall(
-                        man.importedCommand[cargs[0]], "Imported command:")
-                else:
-                    console.warning("We can't recognize this command:")
-                    console.write(f"  {e}")
-                    if console.confirm("Do you mean a system command?", [cli.SwitchState.Yes, cli.SwitchState.No]) == cli.SwitchState.Yes:
-                        doSyscall(oricmd, "Call system command:")
-            else:
-                cmd.func(cmd)
+        executeCommand(oricmd)
+
+    return 0
 
 
 if __name__ == "__main__":  # pragma: no cover
-    main()
+    exit(int(main()))

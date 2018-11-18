@@ -2,15 +2,14 @@
 
 PY = python
 SHELL = powershell.exe
-
-RARG = 
+override RARG += --wdir ../temp/debug
 
 build : 
 	$(PY) setup.py sdist bdist_wheel
 
 run : 
 	-cd temp ; mkdir debug
-	cd src ; $(PY) -m ecr ../temp/debug $(RARG)
+	cd src ; $(PY) -m ecr $(RARG)
 
 test : 
 	pytest --html=./docs/dev/reports/test/index.html --self-contained-html
