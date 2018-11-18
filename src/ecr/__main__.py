@@ -3,6 +3,9 @@ import sys
 import io
 import os
 import platform
+import codecs
+import locale
+import subprocess
 import shlex
 from enum import Enum
 
@@ -17,11 +20,13 @@ except:
     except:
         print("Import failed")
 
+
 class ReturnCode(Enum):
     OK = 0
     ERROR = -1
     UNLOADED = 1
     RUNERR = 2
+
 
 cwd = None
 
@@ -276,5 +281,11 @@ def main():  # pragma: no cover
     return 0
 
 
-if __name__ == "__main__":  # pragma: no cover
+def outmain():  # pragma: no cover
+    if platform.system() == "Windows":
+        os.system("chcp 65001")
     exit(int(main()))
+
+
+if __name__ == "__main__":  # pragma: no cover
+    outmain()

@@ -21,9 +21,9 @@ setup(
 
     license="Apache-2.0",
     classifiers=[
-        "DEVELOPMENT STATUS :: 1 - PLANNING",
+        "Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python :: 3.7",
-        "LICENSE :: OSI APPROVED :: APACHE SOFTWARE LICENSE",
+        "License :: OSI Approved :: Apache Software License",
     ],
     url="https://github.com/eXceediDeaL/edl-coderunner",
     project_urls={
@@ -44,7 +44,7 @@ setup(
     package_data={},
     entry_points={
         "console_scripts": [
-            "ecr = ecr.__main__:main",
+            "ecr = ecr.__main__:outmain",
         ],
     },
 

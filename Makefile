@@ -7,6 +7,12 @@ override RARG += --wdir ../temp/debug
 build : 
 	$(PY) setup.py sdist bdist_wheel
 
+install : 
+	$(PY) setup.py install
+
+uninstall : 
+	$(PY) -m pip uninstall edl-cr -y
+
 run : 
 	-cd temp ; mkdir debug
 	cd src ; $(PY) -m ecr $(RARG)
