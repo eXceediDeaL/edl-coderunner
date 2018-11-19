@@ -5,7 +5,7 @@ install:
 - make SHELL=sh prepare
 script:
 - make SHELL=sh test
-# - make SHELL=sh cover
+- make SHELL=sh cover
 deploy:
   provider: pypi
   user: exceedideal
