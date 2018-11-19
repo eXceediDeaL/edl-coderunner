@@ -1,4 +1,4 @@
-.PHONY : build clean prepare upload uptest
+.PHONY : build clean prepare upload uptest redoc install uninstall
 
 PY = python
 SHELL = powershell.exe
@@ -25,11 +25,13 @@ cover :
 	cd src ; coverage report
 	cd src ; coverage html -d ../docs/dev/reports/coverage/
 
-upload : 
+redoc : test cover
+
+upload : build
 	twine upload ./dist/*
 
 # When use this, remove classifiers in setup.py and rebuild
-uptest : 
+uptest : build
 	twine upload --repository-url https://test.pypi.org/legacy/ ./dist/*
 
 prepare : 

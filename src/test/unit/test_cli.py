@@ -63,8 +63,8 @@ class TestCLI:
         main.executeCommand(f"run {_file} -io ff")
 
     def test_clean(self):
-        main.executeCommand("new 1.cpp") == 0
-        main.executeCommand("run 1.cpp") == 0
+        main.executeCommand("new 1.cpp")
+        main.executeCommand("run 1.cpp")
         assert main.executeCommand("clean") == 0
 
     def test_clear(self):

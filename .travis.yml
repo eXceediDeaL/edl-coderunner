@@ -1,11 +1,14 @@
 language: python
 python:
 - '3.7-dev'
+branches:
+  only:
+    - master
 install:
-- make SHELL=sh prepare
+  - make SHELL=sh prepare
 script:
-- make SHELL=sh test
-- make SHELL=sh cover
+  - make SHELL=sh test
+  - make SHELL=sh cover
 deploy:
   provider: pypi
   user: exceedideal
