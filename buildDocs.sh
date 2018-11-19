@@ -3,6 +3,7 @@ echo 'Begin building docs...'
 set -e
 
 # Create a clean working directory for this script.
+rm -rf docs
 mkdir docs
 cd docs
 
