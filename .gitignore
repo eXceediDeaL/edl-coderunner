@@ -12,7 +12,8 @@ dist/
 MANIFEST
 
 temp
+docs
 .coverage
 .vscode
 .pytest_cache
-# /docs/
+

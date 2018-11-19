@@ -4,6 +4,10 @@ python:
 branches:
   only:
     - master
+env:
+  global:
+    - GH_REPO_NAME: edl-coderunner
+    - GH_REPO_REF: github.com/eXceediDeaL/edl-coderunner.git
 install:
   - make SHELL=sh prepare
 script:
@@ -17,4 +21,7 @@ deploy:
   on:
     tags: true
   skip_existing: true
-after_script: 
+after_script:
+  - cd $TRAVIS_BUILD_DIR
+  - chmod +x buildDocs.sh
+  - ./buildDocs.sh
