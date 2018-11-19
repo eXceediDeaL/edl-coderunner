@@ -12,7 +12,7 @@ defaultExecutors = {
     "c": ["gcc {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "cpp": ["g++ {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "java": ["javac {fileName}", "java {fileNameWithoutExt}"],
-    "python": ["python -u {fileName}"],
+    "python": ["python {fileName}"],
     "pascal": ["fpc {fileName}", "./{fileNameWithoutExt}"],
     "objective-c": ["gcc -framework Cocoa {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "javascript": ["node {fileName}"],

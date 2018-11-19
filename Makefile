@@ -21,7 +21,7 @@ test :
 	pytest --html=./docs/dev/reports/test/index.html --self-contained-html
 
 cover : 
-	cd src ; coverage run --source=ecr -m test
+	cd src ; coverage run --source=ecr -m test quiet
 	cd src ; coverage report
 	cd src ; coverage html -d ../docs/dev/reports/coverage/
 
