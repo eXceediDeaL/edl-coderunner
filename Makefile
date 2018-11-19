@@ -33,7 +33,7 @@ uptest :
 	twine upload --repository-url https://test.pypi.org/legacy/ ./dist/*
 
 prepare : 
-	$(PY) -m pip install --user -r requirements.txt
+	$(PY) -m pip install -r requirements.txt
 
 clean : 
 	-rm -r ./.pytest_cache/*
