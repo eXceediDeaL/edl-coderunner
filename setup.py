@@ -2,9 +2,6 @@ import os
 import codecs
 from setuptools import find_packages, setup
 import sys
-rootpath = str(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(rootpath, "src"))
-from ecr.__main__ import version
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -18,7 +15,7 @@ long_description = read('README.md')
 
 setup(
     name="edl-cr",
-    version=version,
+    version="0.0.1.4",
     description="A CLI tool to run code",
     long_description=long_description,
     long_description_content_type="text/markdown",

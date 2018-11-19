@@ -13,7 +13,7 @@ from .core import manager
 from .ui import color, cli
 from .ui.cli import console
 
-version = "0.0.1.3"
+version = "0.0.1.4"
 
 
 class ReturnCode(Enum):
