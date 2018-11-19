@@ -370,7 +370,7 @@
 <p id="t67" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t68" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t69" class="stm mis"><span class="key">def</span> <span class="nam">getSystemCommand</span><span class="op">(</span><span class="nam">cmd</span><span class="op">:</span> <span class="nam">str</span><span class="op">,</span> <span class="nam">man</span><span class="op">=</span><span class="key">None</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t70" class="stm mis">    <span class="key">if</span> <span class="nam">man</span><span class="op">.</span><span class="nam">defaultShell</span> <span class="op">==</span> <span class="key">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t70" class="stm mis">    <span class="key">if</span> <span class="nam">man</span> <span class="op">==</span> <span class="key">None</span> <span class="key">or</span> <span class="nam">man</span><span class="op">.</span><span class="nam">defaultShell</span> <span class="op">==</span> <span class="key">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t71" class="stm mis">        <span class="key">return</span> <span class="nam">cmd</span><span class="strut">&nbsp;</span></p>
 <p id="t72" class="pln">    <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t73" class="stm mis">        <span class="key">return</span> <span class="str">" "</span><span class="op">.</span><span class="nam">join</span><span class="op">(</span><span class="op">[</span><span class="nam">man</span><span class="op">.</span><span class="nam">defaultShell</span><span class="op">,</span> <span class="str">f'"{cmd}"'</span><span class="op">]</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -542,7 +542,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.2</a>,
-            created at 2018-11-19 12:33
+            created at 2018-11-19 13:04
         </p>
     </div>
 </div>
