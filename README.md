@@ -179,4 +179,4 @@ make uptest
 # Requirements
 
 - Python 3.7
-- prompt_toolkit 2.0.7
+- [See more](https://github.com/eXceediDeaL/edl-coderunner/network/dependencies)

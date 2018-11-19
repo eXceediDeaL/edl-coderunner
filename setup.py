@@ -52,5 +52,6 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         "prompt_toolkit>=2.0.7",
+        "colorama>=0.3.9"
     ]
 )
