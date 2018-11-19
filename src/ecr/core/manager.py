@@ -6,7 +6,7 @@ import subprocess
 import time
 import platform
 from enum import Enum
-from ..ui import color
+from ..ui import color, cli
 from .defaultData import CIO_Types, CIO_SISO, CIO_FIFO, CIO_FISO, CIO_SIFO, defaultCodeTemplate, defaultExecutors, defaultImportedCommand, defaultIO, defaultTempFileFilter, defaultTimeLimit
 
 CONST_tempFileFilter = "tempFileFilter"
@@ -65,7 +65,8 @@ def hasInitialized(basepath: str)->bool:
 def getFileExt(filename: str) -> str:
     return os.path.splitext(filename)[1][1:]
 
-def getSystemCommand(cmd: str, man = None) -> str:
+
+def getSystemCommand(cmd: str, man=None) -> str:
     if man.defaultShell == None:
         return cmd
     else:
@@ -100,7 +101,7 @@ class WorkManager:
             shutil.copyfile(tempPath, dstPath)
         else:
             open(dstPath, "w").close()
-        print(color.useGreen("+"), filename)
+        cli.console.write(color.useGreen("+"), filename)
 
     def clean(self):
         for file in os.listdir(self.workingDirectory):
@@ -108,7 +109,7 @@ class WorkManager:
                 try:
                     if pat == getFileExt(os.path.split(file)[-1]):
                         os.remove(file)
-                        print(color.useRed("-"), file)
+                        cli.console.write(color.useRed("-"), file)
                         break
                 except:
                     pass
@@ -130,6 +131,7 @@ class WorkManager:
                 "dir": self.workingDirectory,
             }
             sumStep = len(cmds)
+            cli.console.info(f"Running {file}")
             for ind, bcmd in enumerate(cmds):
                 cmd, timelimit = None, None
                 if not isinstance(bcmd, str):
@@ -137,17 +139,18 @@ class WorkManager:
                 else:
                     cmd, timelimit = bcmd, self.defaultTimeLimit
                 _cmd = cmd.format(**formats)
-                print(
-                    f"({color.useCyan(str(ind+1))}/{sumStep})", _cmd)
+                cli.console.write(
+                    "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
                 proc = None
                 if ind == sumStep - 1:  # last command
-                    print("-"*20)
+                    cli.console.write("-"*20)
                     proc = subprocess.Popen(getSystemCommand(_cmd, self), cwd=self.workingDirectory,
                                             stdin=None if io[0] == "s" else open(
                                                 getFileInputPath(self.workingDirectory), "r"),
                                             stdout=None if io[1] == "s" else open(getFileOutputPath(self.workingDirectory), "w"))
                 else:
-                    proc = subprocess.Popen(getSystemCommand(_cmd, self), cwd=self.workingDirectory)
+                    proc = subprocess.Popen(getSystemCommand(
+                        _cmd, self), cwd=self.workingDirectory)
 
                 isTimeout = False
                 bg_time = time.time()
@@ -158,14 +161,16 @@ class WorkManager:
                     proc.terminate()
                 ed_time = time.time()
                 if ind == sumStep - 1:  # last command
-                    print("-"*20)
-                print(
-                    f"   -> {passf if proc.returncode == 0 else errf} {round((ed_time-bg_time)*1000)/1000}s")
+                    cli.console.write("-"*20)
+                cli.console.write(
+                    "   ->", passf if proc.returncode == 0 else errf, f"{round((ed_time-bg_time)*1000)/1000}s")
                 if proc.returncode != 0:
-                    print(
-                        f"({color.useRed(str(ind+1))}/{sumStep}) {_cmd} -> {proc.returncode}", end=" ")
+                    cli.console.write(
+                        "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, " -> ", proc.returncode, split="", end=" ")
                     if isTimeout:
-                        print(color.useRed("Time out"))
+                        cli.console.write(color.useRed("Time out"))
+                    else:
+                        cli.console.write()
                     return False
         except BaseException as e:
             return False

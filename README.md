@@ -1,8 +1,8 @@
 # edl-cr
 
-[![](https://img.shields.io/badge/edl--cr-vFirst-blue.svg)](https://pypi.org/project/edl-cr/) ![](https://img.shields.io/badge/license-Apache--2.0-blue.svg) [![](https://api.travis-ci.org/eXceediDeaL/edl-coderunner.svg?branch=master)](https://exceedideal.github.io/edl-coderunner/) ![](http://progressed.io/bar/30?title=developing)
+[![](https://img.shields.io/badge/edl--cr-vFirst-blue.svg)](https://pypi.org/project/edl-cr/) ![](https://img.shields.io/badge/license-Apache--2.0-blue.svg) [![Build Status](https://travis-ci.org/eXceediDeaL/edl-coderunner.svg?branch=master)](https://travis-ci.org/eXceediDeaL/edl-coderunner) ![](http://progressed.io/bar/30?title=developing)
 
-A CLI tool to run code.
+A CLI tool to run code. See more at [here](https://exceedideal.github.io/edl-coderunner/)
 
 # Install
 

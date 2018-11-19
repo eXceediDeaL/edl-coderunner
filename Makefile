@@ -18,7 +18,8 @@ run :
 	cd src ; $(PY) -m ecr $(RARG)
 
 test : 
-	pytest --html=./docs/dev/reports/test/index.html --self-contained-html
+	cd src ; $(PY) -m test --html=./docs/dev/reports/test/index.html --self-contained-html
+	# pytest --html=./docs/dev/reports/test/index.html --self-contained-html
 
 cover : 
 	cd src ; coverage run --source=ecr -m test quiet

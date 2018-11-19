@@ -1,16 +1,16 @@
-from colorama import Fore, Back, Style
+from prompt_toolkit import HTML
 
 def useRed(content):
-    return f"{Fore.RED}{content}{Style.RESET_ALL}"
+    return HTML(f'<obj fg="ansired">{content}</obj>')
 
 def useGreen(content):
-    return f"{Fore.GREEN}{content}{Style.RESET_ALL}"
+    return HTML(f'<obj fg="ansigreen">{content}</obj>')
 
 def useBlue(content):
-    return f"{Fore.BLUE}{content}{Style.RESET_ALL}"
+    return HTML(f'<obj fg="ansiblue">{content}</obj>')
 
 def useCyan(content):
-    return f"{Fore.CYAN}{content}{Style.RESET_ALL}"
+    return HTML(f'<obj fg="ansicyan">{content}</obj>')
 
 def useYellow(content):
-    return f"{Fore.YELLOW}{content}{Style.RESET_ALL}"
+    return HTML(f'<obj fg="ansiyellow">{content}</obj>')

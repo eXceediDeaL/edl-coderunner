@@ -8,8 +8,12 @@ import locale
 import subprocess
 import shlex
 from enum import Enum
+from prompt_toolkit.styles import Style
 from .core import manager
 from .ui import color, cli
+from .ui.cli import console
+
+version = "0.0.1.3"
 
 
 class ReturnCode(Enum):
@@ -24,7 +28,6 @@ cwd = None
 man: manager.WorkManager = None
 
 itParser = None
-console = cli.CLI()
 
 
 def loadMan():
@@ -84,9 +87,6 @@ def run(args):
         console.write("Please set file first")
         return ReturnCode.ERROR
 
-    if args.file != None:
-        console.info(f"Run {args.file}")
-
     result = False
 
     result = man.execute(io=args.io, file=args.file)
@@ -109,7 +109,12 @@ def shutdown(args):
 
 
 def pwd(args):
-    print(cwd)
+    console.write(cwd)
+    return ReturnCode.OK
+
+
+def getVersion(args):
+    console.write("edl-cr", version)
     return ReturnCode.OK
 
 
@@ -150,7 +155,12 @@ class ITParser(argparse.ArgumentParser):
 
     def exit(self, status=0, message=None):
         if message:
-            self._print_message(message, _sys.stderr)
+            self._print_message(message, sys.stderr)
+
+
+builtinCmdLists = ["init", "new", "now", "pwd",
+                   "cd", "clear", "run", "clean", "version", "exit"]
+cmdLists = None
 
 
 def getITParser():
@@ -191,6 +201,9 @@ def getITParser():
     cmd_clean = subpars.add_parser("clean", help="Clean temp files")
     cmd_clean.set_defaults(func=clean)
 
+    cmd_version = subpars.add_parser("version", help="Get version")
+    cmd_version.set_defaults(func=getVersion)
+
     # cmd_help = subpars.add_parser("help", help="Help")
     # cmd_help.set_defaults(func=gethelp)
 
@@ -212,13 +225,29 @@ def doSyscall(cmd, message):
     return retCode
 
 
+defaultPrompt = "> "
+
+
 def mainInit():
-    global itParser, cwd
+    global itParser, cmdLists, cwd
+    from prompt_toolkit import PromptSession
+    from pygments.lexers.shell import BashLexer
+    from prompt_toolkit.lexers import PygmentsLexer
+    from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+
     itParser = getITParser()
     cwd = os.getcwd()
 
     if manager.hasInitialized(cwd):
         loadMan()
+
+    cmdLists = list(builtinCmdLists)
+    if man != None:
+        cmdLists += man.importedCommand.keys()
+
+    cliInputSession = PromptSession(
+        message=defaultPrompt, lexer=PygmentsLexer(BashLexer), auto_suggest=AutoSuggestFromHistory())
+    cli.console = cli.CLI(inputCommandSession=cliInputSession)
 
 
 def executeCommand(oricmd):
@@ -246,16 +275,27 @@ def executeCommand(oricmd):
                 return 0
 
 
+def getCommandCompleter():
+    from prompt_toolkit.completion import WordCompleter, merge_completers
+    wc = WordCompleter(cmdLists, ignore_case=True)
+    pc = cli.PathCompleter()
+    return merge_completers([wc, pc])
+
+
 def main():  # pragma: no cover
     global man, cwd, itParser
 
     baseParser = argparse.ArgumentParser(
         prog="ecr", description="Code Runner")
+    baseParser.add_argument("-v", "--version", default=False, action="store_true",
+                            help="Get version")
     baseParser.add_argument("-w", "--wdir", default=None,
                             help="Set working directory")
     baseParser.add_argument(
         "-c", "--command", default=None,  help="Execute command")
     baseCmd = baseParser.parse_args()
+    if baseCmd.version:
+        return getVersion(None).value
     if baseCmd.wdir != None:
         os.chdir(baseCmd.wdir)
 
@@ -265,19 +305,20 @@ def main():  # pragma: no cover
         return executeCommand(baseCmd.command)
 
     printHead()
-
     while True:
-        if man != None and man.currentFile != None:
-            console.write(man.currentFile, end="")
-        oricmd = str(console.read("> "))
+        try:
+            oricmd = str(console.inputCommand(
+                f'{man.currentFile if man != None and man.currentFile != None else ""}{defaultPrompt}', completer=getCommandCompleter(), complete_in_thread=True))
+        except KeyboardInterrupt:
+            continue
+        except EOFError:
+            break
         executeCommand(oricmd)
 
     return 0
 
 
 def outmain():  # pragma: no cover
-    if platform.system() == "Windows":
-        os.system("chcp 65001")
     exit(int(main()))
 
 
