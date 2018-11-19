@@ -67,7 +67,7 @@ def getFileExt(filename: str) -> str:
 
 
 def getSystemCommand(cmd: str, man=None) -> str:
-    if man.defaultShell == None:
+    if man == None or man.defaultShell == None:
         return cmd
     else:
         return " ".join([man.defaultShell, f'"{cmd}"'])

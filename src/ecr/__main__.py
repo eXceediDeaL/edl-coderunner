@@ -9,7 +9,7 @@ import subprocess
 import shlex
 from enum import Enum
 from prompt_toolkit.styles import Style
-from .core import manager
+from .core import manager, defaultData
 from .ui import color, cli
 from .ui.cli import console
 
@@ -260,9 +260,10 @@ def executeCommand(oricmd):
         try:
             cmd = itParser.parse_args(cargs)
         except BasicError as e:  # when parse failed, parser will call exit()
-            if man != None and cargs[0] in man.importedCommand:
+            importedCommand = man.importedCommand if man != None else defaultData.defaultImportedCommand
+            if cargs[0] in importedCommand:
                 return doSyscall(
-                    f"{man.importedCommand[cargs[0]]} {' '.join(cargs[1:])}", "Imported command:")
+                    f"{importedCommand[cargs[0]]} {' '.join(cargs[1:])}", "Imported command:")
             else:
                 console.warning("We can't recognize this command:")
                 console.write(f"  {e}")

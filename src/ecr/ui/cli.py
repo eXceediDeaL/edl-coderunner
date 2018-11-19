@@ -141,12 +141,9 @@ class CLI:
 
     def confirm(self, message, choice):  # pragma: no cover
         swstr = ','.join([switchToConfirmStr[x] for x in choice])
-        self.write(message, f"({swstr})", end=" ")
-        ret = self.read()
+        ret = self.read(f"{message} ({swstr}) ")
         while ret not in confirmStrToSwitch or confirmStrToSwitch[ret] not in choice:
-            self.write(
-                f"Not an acceptable value. Please input again ({swstr}):", end=" ")
-            ret = self.read()
+            ret = self.read(f"Not an acceptable value. Please input again ({swstr}): ")
         return confirmStrToSwitch[ret]
 
 

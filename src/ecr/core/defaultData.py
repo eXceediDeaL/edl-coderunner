@@ -53,7 +53,14 @@ defaultImportedCommand = {
     "powershell": "powershell",
     "git": "git",
     "vim": "vim",
+    "vi": "vi",
     "gdb": "gdb",
+    "sh": "sh",
+    "ps": "ps",
+    "kill": "kill",
+    "date": "date",
+    "man": "man",
+    "make": "make",
 }
 
 defaultCodeTemplate = {
