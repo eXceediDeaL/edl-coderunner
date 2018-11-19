@@ -11,6 +11,10 @@ env:
 install:
   - make SHELL=sh prepare
 script:
+  - mkdir docs
+  - cd docs
+  - git clone -b gh-pages https://git@$GH_REPO_REF .
+  - cd ..
   - make SHELL=sh test
   - make SHELL=sh cover
 deploy:
