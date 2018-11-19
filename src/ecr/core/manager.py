@@ -5,21 +5,15 @@ import re
 import subprocess
 import time
 import platform
-try:
-    from .ui import color
-except:
-    from ui import color
+from enum import Enum
+from ui import color
+from defaultData import CIO_Types, CIO_SISO, CIO_FIFO, CIO_FISO, CIO_SIFO, defaultCodeTemplate, defaultExecutors, defaultImportedCommand, defaultIO, defaultTempFileFilter, defaultTimeLimit
 
 CONST_tempFileFilter = "tempFileFilter"
 CONST_importedCommand = "importedCommand"
 CONST_defaultShell = "defaultShell"
 CONST_defaultIO = "defaultIO"
 CONST_defaultTimeLimit = "defaultTimeLimit"
-CIO_SISO = "ss"
-CIO_SIFO = "sf"
-CIO_FISO = "fs"
-CIO_FIFO = "ff"
-CIO_Types = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
 
 fileextToLanguage = {
     "c": "c",
@@ -36,74 +30,6 @@ fileextToLanguage = {
 }
 
 languageToFileext = {v: k for k, v in fileextToLanguage.items()}
-
-defaultIO = CIO_SISO
-
-defaultTimeLimit = 5
-
-defaultExecutors = {
-    "c": ["gcc {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
-    "cpp": ["g++ {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
-    "java": ["javac {fileName}", "java {fileNameWithoutExt}"],
-    "python": ["python -u {fileName}"],
-    "pascal": ["fpc {fileName}", "./{fileNameWithoutExt}"],
-    "objective-c": ["gcc -framework Cocoa {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
-    "javascript": ["node {fileName}"],
-    "ruby": ["ruby {filename}"],
-    "go": ["go run {filename}"],
-    "shellscript": ["bash {filename}"],
-    "powershell": ["powershell -ExecutionPolicy ByPass -File {filename}"]
-}
-
-defaultTempFileFilter = ["exe", "o", "class", "out"]
-
-
-defaultImportedCommand = {
-    "ls": "ls",
-    "cls": "clear"
-}
-
-defaultCodeTemplate = {
-    "c":
-    """#include <stdio.h>
-int main()
-{
-    return 0;
-}""",
-    "cpp":
-    """#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-using namespace std;
-int main()
-{
-
-    return EXIT_SUCCESS;
-} """,
-    "java": """import java.util.Scanner;
-
-public class Main {
-    public static void main(String[] args) {
-        
-    }
-}
-""",
-    "python": """def main():
-
-    return 0
-
-if __name__ == "__main__":
-    exit(main())
-
-""",
-    "pascal": """program pro(Input, Output);
-var
-
-begin
-    
-end.
-""",
-}
 
 TEMPLATE_NAME = "base"
 
@@ -140,6 +66,12 @@ def getFileExt(filename: str) -> str:
     return os.path.splitext(filename)[1][1:]
 
 
+class WorkManagerState(Enum):
+    Empty = 0,
+    Loaded = 1,
+    LoadFailed = 2,
+
+
 class WorkManager:
     def __init__(self, path: str):
         self.workingDirectory: str = path
@@ -150,13 +82,15 @@ class WorkManager:
         self.defaultShell = None
         self.defaultIO = defaultIO
         self.defaultTimeLimit = defaultTimeLimit
+        self.state = WorkManagerState.Empty
 
     def newCode(self, filename):
-        lang = fileextToLanguage[getFileExt(filename)]
+        ext = getFileExt(filename)
+        lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
         dstPath = os.path.join(self.workingDirectory, filename)
-        tempPath = os.path.join(getTemplatePath(
+        tempPath = None if lang == None else os.path.join(getTemplatePath(
             self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
-        if os.path.exists(tempPath):
+        if tempPath != None and os.path.exists(tempPath):
             shutil.copyfile(tempPath, dstPath)
         else:
             open(dstPath, "w").close()
@@ -227,7 +161,7 @@ class WorkManager:
                     if isTimeout:
                         print(color.useRed("Time out"))
                     return False
-        except BaseException:
+        except BaseException as e:
             return False
         return True
 
@@ -236,15 +170,19 @@ def load(basepath: str) -> WorkManager:
     if not hasInitialized(basepath):
         return None
     ret = WorkManager(basepath)
-    with open(getExecutorPath(basepath), "r", encoding='utf-8') as f:
-        ret.executorMap = json.loads(f.read())
+    try:
+        with open(getExecutorPath(basepath), "r", encoding='utf-8') as f:
+            ret.executorMap = json.loads(f.read())
 
-    with open(getConfigPath(basepath), "r", encoding='utf-8') as f:
-        config = json.loads(f.read())
-        ret.tempFileFilter = config[CONST_tempFileFilter]
-        ret.importedCommand = config[CONST_importedCommand]
-        ret.defaultShell = config[CONST_defaultShell]
-        ret.defaultIO = config[CONST_defaultIO]
+        with open(getConfigPath(basepath), "r", encoding='utf-8') as f:
+            config = json.loads(f.read())
+            ret.tempFileFilter = config[CONST_tempFileFilter]
+            ret.importedCommand = config[CONST_importedCommand]
+            ret.defaultShell = config[CONST_defaultShell]
+            ret.defaultIO = config[CONST_defaultIO]
+        ret.state = WorkManagerState.Loaded
+    except:
+        ret.state = WorkManagerState.LoadFailed
     return ret
 
 

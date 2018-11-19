@@ -15,4 +15,4 @@ temp
 .coverage
 .vscode
 .pytest_cache
-/docs/
+# /docs/

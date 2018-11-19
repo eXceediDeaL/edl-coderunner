@@ -1,6 +1,6 @@
 # edl-cr
 
-[![](https://img.shields.io/badge/edl--cr-vFirst-blue.svg)](https://pypi.org/project/edl-cr/) ![](https://img.shields.io/badge/license-Apache--2.0-blue.svg) [![](https://img.shields.io/badge/test-passed-green.svg)](https://exceedideal.github.io/edl-coderunner/dev/reports/test/) [![](http://progressed.io/bar/90?title=coverage)](https://exceedideal.github.io/edl-coderunner/dev/reports/coverage/) ![](http://progressed.io/bar/30?title=developing)
+[![](https://img.shields.io/badge/edl--cr-vFirst-blue.svg)](https://pypi.org/project/edl-cr/) ![](https://img.shields.io/badge/license-Apache--2.0-blue.svg) [![](https://api.travis-ci.org/eXceediDeaL/edl-coderunner.svg?branch=master)](https://exceedideal.github.io/edl-coderunner/dev/reports/test/) ![](http://progressed.io/bar/30?title=developing)
 
 A CLI tool to run code.
 
@@ -179,3 +179,4 @@ make uptest
 # Requirements
 
 - Python 3.7
+- prompt_toolkit 2.0.7

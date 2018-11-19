@@ -33,12 +33,7 @@ uptest :
 	twine upload --repository-url https://test.pypi.org/legacy/ ./dist/*
 
 prepare : 
-	$(PY) -m pip install --user --upgrade pytest
-	$(PY) -m pip install --user --upgrade coverage
-	$(PY) -m pip install --user --upgrade setuptools wheel
-	$(PY) -m pip install --user --upgrade twine
-	$(PY) -m pip install --user --upgrade pytest-html
-
+	$(PY) -m pip install --user -r requirements.txt
 
 clean : 
 	-rm -r ./.pytest_cache/*

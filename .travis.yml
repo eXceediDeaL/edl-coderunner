@@ -1,0 +1,17 @@
+language: python
+python:
+- '3.7'
+install:
+- make prepare
+script:
+- make test
+- make cover
+deploy:
+  provider: pypi
+  user: exceedideal
+  password:
+    secure: h6NqAUWaHQZk1YkusnpZELD1kfPAW+rWac9n95lcI4FLmIDhxro1BfTlCRHa1EH1NPsxPIcM9baNy+ql2KXTdsXtWYDvQKIwl3V1P7qXSahpT/U9uXpvrfLUN+vSL0ngTZuTx5CP24QHPGdQsM6quxf1hHiMZ/lz4UZNAbALl9/OxI342s/3IHO6Fz4i7h3DsQ7n6MjQ9B/WHLqWvMhLcnRotfXqkqWTlr6fO/IBcQRB3tS/gngQeRDlfIOn4EtGCVI7oqo6Jf/KaY5CN80lLFXdtG6gnT67IoFpcuVYmky6Dd9vMPuMXNXtfWA17yJc6GpNuRGFYauhaR2qS3q0vy4y0yQlUkLgzDoFMWnmVvFAwB1xgecVb6LiMsEsy1SNs/A4/jEFMzItZ3dfChHOzznnuJVlIUyEEP3HE26DnjtV2EUlCJ3fawdCyWp7UZ3Fjp+TAggylxDoNwPprk2Ac5fQ9uXqy2RqVRzex+mmqXDD540h+X7bRtSal6TqDIfHAtLH/Ix7Us+zEE3vUN4ynnJ/ixra0fMp238RvbMhIHnuivJqyfniipU50M1HqQSX+VauPQQHxzF3OObdPd45cYNmSRqnpRoLOl484CtHrwBxa5WGN/C3ZPAV5nCZQtD+5eb+/jqWSVvgxQnydhG+9d0IgBvJxv43t4OHaHAuMZc=
+  on:
+    tags: true
+  skip_existing: true
+after_script: 

@@ -44,7 +44,7 @@ class CLI:
     def ok(self, message, end="\n"):
         self.write(color.useGreen(message), end=end)
 
-    def confirm(self, message, choice):
+    def confirm(self, message, choice):  # pragma: no cover
         swstr = ','.join([switchToConfirmStr[x] for x in choice])
         self.write(message, f"({swstr})", end=" ")
         ret = self.read()

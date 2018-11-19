@@ -14,7 +14,7 @@ long_description = read('README.md')
 
 setup(
     name="edl-cr",
-    version="0.0.1",
+    version="0.0.1.1",
     description="A CLI tool to run code",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -51,5 +51,6 @@ setup(
     zip_safe=False,
     python_requires='>=3.7',
     install_requires=[
+        "prompt_toolkit>=2.0.7",
     ]
 )

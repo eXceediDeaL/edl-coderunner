@@ -42,14 +42,16 @@ def loadMan():
         man = manager.load(cwd)
     except:
         man = None
-        console.error("ECR Loading Failed")
 
 
 def printHead():
-    if man != None:
-        console.write(color.useGreen("ECR "), end="")
-    else:
-        console.write("ECR ", end="")
+    assert(man == None or man.state != manager.WorkManagerState.Empty)
+    if man == None:
+        console.write("ECR", end=" ")
+    elif man.state == manager.WorkManagerState.Loaded:
+        console.write(color.useGreen("ECR"), end=" ")
+    elif man.state == manager.WorkManagerState.LoadFailed:
+        console.write(color.useRed("ECR"), end=" ")
     console.write(cwd)
 
 
@@ -108,6 +110,7 @@ def clean(args):
     if not assertInited():
         return ReturnCode.UNLOADED
     man.clean()
+    return ReturnCode.OK
 
 
 def shutdown(args):
@@ -142,11 +145,6 @@ def clear(args):
     return ReturnCode.OK
 
 
-def gethelp(args):
-    console.write(itParser.format_help())
-    return ReturnCode.OK
-
-
 class BasicError(Exception):
     def __init__(self, message):
         self.message = message
@@ -158,6 +156,10 @@ class BasicError(Exception):
 class ITParser(argparse.ArgumentParser):
     def error(self, message):
         raise BasicError(message)
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
 
 
 def getITParser():
@@ -226,26 +228,38 @@ def doSyscall(cmd, message):
     return retCode
 
 
+def mainInit():
+    global itParser, cwd
+    itParser = getITParser()
+    cwd = os.getcwd()
+
+    if manager.hasInitialized(cwd):
+        loadMan()
+
+
 def executeCommand(oricmd):
     cargs = shlex.split(oricmd)
     if len(cargs) == 0:
         return
     if cargs[0].startswith(">"):
-        doSyscall(oricmd[1:], "Call system command:")
+        return doSyscall(oricmd[1:], "Call system command:")
     else:
         try:
             cmd = itParser.parse_args(cargs)
         except BasicError as e:  # when parse failed, parser will call exit()
             if man != None and cargs[0] in man.importedCommand:
                 return doSyscall(
-                    man.importedCommand[cargs[0]], "Imported command:")
+                    f"{man.importedCommand[cargs[0]]} {' '.join(cargs[1:])}", "Imported command:")
             else:
                 console.warning("We can't recognize this command:")
                 console.write(f"  {e}")
                 if console.confirm("Do you mean a system command?", [cli.SwitchState.Yes, cli.SwitchState.No]) == cli.SwitchState.Yes:
                     return doSyscall(oricmd, "Call system command:")
         else:
-            return cmd.func(cmd).value
+            if hasattr(cmd, "func"):
+                return cmd.func(cmd).value
+            else:
+                return 0
 
 
 def main():  # pragma: no cover
@@ -261,11 +275,7 @@ def main():  # pragma: no cover
     if baseCmd.wdir != None:
         os.chdir(baseCmd.wdir)
 
-    itParser = getITParser()
-    cwd = os.getcwd()
-
-    if manager.hasInitialized(cwd):
-        loadMan()
+    mainInit()
 
     if baseCmd.command != None:
         return executeCommand(baseCmd.command)
