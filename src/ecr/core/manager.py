@@ -6,8 +6,8 @@ import subprocess
 import time
 import platform
 from enum import Enum
-from ui import color
-from defaultData import CIO_Types, CIO_SISO, CIO_FIFO, CIO_FISO, CIO_SIFO, defaultCodeTemplate, defaultExecutors, defaultImportedCommand, defaultIO, defaultTempFileFilter, defaultTimeLimit
+from ..ui import color
+from .defaultData import CIO_Types, CIO_SISO, CIO_FIFO, CIO_FISO, CIO_SIFO, defaultCodeTemplate, defaultExecutors, defaultImportedCommand, defaultIO, defaultTempFileFilter, defaultTimeLimit
 
 CONST_tempFileFilter = "tempFileFilter"
 CONST_importedCommand = "importedCommand"
@@ -64,6 +64,12 @@ def hasInitialized(basepath: str)->bool:
 
 def getFileExt(filename: str) -> str:
     return os.path.splitext(filename)[1][1:]
+
+def getSystemCommand(cmd: str, man = None) -> str:
+    if man.defaultShell == None:
+        return cmd
+    else:
+        return " ".join([man.defaultShell, f'"{cmd}"'])
 
 
 class WorkManagerState(Enum):
@@ -136,12 +142,12 @@ class WorkManager:
                 proc = None
                 if ind == sumStep - 1:  # last command
                     print("-"*20)
-                    proc = subprocess.Popen(_cmd, cwd=self.workingDirectory,
+                    proc = subprocess.Popen(getSystemCommand(_cmd, self), cwd=self.workingDirectory,
                                             stdin=None if io[0] == "s" else open(
                                                 getFileInputPath(self.workingDirectory), "r"),
                                             stdout=None if io[1] == "s" else open(getFileOutputPath(self.workingDirectory), "w"))
                 else:
-                    proc = subprocess.Popen(_cmd, cwd=self.workingDirectory)
+                    proc = subprocess.Popen(getSystemCommand(_cmd, self), cwd=self.workingDirectory)
 
                 isTimeout = False
                 bg_time = time.time()

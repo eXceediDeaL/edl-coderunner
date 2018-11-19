@@ -8,17 +8,8 @@ import locale
 import subprocess
 import shlex
 from enum import Enum
-
-try:  # for run with module
-    from .core import manager
-    from .ui import color, cli
-except:
-    try:  # for run with only __main__.py
-        # from core import manager
-        # from ui import color, cli
-        pass
-    except:
-        print("Import failed")
+from .core import manager
+from .ui import color, cli
 
 
 class ReturnCode(Enum):
@@ -209,17 +200,10 @@ def getITParser():
     return parser
 
 
-def callSysCommand(cmd):
-    if man == None or man.defaultShell == None:
-        return os.system(cmd)
-    else:
-        return os.system(" ".join([man.defaultShell, f'"{cmd}"']))
-
-
 def doSyscall(cmd, message):
     console.info(message, end=" ")
     console.write(cmd)
-    retCode = callSysCommand(cmd)
+    retCode = os.system(manager.getSystemCommand(cmd, man))
     console.info(f"System command exited:", end=" ")
     if retCode == 0:
         console.write(retCode)
