@@ -7,9 +7,11 @@ class TestManager:
     @classmethod
     def setup_class(cls):
         pat = os.path.dirname(__file__)
-        while not "temp" in os.listdir(pat):
+        while not "src" in os.listdir(pat):
             pat = os.path.dirname(pat)
         pat = os.path.join(pat, "temp")
+        if not os.path.isdir(pat):
+            os.mkdir(pat)
         assert os.path.isdir(pat)
         cls.path = pat
         cls.mpath = os.path.join(cls.path, "testM")
