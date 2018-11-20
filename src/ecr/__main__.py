@@ -47,7 +47,7 @@ def getITParser():
     cmd_clear.set_defaults(func=clear)
 
     cmd_new = subpars.add_parser("new", help="Create new code file")
-    cmd_new.add_argument("filename", nargs="?", default=None, type=str)
+    cmd_new.add_argument("file", nargs="?", default=None, type=str)
     cmd_new.add_argument("-e", "--edit", action="store_true",
                          default=False, help="Edit the file")
     cmd_new.set_defaults(func=new)
@@ -194,6 +194,7 @@ def main():  # pragma: no cover
         try:
             oricmd = str(console.inputCommand(
                 f'{shared.man.currentFile if shared.man != None and shared.man.currentFile != None else ""}{defaultPrompt}', completer=getCommandCompleter(), complete_in_thread=False))
+            oricmd = helper.formatWithVars(oricmd, shared.variables)
         except KeyboardInterrupt:
             continue
         except EOFError:

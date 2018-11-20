@@ -67,6 +67,12 @@ If you want to set current file with a existed file, use this:
 > now a.cpp
 ```
 
+Then use `edit` to open default editor to edit code:
+
+```sh
+> edit
+```
+
 Then use `run` command to run code.
 
 ```sh
@@ -91,6 +97,42 @@ Clean the compiling output and something else:
 ```sh
 > clean
 ```
+
+### Variables
+
+You can use builtin variables just like in bash:
+
+```sh
+echo $wdir
+```
+
+|Variable|Description|
+|-|-|
+|`wdir`|Working directory|
+|`current`|Current file|
+|`input`|Input file|
+|`output`|Output file|
+|`config`|Config file|
+
+### Commands
+
+These are builtin commands. You can use system command in `importedCommand` list.
+
+|Command|Description|
+|-|-|
+|`init`|Initialize ECR data|
+|`clear`|Clear ECR data|
+|`new [file] [-e --edit]`|Create new code file|
+|`now [file]`|Change current file|
+|`edit [file] [-n --now]`|Edit code file|
+|`run [file] [-io --io]`|Run code file|
+|`clean`|Clean temp files|
+|`pwd`|Print working directory|
+|`cd`|Change working directory|
+|`version`|Get version|
+|`cls`|Clear console|
+|`exit`|Exit|
+|`-h --help`|Get help|
 
 # Config
 
@@ -123,7 +165,10 @@ This file contains basic config.
     "defaultIO": "ss",
 
     // The default time limit for every step when run
-    "defaultTimeLimit": 5
+    "defaultTimeLimit": 5,
+
+    // The default editor
+    "defaultEditor": "vim"
 }
 ```
 
@@ -131,7 +176,7 @@ This file contains basic config.
 
 This file gives the way to run a code file.
 
-You can use these varible in command:
+You can use these varibles in command:
 
 - `fileName` The code file name
 - `fileNameWithoutExt` The code file name without extension
