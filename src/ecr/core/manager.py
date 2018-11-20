@@ -15,6 +15,7 @@ CONST_importedCommand = "importedCommand"
 CONST_defaultShell = "defaultShell"
 CONST_defaultIO = "defaultIO"
 CONST_defaultTimeLimit = "defaultTimeLimit"
+CONST_defaultEditor = "defaultEditor"
 
 fileextToLanguage = {
     "c": "c",
@@ -100,9 +101,13 @@ class WorkManager:
         self.defaultIO = defaultData.io
         self.defaultTimeLimit = defaultData.timeLimit
         self.state = WorkManagerState.Empty
-        self.runner : Runner = None
+        self.runner: Runner = None
+        self.defaultEditor = None
 
-    def newCode(self, filename):
+    def newCode(self, filename=None):
+        if filename == None:
+            filename = self.currentFile
+        assert filename != None
         ext = path.getFileExt(filename)
         lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
         dstPath = os.path.join(self.workingDirectory, filename)
@@ -196,6 +201,7 @@ def load(basepath: str) -> WorkManager:
             ret.importedCommand = config[CONST_importedCommand]
             ret.defaultShell = config[CONST_defaultShell]
             ret.defaultIO = config[CONST_defaultIO]
+            ret.defaultEditor = config[CONST_defaultEditor]
         ret.state = WorkManagerState.Loaded
     except:
         ret.state = WorkManagerState.LoadFailed
@@ -230,7 +236,8 @@ def initialize(basepath: str):
               CONST_importedCommand: defaultData.importedCommand,
               CONST_defaultShell: "powershell -c" if platform.system() == "Windows" else None,
               CONST_defaultIO: defaultData.io,
-              CONST_defaultTimeLimit: defaultData.timeLimit}
+              CONST_defaultTimeLimit: defaultData.timeLimit,
+              CONST_defaultEditor: defaultData.editor}
 
     with open(path.getConfigPath(basepath), "w", encoding='utf-8') as f:
         f.write(json.dumps(config, indent=4))

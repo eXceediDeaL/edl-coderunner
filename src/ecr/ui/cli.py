@@ -38,6 +38,7 @@ class CLI:
         self.getProgressBar = ProgressBar
         self.inputCommandSession = inputCommandSession if inputCommandSession != None else defaultInputCommandSession
         self.inputCommand = self.inputCommandSession.prompt
+        self.edit = click.edit
 
     def clear(self):
         click.clear()

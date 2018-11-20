@@ -8,7 +8,7 @@ from enum import Enum
 from prompt_toolkit.styles import Style
 from .core import manager, defaultData, CIO_Types, getSystemCommand
 from .ui import color, cli, console
-from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls
+from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls, edit
 from . import helper, shared, command
 
 itParser = None
@@ -43,24 +43,19 @@ def getITParser():
     cmd_init = subpars.add_parser("init", help="Initialize ECR data")
     cmd_init.set_defaults(func=init)
 
+    cmd_clear = subpars.add_parser("clear", help="Clear ECR data")
+    cmd_clear.set_defaults(func=clear)
+
     cmd_new = subpars.add_parser("new", help="Create new code file")
-    cmd_new.add_argument("filename")
+    cmd_new.add_argument("filename", nargs="?", default=None, type=str)
+    cmd_new.add_argument("-e", "--edit", action="store_true",
+                         default=False, type=bool)
     cmd_new.set_defaults(func=new)
 
     cmd_now = subpars.add_parser("now", help="Change current file")
-    cmd_now.add_argument("path", nargs="?", default=None,
+    cmd_now.add_argument("path", nargs="?", default=None, type=str,
                          help="Set current file (clear for none)")
     cmd_now.set_defaults(func=now)
-
-    cmd_pwd = subpars.add_parser("pwd", help="Print working directory")
-    cmd_pwd.set_defaults(func=pwd)
-
-    cmd_cd = subpars.add_parser("cd", help="Change working directory")
-    cmd_cd.add_argument("path")
-    cmd_cd.set_defaults(func=cd)
-
-    cmd_clear = subpars.add_parser("clear", help="Clear ECR data")
-    cmd_clear.set_defaults(func=clear)
 
     cmd_run = subpars.add_parser("run", help="Run code file")
     cmd_run.add_argument("-io", "--io", choices=CIO_Types,
@@ -69,8 +64,20 @@ def getITParser():
         "file", nargs="?", default=None, help="File name (only for this command)")
     cmd_run.set_defaults(func=run)
 
+    cmd_edit = subpars.add_parser("edit", help="Edit code file")
+    cmd_edit.add_argument(
+        "file", nargs="?", default=None, help="File name (only for this command)")
+    cmd_edit.set_defaults(func=edit)
+
     cmd_clean = subpars.add_parser("clean", help="Clean temp files")
     cmd_clean.set_defaults(func=clean)
+
+    cmd_pwd = subpars.add_parser("pwd", help="Print working directory")
+    cmd_pwd.set_defaults(func=pwd)
+
+    cmd_cd = subpars.add_parser("cd", help="Change working directory")
+    cmd_cd.add_argument("path")
+    cmd_cd.set_defaults(func=cd)
 
     cmd_version = subpars.add_parser("version", help="Get version")
     cmd_version.set_defaults(func=getVersion)

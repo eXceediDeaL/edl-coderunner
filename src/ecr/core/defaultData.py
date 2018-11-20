@@ -2,6 +2,7 @@ from . import CIO_SISO
 
 io = CIO_SISO
 timeLimit = 5
+editor = "vim"
 
 executors = {
     "c": ["gcc {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],

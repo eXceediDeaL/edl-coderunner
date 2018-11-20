@@ -1,10 +1,10 @@
 __all__ = ["init", "new", "now", "pwd", "cd", "clear",
-           "getVersion", "shutdown", "run", "clean", "cls"]
+           "getVersion", "shutdown", "run", "clean", "cls", "edit"]
 cmds = ["init", "new", "now", "pwd", "cd", "clear",
-        "version", "run", "clean", "cls", "exit"]
+        "version", "run", "clean", "cls", "exit", "edit"]
 
 import os
-from .shared import version
+import click
 from .helper import loadMan, printHead
 from .core import manager
 from .ui import SwitchState, console
@@ -25,6 +25,15 @@ def init(args):
     return ReturnCode.OK if shared.man != None else ReturnCode.UNLOADED
 
 
+def clear(args):
+    if not assertInited():
+        return ReturnCode.UNLOADED
+    if console.confirm("Do you want to clear ALL?", [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
+        manager.clear(shared.man.workingDirectory)
+        shared.man = None
+    return ReturnCode.OK
+
+
 def now(args):
     if not assertInited():
         return ReturnCode.UNLOADED
@@ -35,8 +44,26 @@ def now(args):
 def new(args):
     if not assertInited():
         return ReturnCode.UNLOADED
-    shared.man.newCode(args.filename)
-    shared.man.currentFile = args.filename
+    file = args.file
+    if file == None:
+        file = shared.man.currentFile
+    shared.man.newCode(file)
+    shared.man.currentFile = file
+    if args.edit:
+        console.edit(filename=file, editor=shared.man.defaultEditor)
+    return ReturnCode.OK
+
+
+def edit(args):
+    if not assertInited():
+        return ReturnCode.UNLOADED
+    if args.file == None and shared.man.currentFile == None:
+        console.write("Please set file first")
+        return ReturnCode.ERROR
+    file = args.file
+    if file == None:
+        file = shared.man.currentFile
+    console.edit(filename=file, editor=shared.man.defaultEditor)
     return ReturnCode.OK
 
 
@@ -75,7 +102,7 @@ def pwd(args):
 
 
 def getVersion(args):
-    console.write("edl-cr", version)
+    console.write("edl-cr", shared.version)
     console.write("Copyright (C) eXceediDeal")
     console.write(
         "License Apache-2.0, Source https://github.com/eXceediDeaL/edl-coderunner")
@@ -90,15 +117,6 @@ def cd(args):
     shared.cwd = os.getcwd()
     loadMan()
     printHead()
-    return ReturnCode.OK
-
-
-def clear(args):
-    if not assertInited():
-        return ReturnCode.UNLOADED
-    if console.confirm("Do you want to clear ALL?", [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
-        manager.clear(shared.man.workingDirectory)
-        shared.man = None
     return ReturnCode.OK
 
 

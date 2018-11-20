@@ -1,8 +1,18 @@
 # edl-cr
 
-[![](https://img.shields.io/badge/edl--cr-vFirst-blue.svg)](https://pypi.org/project/edl-cr/) ![](https://img.shields.io/badge/license-Apache--2.0-blue.svg) [![Build Status](https://travis-ci.org/eXceediDeaL/edl-coderunner.svg?branch=master)](https://travis-ci.org/eXceediDeaL/edl-coderunner) ![](http://progressed.io/bar/30?title=developing)
+[![](https://img.shields.io/github/stars/eXceediDeaL/edl-coderunner.svg?style=social&label=Stars)](https://github.com/eXceediDeaL/edl-coderunner) [![](https://img.shields.io/github/forks/eXceediDeaL/edl-coderunner.svg?style=social&label=Fork)](https://github.com/eXceediDeaL/edl-coderunner) ![](http://progressed.io/bar/40?title=developing) [![](https://img.shields.io/github/license/eXceediDeaL/edl-coderunner.svg)](https://github.com/eXceediDeaL/edl-coderunner/blob/master/LICENSE)
 
 A CLI tool to run code. See more at [here](https://exceedideal.github.io/edl-coderunner/)
+
+Project Status:
+
+|||
+|-|-|
+|Repository|[![](https://img.shields.io/github/issues/eXceediDeaL/edl-coderunner.svg)](https://github.com/eXceediDeaL/edl-coderunner/issues/) [![](https://img.shields.io/github/issues-pr/eXceediDeaL/edl-coderunner.svg)](https://github.com/eXceediDeaL/edl-coderunner/pulls/)|
+|Dependencies|![](https://img.shields.io/pypi/pyversions/edl-cr.svg) ![](https://img.shields.io/librariesio/github/eXceediDeaL/edl-coderunner.svg)|
+|Build|[![](https://img.shields.io/travis/eXceediDeaL/edl-coderunner/master.svg?label=master)](https://travis-ci.org/eXceediDeaL/edl-coderunner) ![](https://img.shields.io/travis/eXceediDeaL/edl-coderunner/dev.svg?label=dev)|
+|Release|[![](https://img.shields.io/github/release/eXceediDeaL/edl-coderunner.svg)](https://github.com/eXceediDeaL/edl-coderunner/releases/latest/) [![](https://img.shields.io/github/tag/eXceediDeaL/edl-coderunner.svg)](https://github.com/eXceediDeaL/edl-coderunner/tags)|
+|Package|[![](https://img.shields.io/pypi/v/edl-cr.svg)](https://pypi.org/project/edl-cr/) ![](	https://img.shields.io/pypi/status/edl-cr.svg) ![](https://img.shields.io/pypi/dd/edl-cr.svg)|
 
 # Install
 
