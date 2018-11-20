@@ -5,6 +5,9 @@ import re
 import subprocess
 import time
 import platform
+import click
+import signal
+from prompt_toolkit.application import run_in_terminal
 from enum import Enum
 from ..ui import color
 from . import defaultData, path
@@ -59,35 +62,60 @@ class RunResult(Enum):
     TimeOut = 2
 
 
+def safeOutput(*values):
+    run_in_terminal(lambda: print(*values, end=""))
+
+
 class Runner:
-    def __init__(self, proc: subprocess.Popen, timelimit=None):
+    def __init__(self, proc: subprocess.Popen, io: str, timelimit=None):
         self.proc = proc
         self.timeLimit = timelimit
         self.communicate = self.proc.communicate
         self.usedTime = 0
         self.isRunning = False
+        self.io = io
+        self.canInput = io[0] == "s"
 
     def terminate(self):
-        self.proc.terminate()
+        os.kill(self.proc.pid, 9)
+        self.isRunning = False
+
+    def input(self, data):
+        self.proc.stdin.write(data.encode("utf-8"))
+        self.proc.stdin.flush()
 
     def run(self):
         self.isRunning = True
         isTimeout = False
         bg_time = time.time()
         try:
+            # if self.io[1] != "s":  # not stdout
             self.communicate(timeout=self.timeLimit)
+            """else:  # stdout for async
+                while self.proc.poll() == None and self.isRunning:
+                    if self.timeLimit != None and time.time() - bg_time > self.timeLimit:
+                        raise subprocess.TimeoutExpired(
+                            self.proc.cmd, self.timeLimit)
+                    s = self.proc.stdout.readline().decode("utf-8")
+                    safeOutput(s)
+                if self.proc.poll() != 0 and self.isRunning:  # hit error
+                    s = self.proc.stderr.read().decode("utf-8")
+                    safeOutput(s)"""
         except subprocess.TimeoutExpired:
             isTimeout = True
             self.terminate()
-        ed_time = time.time()
-        self.isRunning = False
-        self.usedTime = ed_time - bg_time
-        if isTimeout:
-            return (RunResult.TimeOut, self.proc.returncode)
-        elif self.proc.returncode != 0:
-            return (RunResult.Error, self.proc.returncode)
-        else:
-            return (RunResult.Success, self.proc.returncode)
+        except KeyboardInterrupt:
+            self.terminate()
+        finally:
+            ed_time = time.time()
+            self.isRunning = False
+            self.usedTime = ed_time - bg_time
+            if isTimeout:
+                return (RunResult.TimeOut, self.proc.returncode)
+            elif self.proc.returncode != 0:
+                return (RunResult.Error, self.proc.returncode)
+            else:
+                return (RunResult.Success, self.proc.returncode)
 
 
 class WorkManager:
@@ -104,20 +132,30 @@ class WorkManager:
         self.runner: Runner = None
         self.defaultEditor = None
 
-    def newCode(self, filename=None):
-        if filename == None:
-            filename = self.currentFile
-        assert filename != None
-        ext = path.getFileExt(filename)
-        lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
-        dstPath = os.path.join(self.workingDirectory, filename)
-        tempPath = None if lang == None else os.path.join(path.getTemplatePath(
-            self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
-        if tempPath != None and os.path.exists(tempPath):
-            shutil.copyfile(tempPath, dstPath)
-        else:
-            open(dstPath, "w").close()
-        ui.console.write(color.useGreen("+"), filename)
+    def newCode(self, file=None):
+        try:
+            if file == None:
+                file = self.currentFile
+            assert file != None
+            ext = path.getFileExt(file)
+            lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
+            dstPath = os.path.join(self.workingDirectory, file)
+            tempPath = None if lang == None else os.path.join(path.getTemplatePath(
+                self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
+            if tempPath != None and os.path.exists(tempPath):
+                shutil.copyfile(tempPath, dstPath)
+            else:
+                open(dstPath, "w").close()
+            return True
+        except:
+            return False
+
+    def edit(self, file=None):
+        try:
+            click.edit(filename=file, editor=self.defaultEditor)
+            return True
+        except:
+            return False
 
     def clean(self):
         for file in os.listdir(self.workingDirectory):
@@ -137,53 +175,62 @@ class WorkManager:
             file = self.currentFile
         errf = color.useRed("×")
         passf = color.useGreen("√")
-        try:
-            fileNameWithoutExt, fileext = os.path.splitext(file)
-            lang = fileextToLanguage[fileext[1:]]
-            cmds = self.executorMap[lang]
-            formats = {
-                "fileName": file,
-                "fileNameWithoutExt": fileNameWithoutExt,
-                "dir": self.workingDirectory,
-            }
-            sumStep = len(cmds)
-            ui.console.info(f"Running {file}")
-            for ind, bcmd in enumerate(cmds):
-                cmd, timelimit = None, None
-                if not isinstance(bcmd, str):
-                    cmd, timelimit = bcmd
-                else:
-                    cmd, timelimit = bcmd, self.defaultTimeLimit
-                _cmd = cmd.format(**formats)
-                ui.console.write(
-                    "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
-                proc = None
+
+        fileNameWithoutExt, fileext = os.path.splitext(file)
+        lang = fileextToLanguage[fileext[1:]]
+        cmds = self.executorMap[lang]
+        formats = {
+            "fileName": file,
+            "fileNameWithoutExt": fileNameWithoutExt,
+            "dir": self.workingDirectory,
+        }
+        sumStep = len(cmds)
+        ui.console.info(f"Running {file}")
+
+        for ind, bcmd in enumerate(cmds):
+            cmd, timelimit = None, None
+            if not isinstance(bcmd, str):
+                cmd, timelimit = bcmd
+            else:
+                cmd, timelimit = bcmd, self.defaultTimeLimit
+            _cmd = cmd.format(**formats)
+            ui.console.write(
+                "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
+            proc = None
+            rresult, retcode = None, 0
+            try:
                 if ind == sumStep - 1:  # last command
+                    if io[0] == "s":  # stdin
+                        timelimit = None
                     ui.console.write("-"*20)
                     proc = subprocess.Popen(getSystemCommand(_cmd, self), cwd=self.workingDirectory,
                                             stdin=None if io[0] == "s" else open(
                                                 path.getFileInputPath(self.workingDirectory), "r"),
-                                            stdout=None if io[1] == "s" else open(path.getFileOutputPath(self.workingDirectory), "w"))
+                                            stdout=None if io[1] == "s" else open(path.getFileOutputPath(self.workingDirectory), "w"), stderr=None)
                 else:
                     proc = subprocess.Popen(getSystemCommand(
-                        _cmd, self), cwd=self.workingDirectory)
+                        _cmd, self), cwd=self.workingDirectory, stdin=None, stdout=None, stderr=None)
 
-                self.runner = Runner(proc, timelimit)
+                self.runner = Runner(proc=proc, io=io, timelimit=timelimit)
                 rresult, retcode = self.runner.run()
+            except BaseException:
+                self.runner = None
+                return False
+            finally:
                 if ind == sumStep - 1:  # last command
                     ui.console.write("-"*20)
                 ui.console.write(
                     "   ->", passf if retcode == 0 else errf, f"{round(self.runner.usedTime*1000)/1000}s")
                 if rresult != RunResult.Success:
                     ui.console.write(
-                        "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, " -> ", retcode, split="", end=" ")
+                        "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, " -> ", retcode, sep="", end=" ")
                     if rresult == RunResult.TimeOut:
                         ui.console.write(color.useRed("Time out"))
                     else:
                         ui.console.write()
+                    self.runner = None
                     return False
-        except BaseException:
-            return False
+        self.runner = None
         return True
 
 

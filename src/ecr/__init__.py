@@ -8,3 +8,4 @@ class ReturnCode(enum.Enum):
     ERROR = -1
     UNLOADED = 1
     RUNERR = 2
+    EXIT = 3

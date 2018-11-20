@@ -9,7 +9,7 @@ from prompt_toolkit.styles import Style
 from .core import manager, defaultData, CIO_Types, getSystemCommand
 from .ui import color, cli, console
 from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls, edit
-from . import helper, shared, command
+from . import helper, shared, command, ReturnCode
 
 itParser = None
 
@@ -49,11 +49,11 @@ def getITParser():
     cmd_new = subpars.add_parser("new", help="Create new code file")
     cmd_new.add_argument("filename", nargs="?", default=None, type=str)
     cmd_new.add_argument("-e", "--edit", action="store_true",
-                         default=False, type=bool)
+                         default=False, help="Edit the file")
     cmd_new.set_defaults(func=new)
 
     cmd_now = subpars.add_parser("now", help="Change current file")
-    cmd_now.add_argument("path", nargs="?", default=None, type=str,
+    cmd_now.add_argument("file", nargs="?", default=None, type=str,
                          help="Set current file (clear for none)")
     cmd_now.set_defaults(func=now)
 
@@ -67,6 +67,8 @@ def getITParser():
     cmd_edit = subpars.add_parser("edit", help="Edit code file")
     cmd_edit.add_argument(
         "file", nargs="?", default=None, help="File name (only for this command)")
+    cmd_edit.add_argument("-n", "--now", action="store_true",
+                          default=False, help="Set the file as current")
     cmd_edit.set_defaults(func=edit)
 
     cmd_clean = subpars.add_parser("clean", help="Clean temp files")
@@ -196,13 +198,14 @@ def main():  # pragma: no cover
             continue
         except EOFError:
             break
-        executeCommand(oricmd)
-
+        if executeCommand(oricmd) == ReturnCode.EXIT.value:
+            break
+    
     return 0
 
 
 def outmain():  # pragma: no cover
-    exit(int(main()))
+    sys.exit(int(main()))
 
 
 if __name__ == "__main__":  # pragma: no cover
