@@ -1,3 +1,8 @@
+__all__ = ["init", "new", "now", "pwd", "cd", "clear",
+           "getVersion", "shutdown", "run", "clean", "cls"]
+cmds = ["init", "new", "now", "pwd", "cd", "clear",
+        "version", "run", "clean", "cls", "exit"]
+
 import os
 from .shared import version
 from .helper import loadMan, printHead
@@ -71,6 +76,9 @@ def pwd(args):
 
 def getVersion(args):
     console.write("edl-cr", version)
+    console.write("Copyright (C) eXceediDeal")
+    console.write(
+        "License Apache-2.0, Source https://github.com/eXceediDeaL/edl-coderunner")
     return ReturnCode.OK
 
 
@@ -91,4 +99,9 @@ def clear(args):
     if console.confirm("Do you want to clear ALL?", [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
         manager.clear(shared.man.workingDirectory)
         shared.man = None
+    return ReturnCode.OK
+
+
+def cls(args):
+    console.clear()
     return ReturnCode.OK

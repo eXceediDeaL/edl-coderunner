@@ -1,6 +1,7 @@
 import os
 from prompt_toolkit.completion import WordCompleter, Completer, Completion
 
+
 class PathCompleter(Completer):
     """
     Complete for Path variables.
@@ -27,7 +28,10 @@ class PathCompleter(Completer):
         self.expanduser = expanduser
 
     def get_completions(self, document, complete_event):
-        text = document.text_before_cursor.split()[-1]
+        text = document.text_before_cursor.split()
+        if len(text) == 0:
+            return
+        text = text[-1]
 
         # Complete only when we have at least the minimal input length,
         # otherwise, we can too many results and autocompletion will become too

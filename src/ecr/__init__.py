@@ -1,5 +1,7 @@
 import enum
+from . import shared
 
+__version__ = shared.version
 
 class ReturnCode(enum.Enum):
     OK = 0

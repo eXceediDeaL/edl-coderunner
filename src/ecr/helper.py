@@ -13,7 +13,8 @@ def loadMan():
 
 
 def printHead():
-    assert(shared.man == None or shared.man.state != manager.WorkManagerState.Empty)
+    assert(shared.man == None or shared.man.state !=
+           manager.WorkManagerState.Empty)
     if shared.man == None:
         console.write("ECR", end=" ")
     elif shared.man.state == manager.WorkManagerState.Loaded:

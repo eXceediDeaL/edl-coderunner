@@ -52,6 +52,43 @@ class WorkManagerState(Enum):
     LoadFailed = 2,
 
 
+class RunResult(Enum):
+    Success = 0
+    Error = 1
+    TimeOut = 2
+
+
+class Runner:
+    def __init__(self, proc: subprocess.Popen, timelimit=None):
+        self.proc = proc
+        self.timeLimit = timelimit
+        self.communicate = self.proc.communicate
+        self.usedTime = 0
+        self.isRunning = False
+
+    def terminate(self):
+        self.proc.terminate()
+
+    def run(self):
+        self.isRunning = True
+        isTimeout = False
+        bg_time = time.time()
+        try:
+            self.communicate(timeout=self.timeLimit)
+        except subprocess.TimeoutExpired:
+            isTimeout = True
+            self.terminate()
+        ed_time = time.time()
+        self.isRunning = False
+        self.usedTime = ed_time - bg_time
+        if isTimeout:
+            return (RunResult.TimeOut, self.proc.returncode)
+        elif self.proc.returncode != 0:
+            return (RunResult.Error, self.proc.returncode)
+        else:
+            return (RunResult.Success, self.proc.returncode)
+
+
 class WorkManager:
     def __init__(self, path: str):
         self.workingDirectory: str = path
@@ -63,6 +100,7 @@ class WorkManager:
         self.defaultIO = defaultData.io
         self.defaultTimeLimit = defaultData.timeLimit
         self.state = WorkManagerState.Empty
+        self.runner : Runner = None
 
     def newCode(self, filename):
         ext = path.getFileExt(filename)
@@ -125,22 +163,16 @@ class WorkManager:
                     proc = subprocess.Popen(getSystemCommand(
                         _cmd, self), cwd=self.workingDirectory)
 
-                isTimeout = False
-                bg_time = time.time()
-                try:
-                    proc.communicate(timeout=timelimit)
-                except subprocess.TimeoutExpired:
-                    isTimeout = True
-                    proc.terminate()
-                ed_time = time.time()
+                self.runner = Runner(proc, timelimit)
+                rresult, retcode = self.runner.run()
                 if ind == sumStep - 1:  # last command
                     ui.console.write("-"*20)
                 ui.console.write(
-                    "   ->", passf if proc.returncode == 0 else errf, f"{round((ed_time-bg_time)*1000)/1000}s")
-                if proc.returncode != 0:
+                    "   ->", passf if retcode == 0 else errf, f"{round(self.runner.usedTime*1000)/1000}s")
+                if rresult != RunResult.Success:
                     ui.console.write(
-                        "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, " -> ", proc.returncode, split="", end=" ")
-                    if isTimeout:
+                        "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, " -> ", retcode, split="", end=" ")
+                    if rresult == RunResult.TimeOut:
                         ui.console.write(color.useRed("Time out"))
                     else:
                         ui.console.write()

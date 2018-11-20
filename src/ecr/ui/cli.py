@@ -1,14 +1,15 @@
 import os
 import platform
+import click
 from prompt_toolkit import prompt, print_formatted_text, HTML, PromptSession
 from pygments.lexers.shell import BashLexer
 from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.shortcuts import ProgressBar
 from enum import Enum
-from click import clear
 from .helper import PathCompleter
 from . import color
+
 
 class SwitchState(Enum):
     Yes = 0
@@ -39,10 +40,7 @@ class CLI:
         self.inputCommand = self.inputCommandSession.prompt
 
     def clear(self):
-        if platform.system() == "Windows":
-            os.system("cls")
-        else:
-            os.system("clear")
+        click.clear()
 
     def info(self, message, end="\n"):
         self.write(color.useCyan(message), end=end)
@@ -60,5 +58,6 @@ class CLI:
         swstr = ','.join([switchToConfirmStr[x] for x in choice])
         ret = self.read(f"{message} ({swstr}) ")
         while ret not in confirmStrToSwitch or confirmStrToSwitch[ret] not in choice:
-            ret = self.read(f"Not an acceptable value. Please input again ({swstr}): ")
+            ret = self.read(
+                f"Not an acceptable value. Please input again ({swstr}): ")
         return confirmStrToSwitch[ret]

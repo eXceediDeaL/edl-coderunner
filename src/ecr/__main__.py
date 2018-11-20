@@ -8,9 +8,8 @@ from enum import Enum
 from prompt_toolkit.styles import Style
 from .core import manager, defaultData, CIO_Types, getSystemCommand
 from .ui import color, cli, console
-from .command import init, new, now, pwd, cd, clear, getVersion, shutdown, run, clean
-from .shared import man, version
-from . import helper, shared
+from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls
+from . import helper, shared, command
 
 itParser = None
 
@@ -32,9 +31,7 @@ class ITParser(argparse.ArgumentParser):
             self._print_message(message, sys.stderr)
 
 
-builtinCmdLists = ["init", "new", "now", "pwd",
-                   "cd", "clear", "run", "clean", "version", "exit"]
-cmdLists = None
+builtinCmdLists = list(command.cmds)
 
 
 def getITParser():
@@ -81,6 +78,9 @@ def getITParser():
     # cmd_help = subpars.add_parser("help", help="Help")
     # cmd_help.set_defaults(func=gethelp)
 
+    cmd_cls = subpars.add_parser("cls", help="Clear console")
+    cmd_cls.set_defaults(func=cls)
+
     cmd_exit = subpars.add_parser("exit", help="Exit")
     cmd_exit.set_defaults(func=shutdown)
 
@@ -90,7 +90,7 @@ def getITParser():
 def doSyscall(cmd, message):
     console.info(message, end=" ")
     console.write(cmd)
-    retCode = os.system(getSystemCommand(cmd, man))
+    retCode = os.system(getSystemCommand(cmd, shared.man))
     console.info(f"System command exited:", end=" ")
     if retCode == 0:
         console.write(retCode)
@@ -103,7 +103,7 @@ defaultPrompt = "> "
 
 
 def mainInit():
-    global itParser, cmdLists
+    global itParser
     from prompt_toolkit import PromptSession
     from pygments.lexers.shell import BashLexer
     from prompt_toolkit.lexers import PygmentsLexer
@@ -114,10 +114,6 @@ def mainInit():
 
     if manager.hasInitialized(shared.cwd):
         helper.loadMan()
-
-    cmdLists = list(builtinCmdLists)
-    if man != None:
-        cmdLists += man.importedCommand.keys()
 
     cliInputSession = PromptSession(
         message=defaultPrompt, lexer=PygmentsLexer(BashLexer), auto_suggest=AutoSuggestFromHistory())
@@ -134,7 +130,7 @@ def executeCommand(oricmd):
         try:
             cmd = itParser.parse_args(cargs)
         except BasicError as e:  # when parse failed, parser will call exit()
-            importedCommand = man.importedCommand if man != None else defaultData.importedCommand
+            importedCommand = shared.man.importedCommand if shared.man != None else defaultData.importedCommand
             if cargs[0] in importedCommand:
                 return doSyscall(
                     f"{importedCommand[cargs[0]]} {' '.join(cargs[1:])}", "Imported command:")
@@ -152,13 +148,18 @@ def executeCommand(oricmd):
 
 def getCommandCompleter():
     from prompt_toolkit.completion import WordCompleter, merge_completers
+    cmdLists = list(builtinCmdLists)
+    if shared.man != None:
+        cmdLists += shared.man.importedCommand.keys()
+    else:
+        cmdLists += defaultData.importedCommand
     wc = WordCompleter(cmdLists, ignore_case=True)
     pc = cli.PathCompleter()
     return merge_completers([wc, pc])
 
 
 def main():  # pragma: no cover
-    global man, itParser
+    global itParser
 
     baseParser = argparse.ArgumentParser(
         prog="ecr", description="Code Runner")
@@ -183,7 +184,7 @@ def main():  # pragma: no cover
     while True:
         try:
             oricmd = str(console.inputCommand(
-                f'{man.currentFile if man != None and man.currentFile != None else ""}{defaultPrompt}', completer=getCommandCompleter(), complete_in_thread=True))
+                f'{shared.man.currentFile if shared.man != None and shared.man.currentFile != None else ""}{defaultPrompt}', completer=getCommandCompleter(), complete_in_thread=False))
         except KeyboardInterrupt:
             continue
         except EOFError:

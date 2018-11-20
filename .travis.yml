@@ -10,11 +10,12 @@ env:
     - GH_REPO_REF: github.com/eXceediDeaL/edl-coderunner.git
 install:
   - make SHELL=sh prepare
-script:
+before_script:
   - mkdir docs
   - cd docs
   - git clone -b gh-pages https://git@$GH_REPO_REF .
   - cd ..
+script:
   - make SHELL=sh test
   - make SHELL=sh cover
 deploy:
