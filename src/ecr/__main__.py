@@ -3,142 +3,16 @@ import sys
 import io
 import os
 import platform
-import codecs
-import locale
-import subprocess
 import shlex
 from enum import Enum
 from prompt_toolkit.styles import Style
-from .core import manager, defaultData
-from .ui import color, cli
-from .ui.cli import console
-
-version = "0.0.1.4"
-
-
-class ReturnCode(Enum):
-    OK = 0
-    ERROR = -1
-    UNLOADED = 1
-    RUNERR = 2
-
-
-cwd = None
-
-man: manager.WorkManager = None
+from .core import manager, defaultData, CIO_Types, getSystemCommand
+from .ui import color, cli, console
+from .command import init, new, now, pwd, cd, clear, getVersion, shutdown, run, clean
+from .shared import man, version
+from . import helper, shared
 
 itParser = None
-
-
-def loadMan():
-    global man
-    try:
-        man = manager.load(cwd)
-    except:
-        man = None
-
-
-def printHead():
-    assert(man == None or man.state != manager.WorkManagerState.Empty)
-    if man == None:
-        console.write("ECR", end=" ")
-    elif man.state == manager.WorkManagerState.Loaded:
-        console.write(color.useGreen("ECR"), end=" ")
-    elif man.state == manager.WorkManagerState.LoadFailed:
-        console.write(color.useRed("ECR"), end=" ")
-    console.write(cwd)
-
-
-def assertInited()->bool:
-    if man == None:
-        console.error("Not have any ecr directory")
-        return False
-    return True
-
-
-def init(args):
-    global man
-    manager.initialize(cwd)
-    loadMan()
-    printHead()
-    return ReturnCode.OK if man != None else ReturnCode.UNLOADED
-
-
-def now(args):
-    if not assertInited():
-        return ReturnCode.UNLOADED
-    man.currentFile = args.path
-    return ReturnCode.OK
-
-
-def new(args):
-    if not assertInited():
-        return ReturnCode.UNLOADED
-    man.newCode(args.filename)
-    man.currentFile = args.filename
-    return ReturnCode.OK
-
-
-def run(args):
-    if not assertInited():
-        return ReturnCode.UNLOADED
-
-    if args.file == None and man.currentFile == None:
-        console.write("Please set file first")
-        return ReturnCode.ERROR
-
-    result = False
-
-    result = man.execute(io=args.io, file=args.file)
-
-    if not result:
-        console.error("Running Failed")
-        return ReturnCode.RUNERR
-    return ReturnCode.OK
-
-
-def clean(args):
-    if not assertInited():
-        return ReturnCode.UNLOADED
-    man.clean()
-    return ReturnCode.OK
-
-
-def shutdown(args):
-    exit(0)
-
-
-def pwd(args):
-    console.write(cwd)
-    return ReturnCode.OK
-
-
-def getVersion(args):
-    console.write("edl-cr", version)
-    return ReturnCode.OK
-
-
-def cd(args):
-    global man, cwd
-    if not os.path.exists(args.path):
-        console.error("No this directory")
-        return ReturnCode.ERROR
-    os.chdir(args.path)
-    cwd = os.getcwd()
-    printHead()
-    if manager.hasInitialized(cwd):
-        loadMan()
-    return ReturnCode.OK
-
-
-def clear(args):
-    global man
-    if not assertInited():
-        return ReturnCode.UNLOADED
-    if console.confirm("Do you want to clear ALL?", [cli.SwitchState.OK, cli.SwitchState.Cancel]) == cli.SwitchState.OK:
-        manager.clear(man.workingDirectory)
-        man = None
-    return ReturnCode.OK
 
 
 class BasicError(Exception):
@@ -192,7 +66,7 @@ def getITParser():
     cmd_clear.set_defaults(func=clear)
 
     cmd_run = subpars.add_parser("run", help="Run code file")
-    cmd_run.add_argument("-io", "--io", choices=manager.CIO_Types,
+    cmd_run.add_argument("-io", "--io", choices=CIO_Types,
                          default=None, help="Change input and output")
     cmd_run.add_argument(
         "file", nargs="?", default=None, help="File name (only for this command)")
@@ -216,7 +90,7 @@ def getITParser():
 def doSyscall(cmd, message):
     console.info(message, end=" ")
     console.write(cmd)
-    retCode = os.system(manager.getSystemCommand(cmd, man))
+    retCode = os.system(getSystemCommand(cmd, man))
     console.info(f"System command exited:", end=" ")
     if retCode == 0:
         console.write(retCode)
@@ -229,17 +103,17 @@ defaultPrompt = "> "
 
 
 def mainInit():
-    global itParser, cmdLists, cwd
+    global itParser, cmdLists
     from prompt_toolkit import PromptSession
     from pygments.lexers.shell import BashLexer
     from prompt_toolkit.lexers import PygmentsLexer
     from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
     itParser = getITParser()
-    cwd = os.getcwd()
+    shared.cwd = os.getcwd()
 
-    if manager.hasInitialized(cwd):
-        loadMan()
+    if manager.hasInitialized(shared.cwd):
+        helper.loadMan()
 
     cmdLists = list(builtinCmdLists)
     if man != None:
@@ -260,7 +134,7 @@ def executeCommand(oricmd):
         try:
             cmd = itParser.parse_args(cargs)
         except BasicError as e:  # when parse failed, parser will call exit()
-            importedCommand = man.importedCommand if man != None else defaultData.defaultImportedCommand
+            importedCommand = man.importedCommand if man != None else defaultData.importedCommand
             if cargs[0] in importedCommand:
                 return doSyscall(
                     f"{importedCommand[cargs[0]]} {' '.join(cargs[1:])}", "Imported command:")
@@ -284,7 +158,7 @@ def getCommandCompleter():
 
 
 def main():  # pragma: no cover
-    global man, cwd, itParser
+    global man, itParser
 
     baseParser = argparse.ArgumentParser(
         prog="ecr", description="Code Runner")
@@ -305,7 +179,7 @@ def main():  # pragma: no cover
     if baseCmd.command != None:
         return executeCommand(baseCmd.command)
 
-    printHead()
+    helper.printHead()
     while True:
         try:
             oricmd = str(console.inputCommand(

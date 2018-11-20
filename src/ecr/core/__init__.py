@@ -1,4 +1,7 @@
-import os
-import sys
-rootpath = str(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(rootpath)
+CIO_SISO = "ss"
+CIO_SIFO = "sf"
+CIO_FISO = "fs"
+CIO_FIFO = "ff"
+CIO_Types = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
+
+from .manager import WorkManager, WorkManagerState, hasInitialized, getSystemCommand

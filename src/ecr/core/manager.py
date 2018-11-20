@@ -6,8 +6,9 @@ import subprocess
 import time
 import platform
 from enum import Enum
-from ..ui import color, cli
-from .defaultData import CIO_Types, CIO_SISO, CIO_FIFO, CIO_FISO, CIO_SIFO, defaultCodeTemplate, defaultExecutors, defaultImportedCommand, defaultIO, defaultTempFileFilter, defaultTimeLimit
+from ..ui import color
+from . import defaultData, path
+from .. import ui
 
 CONST_tempFileFilter = "tempFileFilter"
 CONST_importedCommand = "importedCommand"
@@ -34,36 +35,8 @@ languageToFileext = {v: k for k, v in fileextToLanguage.items()}
 TEMPLATE_NAME = "base"
 
 
-def getMainPath(basepath: str)->str:
-    return os.path.join(basepath, ".ecr")
-
-
-def getConfigPath(basepath: str) -> str:
-    return os.path.join(getMainPath(basepath), "config.json")
-
-
-def getExecutorPath(basepath: str) -> str:
-    return os.path.join(getMainPath(basepath), "executor.json")
-
-
-def getTemplatePath(basepath: str) -> str:
-    return os.path.join(getMainPath(basepath), "templates")
-
-
-def getFileInputPath(basepath: str) -> str:
-    return os.path.join(getMainPath(basepath), "input.data")
-
-
-def getFileOutputPath(basepath: str) -> str:
-    return os.path.join(getMainPath(basepath), "output.data")
-
-
 def hasInitialized(basepath: str)->bool:
-    return os.path.exists(getMainPath(basepath))
-
-
-def getFileExt(filename: str) -> str:
-    return os.path.splitext(filename)[1][1:]
+    return os.path.exists(path.getMainPath(basepath))
 
 
 def getSystemCommand(cmd: str, man=None) -> str:
@@ -87,29 +60,29 @@ class WorkManager:
         self.currentFile: str = None
         self.importedCommand = {}
         self.defaultShell = None
-        self.defaultIO = defaultIO
-        self.defaultTimeLimit = defaultTimeLimit
+        self.defaultIO = defaultData.io
+        self.defaultTimeLimit = defaultData.timeLimit
         self.state = WorkManagerState.Empty
 
     def newCode(self, filename):
-        ext = getFileExt(filename)
+        ext = path.getFileExt(filename)
         lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
         dstPath = os.path.join(self.workingDirectory, filename)
-        tempPath = None if lang == None else os.path.join(getTemplatePath(
+        tempPath = None if lang == None else os.path.join(path.getTemplatePath(
             self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
         if tempPath != None and os.path.exists(tempPath):
             shutil.copyfile(tempPath, dstPath)
         else:
             open(dstPath, "w").close()
-        cli.console.write(color.useGreen("+"), filename)
+        ui.console.write(color.useGreen("+"), filename)
 
     def clean(self):
         for file in os.listdir(self.workingDirectory):
             for pat in self.tempFileFilter:
                 try:
-                    if pat == getFileExt(os.path.split(file)[-1]):
+                    if pat == path.getFileExt(os.path.split(file)[-1]):
                         os.remove(file)
-                        cli.console.write(color.useRed("-"), file)
+                        ui.console.write(color.useRed("-"), file)
                         break
                 except:
                     pass
@@ -131,7 +104,7 @@ class WorkManager:
                 "dir": self.workingDirectory,
             }
             sumStep = len(cmds)
-            cli.console.info(f"Running {file}")
+            ui.console.info(f"Running {file}")
             for ind, bcmd in enumerate(cmds):
                 cmd, timelimit = None, None
                 if not isinstance(bcmd, str):
@@ -139,15 +112,15 @@ class WorkManager:
                 else:
                     cmd, timelimit = bcmd, self.defaultTimeLimit
                 _cmd = cmd.format(**formats)
-                cli.console.write(
+                ui.console.write(
                     "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
                 proc = None
                 if ind == sumStep - 1:  # last command
-                    cli.console.write("-"*20)
+                    ui.console.write("-"*20)
                     proc = subprocess.Popen(getSystemCommand(_cmd, self), cwd=self.workingDirectory,
                                             stdin=None if io[0] == "s" else open(
-                                                getFileInputPath(self.workingDirectory), "r"),
-                                            stdout=None if io[1] == "s" else open(getFileOutputPath(self.workingDirectory), "w"))
+                                                path.getFileInputPath(self.workingDirectory), "r"),
+                                            stdout=None if io[1] == "s" else open(path.getFileOutputPath(self.workingDirectory), "w"))
                 else:
                     proc = subprocess.Popen(getSystemCommand(
                         _cmd, self), cwd=self.workingDirectory)
@@ -161,18 +134,18 @@ class WorkManager:
                     proc.terminate()
                 ed_time = time.time()
                 if ind == sumStep - 1:  # last command
-                    cli.console.write("-"*20)
-                cli.console.write(
+                    ui.console.write("-"*20)
+                ui.console.write(
                     "   ->", passf if proc.returncode == 0 else errf, f"{round((ed_time-bg_time)*1000)/1000}s")
                 if proc.returncode != 0:
-                    cli.console.write(
+                    ui.console.write(
                         "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, " -> ", proc.returncode, split="", end=" ")
                     if isTimeout:
-                        cli.console.write(color.useRed("Time out"))
+                        ui.console.write(color.useRed("Time out"))
                     else:
-                        cli.console.write()
+                        ui.console.write()
                     return False
-        except BaseException as e:
+        except BaseException:
             return False
         return True
 
@@ -182,10 +155,10 @@ def load(basepath: str) -> WorkManager:
         return None
     ret = WorkManager(basepath)
     try:
-        with open(getExecutorPath(basepath), "r", encoding='utf-8') as f:
+        with open(path.getExecutorPath(basepath), "r", encoding='utf-8') as f:
             ret.executorMap = json.loads(f.read())
 
-        with open(getConfigPath(basepath), "r", encoding='utf-8') as f:
+        with open(path.getConfigPath(basepath), "r", encoding='utf-8') as f:
             config = json.loads(f.read())
             ret.tempFileFilter = config[CONST_tempFileFilter]
             ret.importedCommand = config[CONST_importedCommand]
@@ -198,7 +171,7 @@ def load(basepath: str) -> WorkManager:
 
 
 def clear(basepath: str):
-    oipath = getMainPath(basepath)
+    oipath = path.getMainPath(basepath)
     if hasInitialized(basepath):
         shutil.rmtree(oipath)
 
@@ -206,26 +179,26 @@ def clear(basepath: str):
 def initialize(basepath: str):
     clear(basepath)
 
-    oipath = getMainPath(basepath)
+    oipath = path.getMainPath(basepath)
     os.mkdir(oipath)
 
-    templatePath = getTemplatePath(basepath)
+    templatePath = path.getTemplatePath(basepath)
     os.mkdir(templatePath)
-    for k, v in defaultCodeTemplate.items():
+    for k, v in defaultData.codeTemplate.items():
         with open(os.path.join(templatePath, f"{TEMPLATE_NAME}.{languageToFileext[k]}"), "w", encoding='utf-8') as f:
             f.write(v)
-    executors = defaultExecutors
-    with open(getExecutorPath(basepath), "w", encoding='utf-8') as f:
+    executors = defaultData.executors
+    with open(path.getExecutorPath(basepath), "w", encoding='utf-8') as f:
         f.write(json.dumps(executors, indent=4))
 
-    open(getFileInputPath(basepath), "w").close()
-    open(getFileOutputPath(basepath), "w").close()
+    open(path.getFileInputPath(basepath), "w").close()
+    open(path.getFileOutputPath(basepath), "w").close()
 
-    config = {CONST_tempFileFilter: defaultTempFileFilter,
-              CONST_importedCommand: defaultImportedCommand,
+    config = {CONST_tempFileFilter: defaultData.tempFileFilter,
+              CONST_importedCommand: defaultData.importedCommand,
               CONST_defaultShell: "powershell -c" if platform.system() == "Windows" else None,
-              CONST_defaultIO: defaultIO,
-              CONST_defaultTimeLimit: defaultTimeLimit}
+              CONST_defaultIO: defaultData.io,
+              CONST_defaultTimeLimit: defaultData.timeLimit}
 
-    with open(getConfigPath(basepath), "w", encoding='utf-8') as f:
+    with open(path.getConfigPath(basepath), "w", encoding='utf-8') as f:
         f.write(json.dumps(config, indent=4))

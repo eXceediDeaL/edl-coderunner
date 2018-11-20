@@ -1,14 +1,9 @@
-CIO_SISO = "ss"
-CIO_SIFO = "sf"
-CIO_FISO = "fs"
-CIO_FIFO = "ff"
-CIO_Types = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
+from . import CIO_SISO
 
-defaultIO = CIO_SISO
+io = CIO_SISO
+timeLimit = 5
 
-defaultTimeLimit = 5
-
-defaultExecutors = {
+executors = {
     "c": ["gcc {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "cpp": ["g++ {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "java": ["javac {fileName}", "java {fileNameWithoutExt}"],
@@ -22,13 +17,11 @@ defaultExecutors = {
     "powershell": ["powershell -ExecutionPolicy ByPass -File {filename}"]
 }
 
-defaultTempFileFilter = ["exe", "o", "class", "out"]
+tempFileFilter = ["exe", "o", "class", "out"]
 
-
-defaultImportedCommand = {
+importedCommand = {
     "ls": "ls",
     "dir": "dir",
-    "cls": "clear",
     "cat": "cat",
     "mkdir": "mkdir",
     "echo": "echo",
@@ -63,7 +56,7 @@ defaultImportedCommand = {
     "make": "make",
 }
 
-defaultCodeTemplate = {
+codeTemplate = {
     "c":
     """#include <stdio.h>
 int main()

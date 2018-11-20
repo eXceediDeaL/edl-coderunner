@@ -1,6 +1,8 @@
-import os
-import sys
-rootpath = str(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(rootpath)
+import enum
 
-__all__ = ["core","ui"]
+
+class ReturnCode(enum.Enum):
+    OK = 0
+    ERROR = -1
+    UNLOADED = 1
+    RUNERR = 2
