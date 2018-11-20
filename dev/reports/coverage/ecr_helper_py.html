@@ -83,13 +83,14 @@
 <p id="n14" class="pln"><a href="#n14">14</a></p>
 <p id="n15" class="stm mis"><a href="#n15">15</a></p>
 <p id="n16" class="stm mis"><a href="#n16">16</a></p>
-<p id="n17" class="stm mis"><a href="#n17">17</a></p>
+<p id="n17" class="pln"><a href="#n17">17</a></p>
 <p id="n18" class="stm mis"><a href="#n18">18</a></p>
 <p id="n19" class="stm mis"><a href="#n19">19</a></p>
 <p id="n20" class="stm mis"><a href="#n20">20</a></p>
 <p id="n21" class="stm mis"><a href="#n21">21</a></p>
 <p id="n22" class="stm mis"><a href="#n22">22</a></p>
 <p id="n23" class="stm mis"><a href="#n23">23</a></p>
+<p id="n24" class="stm mis"><a href="#n24">24</a></p>
 
             </td>
             <td class="text">
@@ -108,14 +109,15 @@
 <p id="t13" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t14" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t15" class="stm mis"><span class="key">def</span> <span class="nam">printHead</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t16" class="stm mis">    <span class="key">assert</span><span class="op">(</span><span class="nam">shared</span><span class="op">.</span><span class="nam">man</span> <span class="op">==</span> <span class="key">None</span> <span class="key">or</span> <span class="nam">shared</span><span class="op">.</span><span class="nam">man</span><span class="op">.</span><span class="nam">state</span> <span class="op">!=</span> <span class="nam">manager</span><span class="op">.</span><span class="nam">WorkManagerState</span><span class="op">.</span><span class="nam">Empty</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t17" class="stm mis">    <span class="key">if</span> <span class="nam">shared</span><span class="op">.</span><span class="nam">man</span> <span class="op">==</span> <span class="key">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t18" class="stm mis">        <span class="nam">console</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="str">"ECR"</span><span class="op">,</span> <span class="nam">end</span><span class="op">=</span><span class="str">" "</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t19" class="stm mis">    <span class="key">elif</span> <span class="nam">shared</span><span class="op">.</span><span class="nam">man</span><span class="op">.</span><span class="nam">state</span> <span class="op">==</span> <span class="nam">manager</span><span class="op">.</span><span class="nam">WorkManagerState</span><span class="op">.</span><span class="nam">Loaded</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t20" class="stm mis">        <span class="nam">console</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">color</span><span class="op">.</span><span class="nam">useGreen</span><span class="op">(</span><span class="str">"ECR"</span><span class="op">)</span><span class="op">,</span> <span class="nam">end</span><span class="op">=</span><span class="str">" "</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t21" class="stm mis">    <span class="key">elif</span> <span class="nam">shared</span><span class="op">.</span><span class="nam">man</span><span class="op">.</span><span class="nam">state</span> <span class="op">==</span> <span class="nam">manager</span><span class="op">.</span><span class="nam">WorkManagerState</span><span class="op">.</span><span class="nam">LoadFailed</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t22" class="stm mis">        <span class="nam">console</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">color</span><span class="op">.</span><span class="nam">useRed</span><span class="op">(</span><span class="str">"ECR"</span><span class="op">)</span><span class="op">,</span> <span class="nam">end</span><span class="op">=</span><span class="str">" "</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t23" class="stm mis">    <span class="nam">console</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">shared</span><span class="op">.</span><span class="nam">cwd</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t16" class="stm mis">    <span class="key">assert</span><span class="op">(</span><span class="nam">shared</span><span class="op">.</span><span class="nam">man</span> <span class="op">==</span> <span class="key">None</span> <span class="key">or</span> <span class="nam">shared</span><span class="op">.</span><span class="nam">man</span><span class="op">.</span><span class="nam">state</span> <span class="op">!=</span><span class="strut">&nbsp;</span></p>
+<p id="t17" class="pln">           <span class="nam">manager</span><span class="op">.</span><span class="nam">WorkManagerState</span><span class="op">.</span><span class="nam">Empty</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t18" class="stm mis">    <span class="key">if</span> <span class="nam">shared</span><span class="op">.</span><span class="nam">man</span> <span class="op">==</span> <span class="key">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t19" class="stm mis">        <span class="nam">console</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="str">"ECR"</span><span class="op">,</span> <span class="nam">end</span><span class="op">=</span><span class="str">" "</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t20" class="stm mis">    <span class="key">elif</span> <span class="nam">shared</span><span class="op">.</span><span class="nam">man</span><span class="op">.</span><span class="nam">state</span> <span class="op">==</span> <span class="nam">manager</span><span class="op">.</span><span class="nam">WorkManagerState</span><span class="op">.</span><span class="nam">Loaded</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t21" class="stm mis">        <span class="nam">console</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">color</span><span class="op">.</span><span class="nam">useGreen</span><span class="op">(</span><span class="str">"ECR"</span><span class="op">)</span><span class="op">,</span> <span class="nam">end</span><span class="op">=</span><span class="str">" "</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t22" class="stm mis">    <span class="key">elif</span> <span class="nam">shared</span><span class="op">.</span><span class="nam">man</span><span class="op">.</span><span class="nam">state</span> <span class="op">==</span> <span class="nam">manager</span><span class="op">.</span><span class="nam">WorkManagerState</span><span class="op">.</span><span class="nam">LoadFailed</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t23" class="stm mis">        <span class="nam">console</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">color</span><span class="op">.</span><span class="nam">useRed</span><span class="op">(</span><span class="str">"ECR"</span><span class="op">)</span><span class="op">,</span> <span class="nam">end</span><span class="op">=</span><span class="str">" "</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t24" class="stm mis">    <span class="nam">console</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">shared</span><span class="op">.</span><span class="nam">cwd</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 
             </td>
         </tr>
@@ -126,7 +128,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.2</a>,
-            created at 2018-11-20 01:01
+            created at 2018-11-20 04:02
         </p>
     </div>
 </div>
