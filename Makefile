@@ -2,7 +2,7 @@
 
 PY = python
 SHELL = powershell.exe
-override RARG += --wdir ../temp/debug
+override RARG += --dir ../temp/debug
 
 build : 
 	$(PY) setup.py sdist bdist_wheel

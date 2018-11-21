@@ -15,14 +15,14 @@ long_description = read('README.md')
 
 setup(
     name="edl-cr",
-    version="0.0.1.5",
+    version="0.0.2",
     description="A CLI tool to run code",
     long_description=long_description,
     long_description_content_type="text/markdown",
 
     license="Apache-2.0",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: Apache Software License",
     ],
@@ -53,6 +53,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         "prompt_toolkit>=2.0.7",
-        "click>=7.0"
+        "click>=7.0",
+        "watchdog>=0.9.0"
     ]
 )

@@ -7,11 +7,25 @@ import os
 import click
 import threading
 import time
+import watchdog
+from watchdog.events import FileSystemEventHandler
 from argparse import Namespace
 from .helper import loadMan, printHead
 from .core import manager
 from .ui import SwitchState, color
 from . import ReturnCode, shared, ui
+
+
+def printFileModify(file):
+    ui.console.write(color.useYellow("M"), file)
+
+
+def printFileCreate(file):
+    ui.console.write(color.useGreen("+"), file)
+
+
+def printFileDelete(file):
+    ui.console.write(color.useRed("-"), file)
 
 
 def assertInited()->bool:
@@ -53,7 +67,7 @@ def new(args):
     result = shared.man.newCode(file)
     if result:
         shared.man.currentFile = file
-        ui.console.write(color.useGreen("+"), file)
+        printFileCreate(file)
         if args.edit:
             return edit(Namespace(file=file, now=False))
         return ReturnCode.OK
@@ -73,7 +87,7 @@ def edit(args):
         file = shared.man.currentFile
     result = shared.man.edit(file)
     if result:
-        ui.console.write(color.useYellow("M"), file)
+        printFileModify(file)
         if args.now:
             return now(Namespace(file=file))
         return ReturnCode.OK
@@ -81,6 +95,34 @@ def edit(args):
         ui.console.error(f"Editing file error {file}")
         return ReturnCode.ERROR
     return ReturnCode.OK
+
+
+class RunWatchEventHandler(FileSystemEventHandler):
+    def __init__(self, file, func):
+        self.func = func
+        self.file = file
+        self.state = False
+
+    def on_moved(self, event):
+        super().on_moved(event)
+        # self.func()
+
+        # what = 'directory' if event.is_directory else 'file'
+        # logging.info("Moved %s: from %s to %s", what, event.src_path,event.dest_path)
+
+    def on_created(self, event):
+        super().on_created(event)
+
+    def on_deleted(self, event):
+        super().on_deleted(event)
+        # self.func()
+
+    def on_modified(self, event):
+        super().on_modified(event)
+        if os.path.split(event.src_path)[-1] == self.file:
+            self.state = not self.state
+            if self.state: # one modify raise two event
+                self.func()
 
 
 def run(args):
@@ -116,18 +158,44 @@ def run(args):
 
     result = ret[0] if len(ret) > 0 else False"""
 
-    result = shared.man.execute(io=args.io, file=args.file)
+    if not args.watch:
+        result = shared.man.execute(io=args.io, file=args.file)
 
-    if not result:
-        ui.console.error("Running failed")
-        return ReturnCode.RUNERR
-    return ReturnCode.OK
+        if not result:
+            ui.console.error("Running failed")
+            return ReturnCode.RUNERR
+        return ReturnCode.OK
+    else:
+        def func():
+            ui.console.clear()
+            ui.console.info(f"Watching", end=" ")
+            printFileModify(file)
+            result = shared.man.execute(io=args.io, file=args.file)
+            if not result:
+                ui.console.error("Running failed")
+
+        from watchdog.observers import Observer
+        file = args.file if args.file != None else shared.man.currentFile
+        path = shared.man.workingDirectory
+        ui.console.info(f"Watching {file} (press ctrl+c to end)")
+        event_handler = RunWatchEventHandler(file, func)
+        observer = Observer()
+        observer.schedule(event_handler, path, recursive=False)
+        observer.start()
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            observer.stop()
+            ui.console.info("Watching end.")
+        observer.join()
+        return ReturnCode.OK
 
 
 def clean(args):
     if not assertInited():
         return ReturnCode.UNLOADED
-    shared.man.clean()
+    shared.man.clean(rmHandler=printFileDelete)
     return ReturnCode.OK
 
 

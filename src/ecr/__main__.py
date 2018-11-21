@@ -62,6 +62,7 @@ def getITParser():
                          default=None, help="Change input and output")
     cmd_run.add_argument(
         "file", nargs="?", default=None, help="File name (only for this command)")
+    cmd_run.add_argument("-w", "--watch", action="store_true",default=False,help="Watch the file and run auto till Ctrl-C")
     cmd_run.set_defaults(func=run)
 
     cmd_edit = subpars.add_parser("edit", help="Edit code file")
@@ -174,15 +175,15 @@ def main():  # pragma: no cover
         prog="ecr", description="Code Runner")
     baseParser.add_argument("-v", "--version", default=False, action="store_true",
                             help="Get version")
-    baseParser.add_argument("-w", "--wdir", default=None,
+    baseParser.add_argument("-d", "--dir", default=None,
                             help="Set working directory")
     baseParser.add_argument(
         "-c", "--command", default=None,  help="Execute command")
     baseCmd = baseParser.parse_args()
     if baseCmd.version:
         return getVersion(None).value
-    if baseCmd.wdir != None:
-        os.chdir(baseCmd.wdir)
+    if baseCmd.dir != None:
+        os.chdir(baseCmd.dir)
 
     mainInit()
 
@@ -201,7 +202,7 @@ def main():  # pragma: no cover
             break
         if executeCommand(oricmd) == ReturnCode.EXIT.value:
             break
-    
+
     return 0
 
 

@@ -1,7 +1,7 @@
 from .core import WorkManager, path
 from .ui import CLI
 
-version = "0.0.1.5"
+version = "0.0.2"
 
 cwd = None
 

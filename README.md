@@ -30,7 +30,7 @@ Use command `ecr` to run edl-cr.
 
 |Option|Description|
 |-|-|
-|`-w --wdir`|Set working directory|
+|`-d --dir`|Set working directory|
 |`-c --command`|Execute command just like in interactive mode|
 
 ## Interactive Mode
@@ -84,6 +84,9 @@ a.cpp> run b.cpp
 
 # run a.cpp with file input and standard output
 a.cpp> run -io fs
+
+# watch the file a.cpp and run auto
+a.cpp> run -w
 ```
 
 ### Input and Output
@@ -125,7 +128,7 @@ These are builtin commands. You can use system command in `importedCommand` list
 |`new [file] [-e --edit]`|Create new code file|
 |`now [file]`|Change current file|
 |`edit [file] [-n --now]`|Edit code file|
-|`run [file] [-io --io]`|Run code file|
+|`run [file] [-io --io] [-w]`|Run code file|
 |`clean`|Clean temp files|
 |`pwd`|Print working directory|
 |`cd`|Change working directory|

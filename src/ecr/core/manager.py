@@ -157,13 +157,14 @@ class WorkManager:
         except:
             return False
 
-    def clean(self):
+    def clean(self, rmHandler=None):
         for file in os.listdir(self.workingDirectory):
             for pat in self.tempFileFilter:
                 try:
                     if pat == path.getFileExt(os.path.split(file)[-1]):
-                        os.remove(file)
-                        ui.console.write(color.useRed("-"), file)
+                        os.remove(os.path.join(self.workingDirectory, file))
+                        if rmHandler != None:
+                            rmHandler(file)
                         break
                 except:
                     pass

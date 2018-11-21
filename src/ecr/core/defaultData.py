@@ -1,7 +1,7 @@
 from . import CIO_SISO
 
 io = CIO_SISO
-timeLimit = 5
+timeLimit = 10
 editor = "vim"
 
 executors = {

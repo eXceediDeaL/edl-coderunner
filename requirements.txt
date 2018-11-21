@@ -6,3 +6,4 @@ twine
 pytest-html
 prompt_toolkit
 click
+watchdog
