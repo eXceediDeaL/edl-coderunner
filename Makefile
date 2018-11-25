@@ -19,11 +19,12 @@ run :
 
 lint : 
 	-cd src ; pylint --rcfile=../pylint.conf ecr
+	-mypy ./src/ecr
 
+# cd src ; $(PY) -m test --html=./docs/dev/reports/test/index.html --self-contained-html
+# pytest --html=./docs/dev/reports/test/index.html --self-contained-html
 test : 
-	# cd src ; $(PY) -m test --html=./docs/dev/reports/test/index.html --self-contained-html
-	# pytest --html=./docs/dev/reports/test/index.html --self-contained-html
-	$(PY) setup.py install
+	$(PY) setup.py install -q
 	-cd temp ; mkdir testC
 	cd ./temp/testC ; ecr -c 'init'
 	-rm -r ./temp/testC/*

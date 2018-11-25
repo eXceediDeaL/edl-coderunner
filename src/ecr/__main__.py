@@ -1,14 +1,16 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 import sys
 import os
 import shlex
+from typing import List, NoReturn
+import prompt_toolkit
 from .core import manager, defaultData, getSystemCommand
 from .core.defaultData import CIO_Types
 from .ui import cli, console
 from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls, edit
 from . import helper, shared, command, ReturnCode, ui
 
-itParser = None
+itParser: ArgumentParser = ArgumentParser()
 
 
 class BasicError(Exception):
@@ -29,10 +31,10 @@ class ITParser(ArgumentParser):
             self._print_message(message, sys.stderr)
 
 
-builtinCmdLists = list(command.cmds)
+builtinCmdLists: List[str] = list(command.cmds)
 
 
-def getITParser():
+def getITParser()->ITParser:
     parser = ITParser(
         prog="", description="Code Runner", add_help=True)
 
@@ -96,7 +98,7 @@ def getITParser():
     return parser
 
 
-def doSyscall(cmd, message):
+def doSyscall(cmd, message)->int:
     console.info(message, end=" ")
     console.write(cmd)
     retCode = os.system(getSystemCommand(cmd, shared.man))
@@ -111,7 +113,7 @@ def doSyscall(cmd, message):
 defaultPrompt = "> "
 
 
-def mainInit():
+def mainInit()->None:
     global itParser
     from prompt_toolkit import PromptSession
     from pygments.lexers.shell import BashLexer
@@ -128,10 +130,11 @@ def mainInit():
         message=defaultPrompt,
         lexer=PygmentsLexer(BashLexer),
         auto_suggest=AutoSuggestFromHistory())
-    cli.console = cli.CLI(inputCommandSession=cliInputSession)
+
+    ui.console = cli.CLI(inputCommandSession=cliInputSession)
 
 
-def executeCommand(oricmd):
+def executeCommand(oricmd: str)->int:
     cargs = shlex.split(oricmd)
     if not cargs:
         return 0
@@ -156,11 +159,10 @@ def executeCommand(oricmd):
         else:
             if hasattr(cmd, "func"):
                 return cmd.func(cmd).value
-            else:
-                return 0
+    return 0
 
 
-def getCommandCompleter():
+def getCommandCompleter()->prompt_toolkit.completion.Completer:
     from prompt_toolkit.completion import WordCompleter, merge_completers
     cmdLists = list(builtinCmdLists)
     if shared.man:
@@ -172,7 +174,7 @@ def getCommandCompleter():
     return merge_completers([wc, pc])
 
 
-def main():  # pragma: no cover
+def main()->int:  # pragma: no cover
     global itParser
 
     baseParser = ArgumentParser(
@@ -185,7 +187,7 @@ def main():  # pragma: no cover
         "-c", "--command", default=None, help="Execute command")
     baseCmd = baseParser.parse_args()
     if baseCmd.version:
-        return getVersion(None).value
+        return getVersion(Namespace()).value
     if baseCmd.dir:
         os.chdir(baseCmd.dir)
 
@@ -214,7 +216,7 @@ def main():  # pragma: no cover
     return 0
 
 
-def outmain():  # pragma: no cover
+def outmain()->NoReturn:  # pragma: no cover
     exit(int(main()))
 
 

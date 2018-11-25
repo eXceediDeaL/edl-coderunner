@@ -1,14 +1,17 @@
-CIO_SISO = "ss"
-CIO_SIFO = "sf"
-CIO_FISO = "fs"
-CIO_FIFO = "ff"
-CIO_Types = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
+from typing import List
+from .types import ExecutorMapping, CommandMapping, CodeTemplateMapping
 
-io = CIO_SISO
-timeLimit = 10
-editor = "vim"
+CIO_SISO: str = "ss"
+CIO_SIFO: str = "sf"
+CIO_FISO: str = "fs"
+CIO_FIFO: str = "ff"
+CIO_Types: List[str] = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
 
-executors = {
+io: str = CIO_SISO
+timeLimit: int = 10
+editor: str = "vim"
+
+executors: ExecutorMapping = {
     "c": ["gcc {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "cpp": ["g++ {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
     "java": ["javac {fileName}", "java {fileNameWithoutExt}"],
@@ -25,9 +28,9 @@ executors = {
     "powershell": ["powershell -ExecutionPolicy ByPass -File {filename}"]
 }
 
-tempFileFilter = ["exe", "o", "class", "out"]
+tempFileFilter: List[str] = ["exe", "o", "class", "out"]
 
-importedCommand = {
+importedCommand: CommandMapping = {
     "ls": "ls",
     "dir": "dir",
     "cat": "cat",
@@ -64,7 +67,7 @@ importedCommand = {
     "make": "make",
 }
 
-codeTemplate = {
+codeTemplate: CodeTemplateMapping = {
     "c":
     """#include <stdio.h>
 int main()

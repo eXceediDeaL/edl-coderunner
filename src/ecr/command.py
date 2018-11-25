@@ -1,9 +1,10 @@
 import os
 import time
+from typing import cast
 from argparse import Namespace
 from watchdog.events import FileSystemEventHandler
 from .helper import loadMan, printHead
-from .core import manager
+from .core import manager, WorkManager
 from .ui import SwitchState, color
 from . import ReturnCode, shared, ui
 
@@ -13,15 +14,15 @@ cmds = ["init", "new", "now", "pwd", "cd", "clear",
         "version", "run", "clean", "cls", "exit", "edit"]
 
 
-def printFileModify(file):
+def printFileModify(file: str)->None:
     ui.console.write(color.useYellow("M"), file)
 
 
-def printFileCreate(file):
+def printFileCreate(file: str)->None:
     ui.console.write(color.useGreen("+"), file)
 
 
-def printFileDelete(file):
+def printFileDelete(file: str)->None:
     ui.console.write(color.useRed("-"), file)
 
 
@@ -32,39 +33,42 @@ def assertInited()->bool:
     return True
 
 
-def init(args): # pylint: disable=W0613
-    manager.initialize(shared.cwd)
+def init(args: Namespace)->ReturnCode:  # pylint: disable=W0613
+    manager.initialize(cast(str, shared.cwd))
     loadMan()
     printHead()
     return ReturnCode.OK if shared.man else ReturnCode.UNLOADED
 
 
-def clear(args): # pylint: disable=W0613
+def clear(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     if not assertInited():
         return ReturnCode.UNLOADED
-    if ui.console.confirm("Do you want to clear ALL?", \
-        [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
-        manager.clear(shared.man.workingDirectory)
+    tman: WorkManager = cast(WorkManager, shared.man)
+    if ui.console.confirm("Do you want to clear ALL?",
+                          [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
+        manager.clear(tman.workingDirectory)
         shared.man = None
     return ReturnCode.OK
 
 
-def now(args):
+def now(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
-    shared.man.currentFile = args.file
+    tman: WorkManager = cast(WorkManager, shared.man)
+    tman.currentFile = args.file
     return ReturnCode.OK
 
 
-def new(args):
+def new(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
+    tman: WorkManager = cast(WorkManager, shared.man)
     file = args.file
     if file is None:
-        file = shared.man.currentFile
-    result = shared.man.newCode(file)
+        file = tman.currentFile
+    result = tman.newCode(file)
     if result:
-        shared.man.currentFile = file
+        tman.currentFile = file
         printFileCreate(file)
         if args.edit:
             return edit(Namespace(file=file, now=False))
@@ -74,16 +78,17 @@ def new(args):
         return ReturnCode.ERROR
 
 
-def edit(args):
+def edit(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
-    if args.file is None and shared.man.currentFile is None:
+    tman: WorkManager = cast(WorkManager, shared.man)
+    if args.file is None and tman.currentFile is None:
         ui.console.write("Please set file first")
         return ReturnCode.ERROR
     file = args.file
     if file is None:
-        file = shared.man.currentFile
-    result = shared.man.edit(file)
+        file = tman.currentFile
+    result = tman.edit(file)
     if result:
         printFileModify(file)
         if args.now:
@@ -101,17 +106,17 @@ class RunWatchEventHandler(FileSystemEventHandler):
         self.file = file
         self.state = False
 
-    def on_moved(self, event): # pylint: disable=W0235
+    def on_moved(self, event):  # pylint: disable=W0235
         super().on_moved(event)
         # self.func()
 
         # what = 'directory' if event.is_directory else 'file'
         # logging.info("Moved %s: from %s to %s", what, event.src_path,event.dest_path)
 
-    def on_created(self, event): # pylint: disable=W0235
+    def on_created(self, event):  # pylint: disable=W0235
         super().on_created(event)
 
-    def on_deleted(self, event): # pylint: disable=W0235
+    def on_deleted(self, event):  # pylint: disable=W0235
         super().on_deleted(event)
         # self.func()
 
@@ -123,18 +128,18 @@ class RunWatchEventHandler(FileSystemEventHandler):
                 self.func()
 
 
-def run(args):
+def run(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
-
-    if args.file is None and shared.man.currentFile is None:
+    tman: WorkManager = cast(WorkManager, shared.man)
+    if args.file is None and tman.currentFile is None:
         ui.console.write("Please set file first")
         return ReturnCode.ERROR
 
     # pylint: disable=W0105
     """def func(ret): # for async
         try:
-            ret.append(shared.man.execute(io=args.io, file=args.file))
+            ret.append(tman.execute(io=args.io, file=args.file))
         except:
             ret.append(False)
 
@@ -143,22 +148,22 @@ def run(args):
     new_thread = threading.Thread(target=func, args=(ret,))
     new_thread.start()
 
-    while shared.man.runner is None:
+    while tman.runner is None:
         pass
 
-    while shared.man.runner != None and shared.man.runner.isRunning:
+    while tman.runner != None and tman.runner.isRunning:
         cmd = ui.console.read()
         if cmd == "kill":
             ui.console.write(cmd)
-            shared.man.runner.terminate()
+            tman.runner.terminate()
             new_thread.join()
-        elif shared.man.runner.canInput:
-            shared.man.runner.input(cmd)
+        elif tman.runner.canInput:
+            tman.runner.input(cmd)
 
     result = ret[0] if len(ret) > 0 else False"""
 
     if not args.watch:
-        result = shared.man.execute(io=args.io, file=args.file)
+        result = tman.execute(io=args.io, file=args.file)
 
         if not result:
             ui.console.error("Running failed")
@@ -169,13 +174,13 @@ def run(args):
             ui.console.clear()
             ui.console.info(f"Watching", end=" ")
             printFileModify(file)
-            result = shared.man.execute(io=args.io, file=args.file)
+            result = tman.execute(io=args.io, file=args.file)
             if not result:
                 ui.console.error("Running failed")
 
         from watchdog.observers import Observer
-        file = args.file if args.file else shared.man.currentFile
-        path = shared.man.workingDirectory
+        file = args.file if args.file else tman.currentFile
+        path = tman.workingDirectory
         ui.console.info(f"Watching {file} (press ctrl+c to end)")
         event_handler = RunWatchEventHandler(file, func)
         observer = Observer()
@@ -191,23 +196,24 @@ def run(args):
         return ReturnCode.OK
 
 
-def clean(args):  # pylint: disable=W0613
+def clean(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     if not assertInited():
         return ReturnCode.UNLOADED
-    shared.man.clean(rmHandler=printFileDelete)
+    tman: WorkManager = cast(WorkManager, shared.man)
+    tman.clean(rmHandler=printFileDelete)
     return ReturnCode.OK
 
 
-def shutdown(args):  # pylint: disable=W0613
+def shutdown(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     return ReturnCode.EXIT
 
 
-def pwd(args):  # pylint: disable=W0613
+def pwd(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     ui.console.write(shared.cwd)
     return ReturnCode.OK
 
 
-def getVersion(args):  # pylint: disable=W0613
+def getVersion(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     ui.console.write("edl-cr", shared.version)
     ui.console.write("Copyright (C) eXceediDeal")
     ui.console.write(
@@ -215,7 +221,7 @@ def getVersion(args):  # pylint: disable=W0613
     return ReturnCode.OK
 
 
-def cd(args):
+def cd(args: Namespace)->ReturnCode:
     if not os.path.exists(args.path):
         ui.console.error("No this directory")
         return ReturnCode.ERROR
@@ -226,6 +232,6 @@ def cd(args):
     return ReturnCode.OK
 
 
-def cls(args):  # pylint: disable=W0613
+def cls(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     ui.console.clear()
     return ReturnCode.OK

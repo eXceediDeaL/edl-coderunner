@@ -1,12 +1,14 @@
+from typing import Optional
 from .core import WorkManager, path
+from .core.types import VariableMapping
 
 version = "0.0.2"
 
-cwd = None
+cwd: Optional[str] = None
 
-man: WorkManager
+man: Optional[WorkManager] = None
 
-variables = {
+variables: VariableMapping = {
     "current": lambda: None if man is None else man.currentFile,
     "wdir": lambda: None if man is None else man.workingDirectory,
     "config": lambda: None if man is None else path.getConfigPath(man.workingDirectory),

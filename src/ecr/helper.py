@@ -1,24 +1,26 @@
 import re
-from .core import manager
+from typing import cast
+from .core import manager, WorkManager
+from .core.types import VariableMapping
 from .ui import color, console
 from . import shared
 
 
-def loadMan():
+def loadMan()->None:
     try:
-        shared.man = manager.load(shared.cwd)
+        shared.man = manager.load(cast(str, shared.cwd))
     except:
         shared.man = None
 
 
-def printHead():
-    assert(shared.man is None or shared.man.state !=
-           manager.WorkManagerState.Empty)
-    if shared.man is None:
+def printHead()->None:
+    assert not shared.man or shared.man.state != manager.WorkManagerState.Empty
+    tman: WorkManager = cast(WorkManager, shared.man)
+    if not shared.man:
         console.write("ECR", end=" ")
-    elif shared.man.state == manager.WorkManagerState.Loaded:
+    elif tman.state == manager.WorkManagerState.Loaded:
         console.write(color.useGreen("ECR"), end=" ")
-    elif shared.man.state == manager.WorkManagerState.LoadFailed:
+    elif tman.state == manager.WorkManagerState.LoadFailed:
         console.write(color.useRed("ECR"), end=" ")
     console.write(shared.cwd)
 
@@ -26,12 +28,12 @@ def printHead():
 varFormatRE = re.compile(r'\$(?P<name>[a-zA-Z_]\w*)')
 
 
-def bashVarToPythonVar(m):
+def bashVarToPythonVar(m)->str:
     s = m.groupdict()
     return "{" + s["name"] + "}"
 
 
-def formatWithVars(oristr, var):
+def formatWithVars(oristr: str, var: VariableMapping)->str:
     try:
         tmp = {k: v() for k, v in var.items()}
         oristr = varFormatRE.sub(bashVarToPythonVar, oristr)

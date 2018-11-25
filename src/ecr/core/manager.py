@@ -4,23 +4,24 @@ import shutil
 import subprocess
 import time
 import platform
-from typing import cast, Dict, List
+from typing import cast, Dict, List, Optional, Tuple, Callable
 from enum import Enum
 import click
 from prompt_toolkit.application import run_in_terminal
+from .types import ExecutorMapping, CommandMapping
 from ..ui import color
 from . import defaultData
 from . import path as ecrpath
 from .. import ui
 
-CONST_tempFileFilter = "tempFileFilter"
-CONST_importedCommand = "importedCommand"
-CONST_defaultShell = "defaultShell"
-CONST_defaultIO = "defaultIO"
-CONST_defaultTimeLimit = "defaultTimeLimit"
-CONST_defaultEditor = "defaultEditor"
+CONST_tempFileFilter: str = "tempFileFilter"
+CONST_importedCommand: str = "importedCommand"
+CONST_defaultShell: str = "defaultShell"
+CONST_defaultIO: str = "defaultIO"
+CONST_defaultTimeLimit: str = "defaultTimeLimit"
+CONST_defaultEditor: str = "defaultEditor"
 
-fileextToLanguage = {
+fileextToLanguage: Dict[str, str] = {
     "c": "c",
     "cpp": "cpp",
     "py": "python",
@@ -34,9 +35,10 @@ fileextToLanguage = {
     "ps1": "powershell",
 }
 
-languageToFileext = {v: k for k, v in fileextToLanguage.items()}
+languageToFileext: Dict[str, str] = {
+    v: k for k, v in fileextToLanguage.items()}
 
-TEMPLATE_NAME = "base"
+TEMPLATE_NAME: str = "base"
 
 
 def hasInitialized(basepath: str)->bool:
@@ -44,47 +46,47 @@ def hasInitialized(basepath: str)->bool:
 
 
 def getSystemCommand(cmd: str, man=None) -> str:
-    if man is None or man.defaultShell is None:
+    if not man or not man.defaultShell:
         return cmd
     else:
         return " ".join([man.defaultShell, f'"{cmd}"'])
 
 
 class WorkManagerState(Enum):
-    Empty = 0
-    Loaded = 1
-    LoadFailed = 2
+    Empty: int = 0
+    Loaded: int = 1
+    LoadFailed: int = 2
 
 
 class RunResult(Enum):
-    Success = 0
-    Error = 1
-    TimeOut = 2
+    Success: int = 0
+    Error: int = 1
+    TimeOut: int = 2
 
 
-def safeOutput(*values):
+def safeOutput(*values: List)->None:
     run_in_terminal(lambda: print(*values, end=""))
 
 
 class Runner:
-    def __init__(self, proc: subprocess.Popen, io: str, timelimit=None):
-        self.proc = proc
-        self.timeLimit = timelimit
+    def __init__(self, proc: subprocess.Popen, io: str, timelimit: Optional[int] = None):
+        self.proc: subprocess.Popen = proc
+        self.timeLimit: Optional[int] = timelimit
         self.communicate = self.proc.communicate
-        self.usedTime = 0
-        self.isRunning = False
-        self.io = io
-        self.canInput = io[0] == "s"
+        self.usedTime: float = 0
+        self.isRunning: bool = False
+        self.io: str = io
+        self.canInput: bool = io[0] == "s"
 
-    def terminate(self):
+    def terminate(self)->None:
         os.kill(self.proc.pid, 9)
         self.isRunning = False
 
-    def input(self, data):
+    def input(self, data: str)->None:
         self.proc.stdin.write(data.encode("utf-8"))
         self.proc.stdin.flush()
 
-    def run(self):
+    def run(self)->Tuple[RunResult, Optional[int]]:
         self.isRunning = True
         isTimeout = False
         bg_time = time.time()
@@ -121,18 +123,18 @@ class Runner:
 class WorkManager:
     def __init__(self, path: str):
         self.workingDirectory: str = path
-        self.executorMap: dict = {}
-        self.tempFileFilter: list = []
-        self.currentFile: str = ""
-        self.importedCommand: Dict[str, str] = {}
-        self.defaultShell: str = ""
-        self.defaultIO = defaultData.io
-        self.defaultTimeLimit = defaultData.timeLimit
-        self.state = WorkManagerState.Empty
-        self.runner: Runner = cast(Runner, None)
-        self.defaultEditor: str = ""
+        self.executorMap: ExecutorMapping = {}
+        self.tempFileFilter: List[str] = []
+        self.currentFile: Optional[str] = None
+        self.importedCommand: CommandMapping = {}
+        self.defaultShell: Optional[str] = None
+        self.defaultIO: str = defaultData.io
+        self.defaultTimeLimit: int = defaultData.timeLimit
+        self.state: WorkManagerState = WorkManagerState.Empty
+        self.runner: Optional[Runner] = None
+        self.defaultEditor: Optional[str] = None
 
-    def newCode(self, file=None):
+    def newCode(self, file=None)->bool:
         try:
             if file is None:
                 file = self.currentFile
@@ -140,7 +142,7 @@ class WorkManager:
             ext = ecrpath.getFileExt(file)
             lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
             dstPath = os.path.join(self.workingDirectory, file)
-            tempPath = None if lang is None else os.path.join(ecrpath.getTemplatePath(
+            tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(
                 self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
             if tempPath and os.path.exists(tempPath):
                 shutil.copyfile(tempPath, dstPath)
@@ -150,14 +152,14 @@ class WorkManager:
         except:
             return False
 
-    def edit(self, file=None):
+    def edit(self, file: Optional[str] = None)->bool:
         try:
             click.edit(filename=file, editor=self.defaultEditor)
             return True
         except:
             return False
 
-    def clean(self, rmHandler=None):
+    def clean(self, rmHandler: Optional[Callable[[str], None]] = None)->None:
         for file in os.listdir(self.workingDirectory):
             for pat in self.tempFileFilter:
                 try:
@@ -169,7 +171,7 @@ class WorkManager:
                 except:
                     pass
 
-    def execute(self, io=None, file=None):
+    def execute(self, io: Optional[str] = None, file: Optional[str] = None)->bool:
         if io is None:
             io = self.defaultIO
         if file is None:
@@ -177,7 +179,8 @@ class WorkManager:
         errf = color.useRed("×")
         passf = color.useGreen("√")
 
-        fileNameWithoutExt, fileext = os.path.splitext(file)
+        fileNameWithoutExt, fileext = cast(
+            Tuple[str, str], os.path.splitext(file))
         lang = fileextToLanguage[fileext[1:]]
         cmds = self.executorMap[lang]
         formats = {
@@ -202,7 +205,7 @@ class WorkManager:
             ui.console.write(
                 "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
             proc = None
-            rresult, retcode = None, 0
+            rresult, retcode = None, None
             try:
                 if ind == sumStep - 1:  # last command
                     if io[0] == "s":  # stdin
@@ -233,7 +236,7 @@ class WorkManager:
                 ui.console.write(
                     "   ->",
                     passf if retcode == 0 else errf,
-                    f"{round(self.runner.usedTime*1000)/1000}s")
+                    f"{round(cast(Runner,self.runner).usedTime*1000)/1000}s")
                 if rresult != RunResult.Success:
                     ui.console.write(
                         "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
@@ -248,9 +251,9 @@ class WorkManager:
         return isSuccess
 
 
-def load(basepath: str) -> WorkManager:
+def load(basepath: str) -> Optional[WorkManager]:
     if not hasInitialized(basepath):
-        return cast(WorkManager, None)
+        return None
     ret = WorkManager(basepath)
     try:
         with open(ecrpath.getExecutorPath(basepath), "r", encoding='utf-8') as f:
@@ -269,13 +272,13 @@ def load(basepath: str) -> WorkManager:
     return ret
 
 
-def clear(basepath: str):
+def clear(basepath: str)->None:
     oipath = ecrpath.getMainPath(basepath)
     if hasInitialized(basepath):
         shutil.rmtree(oipath)
 
 
-def initialize(basepath: str):
+def initialize(basepath: str)->None:
     clear(basepath)
 
     oipath = ecrpath.getMainPath(basepath)
