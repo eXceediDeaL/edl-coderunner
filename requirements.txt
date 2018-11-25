@@ -8,3 +8,5 @@ prompt_toolkit
 click
 watchdog
 pygments
+pylint
+mypy

@@ -1,14 +1,11 @@
-import os
-import platform
+from enum import Enum
 import click
-from prompt_toolkit import prompt, print_formatted_text, HTML, PromptSession
 from pygments.lexers.shell import BashLexer
+from prompt_toolkit import prompt, print_formatted_text, PromptSession
 from prompt_toolkit.lexers import PygmentsLexer
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.shortcuts import ProgressBar
 from prompt_toolkit.application import run_in_terminal
-from enum import Enum
-from .helper import PathCompleter
 from . import color
 
 
@@ -36,17 +33,16 @@ class CLI:
     def __init__(self, inputCommandSession: PromptSession = None):
         self.read = prompt
         self.getProgressBar = ProgressBar
-        self.inputCommandSession = inputCommandSession if inputCommandSession != None else defaultInputCommandSession
+        self.inputCommandSession = inputCommandSession if inputCommandSession \
+            else defaultInputCommandSession
         self.inputCommand = self.inputCommandSession.prompt
         self.edit = click.edit
+        self.clear = click.clear
 
-    def write(self, *values, **kwargs):
+    def write(self, *values, **kwargs): # pylint: disable=R0201
         def func():
             print_formatted_text(*values, **kwargs)
         run_in_terminal(func)
-
-    def clear(self):
-        click.clear()
 
     def info(self, message, end="\n"):
         self.write(color.useCyan(message), end=end)

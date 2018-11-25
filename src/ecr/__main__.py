@@ -1,28 +1,26 @@
-import argparse
+from argparse import ArgumentParser
 import sys
-import io
 import os
-import platform
 import shlex
-from enum import Enum
-from prompt_toolkit.styles import Style
-from .core import manager, defaultData, CIO_Types, getSystemCommand
-from .ui import color, cli, console
+from .core import manager, defaultData, getSystemCommand
+from .core.defaultData import CIO_Types
+from .ui import cli, console
 from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls, edit
-from . import helper, shared, command, ReturnCode
+from . import helper, shared, command, ReturnCode, ui
 
 itParser = None
 
 
 class BasicError(Exception):
     def __init__(self, message):
+        super().__init__()
         self.message = message
 
     def __str__(self):
         return self.message
 
 
-class ITParser(argparse.ArgumentParser):
+class ITParser(ArgumentParser):
     def error(self, message):
         raise BasicError(message)
 
@@ -62,7 +60,8 @@ def getITParser():
                          default=None, help="Change input and output")
     cmd_run.add_argument(
         "file", nargs="?", default=None, help="File name (only for this command)")
-    cmd_run.add_argument("-w", "--watch", action="store_true",default=False,help="Watch the file and run auto till Ctrl-C")
+    cmd_run.add_argument("-w", "--watch", action="store_true",
+                         default=False, help="Watch the file and run auto till Ctrl-C")
     cmd_run.set_defaults(func=run)
 
     cmd_edit = subpars.add_parser("edit", help="Edit code file")
@@ -126,13 +125,15 @@ def mainInit():
         helper.loadMan()
 
     cliInputSession = PromptSession(
-        message=defaultPrompt, lexer=PygmentsLexer(BashLexer), auto_suggest=AutoSuggestFromHistory())
+        message=defaultPrompt,
+        lexer=PygmentsLexer(BashLexer),
+        auto_suggest=AutoSuggestFromHistory())
     cli.console = cli.CLI(inputCommandSession=cliInputSession)
 
 
 def executeCommand(oricmd):
     cargs = shlex.split(oricmd)
-    if len(cargs) == 0:
+    if not cargs:
         return 0
     if cargs[0].startswith(">"):
         return doSyscall(oricmd[1:], "Call system command:")
@@ -140,14 +141,17 @@ def executeCommand(oricmd):
         try:
             cmd = itParser.parse_args(cargs)
         except BasicError as e:  # when parse failed, parser will call exit()
-            importedCommand = shared.man.importedCommand if shared.man != None else defaultData.importedCommand
+            importedCommand = shared.man.importedCommand if shared.man \
+                else defaultData.importedCommand
             if cargs[0] in importedCommand:
                 return doSyscall(
                     f"{importedCommand[cargs[0]]} {' '.join(cargs[1:])}", "Imported command:")
             else:
                 console.warning("We can't recognize this command:")
                 console.write(f"  {e}")
-                if console.confirm("Do you mean a system command?", [cli.SwitchState.Yes, cli.SwitchState.No]) == cli.SwitchState.Yes:
+                if console.confirm("Do you mean a system command?",
+                                   [cli.SwitchState.Yes, cli.SwitchState.No])\
+                        == cli.SwitchState.Yes:
                     return doSyscall(oricmd, "Call system command:")
         else:
             if hasattr(cmd, "func"):
@@ -159,42 +163,46 @@ def executeCommand(oricmd):
 def getCommandCompleter():
     from prompt_toolkit.completion import WordCompleter, merge_completers
     cmdLists = list(builtinCmdLists)
-    if shared.man != None:
+    if shared.man:
         cmdLists += shared.man.importedCommand.keys()
     else:
         cmdLists += defaultData.importedCommand
     wc = WordCompleter(cmdLists, ignore_case=True)
-    pc = cli.PathCompleter()
+    pc = ui.PathCompleter()
     return merge_completers([wc, pc])
 
 
 def main():  # pragma: no cover
     global itParser
 
-    baseParser = argparse.ArgumentParser(
+    baseParser = ArgumentParser(
         prog="ecr", description="Code Runner")
     baseParser.add_argument("-v", "--version", default=False, action="store_true",
                             help="Get version")
     baseParser.add_argument("-d", "--dir", default=None,
                             help="Set working directory")
     baseParser.add_argument(
-        "-c", "--command", default=None,  help="Execute command")
+        "-c", "--command", default=None, help="Execute command")
     baseCmd = baseParser.parse_args()
     if baseCmd.version:
         return getVersion(None).value
-    if baseCmd.dir != None:
+    if baseCmd.dir:
         os.chdir(baseCmd.dir)
 
     mainInit()
 
-    if baseCmd.command != None:
+    if baseCmd.command:
         return executeCommand(baseCmd.command)
 
     helper.printHead()
     while True:
         try:
+            curfile = shared.man.currentFile \
+                if shared.man and shared.man.currentFile \
+                else ""
             oricmd = str(console.inputCommand(
-                f'{shared.man.currentFile if shared.man != None and shared.man.currentFile != None else ""}{defaultPrompt}', completer=getCommandCompleter(), complete_in_thread=False))
+                curfile + defaultPrompt,
+                completer=getCommandCompleter(), complete_in_thread=False))
             oricmd = helper.formatWithVars(oricmd, shared.variables)
         except KeyboardInterrupt:
             continue

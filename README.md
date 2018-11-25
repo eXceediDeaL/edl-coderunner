@@ -212,6 +212,9 @@ make run
 
 make run RARG=-h # use command args
 
+# Use pylint to check
+make lint
+
 # Test
 make test
 

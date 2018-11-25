@@ -1,4 +1,8 @@
-from . import CIO_SISO
+CIO_SISO = "ss"
+CIO_SIFO = "sf"
+CIO_FISO = "fs"
+CIO_FIFO = "ff"
+CIO_Types = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
 
 io = CIO_SISO
 timeLimit = 10
@@ -10,7 +14,10 @@ executors = {
     "java": ["javac {fileName}", "java {fileNameWithoutExt}"],
     "python": ["python {fileName}"],
     "pascal": ["fpc {fileName}", "./{fileNameWithoutExt}"],
-    "objective-c": ["gcc -framework Cocoa {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
+    "objective-c": [
+        "gcc -framework Cocoa {fileName} -o {fileNameWithoutExt}",
+        "./{fileNameWithoutExt}"
+    ],
     "javascript": ["node {fileName}"],
     "ruby": ["ruby {filename}"],
     "go": ["go run {filename}"],

@@ -1,5 +1,5 @@
 import os
-from prompt_toolkit.completion import WordCompleter, Completer, Completion
+from prompt_toolkit.completion import Completer, Completion
 
 
 class PathCompleter(Completer):
@@ -29,7 +29,7 @@ class PathCompleter(Completer):
 
     def get_completions(self, document, complete_event):
         text = document.text_before_cursor.split()
-        if len(text) == 0:
+        if text:
             return
         text = text[-1]
 

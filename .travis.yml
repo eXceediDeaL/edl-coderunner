@@ -16,6 +16,7 @@ before_script:
   - git clone -b gh-pages https://git@$GH_REPO_REF .
   - cd ..
 script:
+  - make SHELL=sh lint
   - make SHELL=sh test
   # - make SHELL=sh cover
 deploy:

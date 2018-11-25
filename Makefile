@@ -1,4 +1,4 @@
-.PHONY : build clean prepare upload uptest redoc install uninstall test cover run
+.PHONY : build clean prepare upload uptest redoc install uninstall test cover run lint
 
 PY = python
 SHELL = powershell.exe
@@ -16,6 +16,9 @@ uninstall :
 run : 
 	-cd temp ; mkdir debug
 	cd src ; $(PY) -m ecr $(RARG)
+
+lint : 
+	-cd src ; pylint --rcfile=../pylint.conf ecr
 
 test : 
 	# cd src ; $(PY) -m test --html=./docs/dev/reports/test/index.html --self-contained-html

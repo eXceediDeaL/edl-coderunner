@@ -1,19 +1,16 @@
-__all__ = ["init", "new", "now", "pwd", "cd", "clear",
-           "getVersion", "shutdown", "run", "clean", "cls", "edit"]
-cmds = ["init", "new", "now", "pwd", "cd", "clear",
-        "version", "run", "clean", "cls", "exit", "edit"]
-
 import os
-import click
-import threading
 import time
-import watchdog
-from watchdog.events import FileSystemEventHandler
 from argparse import Namespace
+from watchdog.events import FileSystemEventHandler
 from .helper import loadMan, printHead
 from .core import manager
 from .ui import SwitchState, color
 from . import ReturnCode, shared, ui
+
+__all__ = ["init", "new", "now", "pwd", "cd", "clear",
+           "getVersion", "shutdown", "run", "clean", "cls", "edit"]
+cmds = ["init", "new", "now", "pwd", "cd", "clear",
+        "version", "run", "clean", "cls", "exit", "edit"]
 
 
 def printFileModify(file):
@@ -29,23 +26,24 @@ def printFileDelete(file):
 
 
 def assertInited()->bool:
-    if shared.man == None:
+    if shared.man is None:
         ui.console.error("Not have any ecr directory")
         return False
     return True
 
 
-def init(args):
+def init(args): # pylint: disable=W0613
     manager.initialize(shared.cwd)
     loadMan()
     printHead()
-    return ReturnCode.OK if shared.man != None else ReturnCode.UNLOADED
+    return ReturnCode.OK if shared.man else ReturnCode.UNLOADED
 
 
-def clear(args):
+def clear(args): # pylint: disable=W0613
     if not assertInited():
         return ReturnCode.UNLOADED
-    if ui.console.confirm("Do you want to clear ALL?", [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
+    if ui.console.confirm("Do you want to clear ALL?", \
+        [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
         manager.clear(shared.man.workingDirectory)
         shared.man = None
     return ReturnCode.OK
@@ -62,7 +60,7 @@ def new(args):
     if not assertInited():
         return ReturnCode.UNLOADED
     file = args.file
-    if file == None:
+    if file is None:
         file = shared.man.currentFile
     result = shared.man.newCode(file)
     if result:
@@ -79,11 +77,11 @@ def new(args):
 def edit(args):
     if not assertInited():
         return ReturnCode.UNLOADED
-    if args.file == None and shared.man.currentFile == None:
+    if args.file is None and shared.man.currentFile is None:
         ui.console.write("Please set file first")
         return ReturnCode.ERROR
     file = args.file
-    if file == None:
+    if file is None:
         file = shared.man.currentFile
     result = shared.man.edit(file)
     if result:
@@ -103,17 +101,17 @@ class RunWatchEventHandler(FileSystemEventHandler):
         self.file = file
         self.state = False
 
-    def on_moved(self, event):
+    def on_moved(self, event): # pylint: disable=W0235
         super().on_moved(event)
         # self.func()
 
         # what = 'directory' if event.is_directory else 'file'
         # logging.info("Moved %s: from %s to %s", what, event.src_path,event.dest_path)
 
-    def on_created(self, event):
+    def on_created(self, event): # pylint: disable=W0235
         super().on_created(event)
 
-    def on_deleted(self, event):
+    def on_deleted(self, event): # pylint: disable=W0235
         super().on_deleted(event)
         # self.func()
 
@@ -121,7 +119,7 @@ class RunWatchEventHandler(FileSystemEventHandler):
         super().on_modified(event)
         if os.path.split(event.src_path)[-1] == self.file:
             self.state = not self.state
-            if self.state: # one modify raise two event
+            if self.state:  # one modify raise two event
                 self.func()
 
 
@@ -129,10 +127,11 @@ def run(args):
     if not assertInited():
         return ReturnCode.UNLOADED
 
-    if args.file == None and shared.man.currentFile == None:
+    if args.file is None and shared.man.currentFile is None:
         ui.console.write("Please set file first")
         return ReturnCode.ERROR
 
+    # pylint: disable=W0105
     """def func(ret): # for async
         try:
             ret.append(shared.man.execute(io=args.io, file=args.file))
@@ -144,7 +143,7 @@ def run(args):
     new_thread = threading.Thread(target=func, args=(ret,))
     new_thread.start()
 
-    while shared.man.runner == None:
+    while shared.man.runner is None:
         pass
 
     while shared.man.runner != None and shared.man.runner.isRunning:
@@ -175,7 +174,7 @@ def run(args):
                 ui.console.error("Running failed")
 
         from watchdog.observers import Observer
-        file = args.file if args.file != None else shared.man.currentFile
+        file = args.file if args.file else shared.man.currentFile
         path = shared.man.workingDirectory
         ui.console.info(f"Watching {file} (press ctrl+c to end)")
         event_handler = RunWatchEventHandler(file, func)
@@ -192,23 +191,23 @@ def run(args):
         return ReturnCode.OK
 
 
-def clean(args):
+def clean(args):  # pylint: disable=W0613
     if not assertInited():
         return ReturnCode.UNLOADED
     shared.man.clean(rmHandler=printFileDelete)
     return ReturnCode.OK
 
 
-def shutdown(args):
+def shutdown(args):  # pylint: disable=W0613
     return ReturnCode.EXIT
 
 
-def pwd(args):
+def pwd(args):  # pylint: disable=W0613
     ui.console.write(shared.cwd)
     return ReturnCode.OK
 
 
-def getVersion(args):
+def getVersion(args):  # pylint: disable=W0613
     ui.console.write("edl-cr", shared.version)
     ui.console.write("Copyright (C) eXceediDeal")
     ui.console.write(
@@ -227,6 +226,6 @@ def cd(args):
     return ReturnCode.OK
 
 
-def cls(args):
+def cls(args):  # pylint: disable=W0613
     ui.console.clear()
     return ReturnCode.OK

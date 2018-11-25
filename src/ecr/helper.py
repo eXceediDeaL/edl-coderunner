@@ -1,9 +1,7 @@
-import os
 import re
-from .shared import version
 from .core import manager
 from .ui import color, console
-from . import ReturnCode, shared
+from . import shared
 
 
 def loadMan():
@@ -14,9 +12,9 @@ def loadMan():
 
 
 def printHead():
-    assert(shared.man == None or shared.man.state !=
+    assert(shared.man is None or shared.man.state !=
            manager.WorkManagerState.Empty)
-    if shared.man == None:
+    if shared.man is None:
         console.write("ECR", end=" ")
     elif shared.man.state == manager.WorkManagerState.Loaded:
         console.write(color.useGreen("ECR"), end=" ")
