@@ -196,7 +196,7 @@ class WorkManager:
                 cmd, timelimit = bcmd, self.defaultTimeLimit
             _cmd = cmd.format(**formats)
             ui.console.write(
-                "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
+                "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
             proc = None
             rresult, retcode = None, 0
             try:
@@ -224,7 +224,7 @@ class WorkManager:
                     "   ->", passf if retcode == 0 else errf, f"{round(self.runner.usedTime*1000)/1000}s")
                 if rresult != RunResult.Success:
                     ui.console.write(
-                        "(", color.useCyan(str(ind+1)), f"/{sumStep}) ", _cmd, " -> ", retcode, sep="", end=" ")
+                        "(", color.useRed(str(ind+1)), f"/{sumStep}) ", _cmd, " -> ", retcode, sep="", end=" ")
                     if rresult == RunResult.TimeOut:
                         ui.console.write(color.useRed("Time out"))
                     else:

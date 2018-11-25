@@ -133,7 +133,7 @@ def mainInit():
 def executeCommand(oricmd):
     cargs = shlex.split(oricmd)
     if len(cargs) == 0:
-        return
+        return 0
     if cargs[0].startswith(">"):
         return doSyscall(oricmd[1:], "Call system command:")
     else:
@@ -207,7 +207,7 @@ def main():  # pragma: no cover
 
 
 def outmain():  # pragma: no cover
-    sys.exit(int(main()))
+    exit(int(main()))
 
 
 if __name__ == "__main__":  # pragma: no cover

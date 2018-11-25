@@ -1,6 +1,6 @@
 # edl-cr
 
-[![](https://img.shields.io/github/stars/eXceediDeaL/edl-coderunner.svg?style=social&label=Stars)](https://github.com/eXceediDeaL/edl-coderunner) [![](https://img.shields.io/github/forks/eXceediDeaL/edl-coderunner.svg?style=social&label=Fork)](https://github.com/eXceediDeaL/edl-coderunner) ![](http://progressed.io/bar/40?title=developing) [![](https://img.shields.io/github/license/eXceediDeaL/edl-coderunner.svg)](https://github.com/eXceediDeaL/edl-coderunner/blob/master/LICENSE)
+[![](https://img.shields.io/github/stars/eXceediDeaL/edl-coderunner.svg?style=social&label=Stars)](https://github.com/eXceediDeaL/edl-coderunner) [![](https://img.shields.io/github/forks/eXceediDeaL/edl-coderunner.svg?style=social&label=Fork)](https://github.com/eXceediDeaL/edl-coderunner) ![](http://progressed.io/bar/60?title=developing) [![](https://img.shields.io/github/license/eXceediDeaL/edl-coderunner.svg)](https://github.com/eXceediDeaL/edl-coderunner/blob/master/LICENSE)
 
 A CLI tool to run code. See more at [here](https://exceedideal.github.io/edl-coderunner/)
 
@@ -106,7 +106,7 @@ Clean the compiling output and something else:
 You can use builtin variables just like in bash:
 
 ```sh
-echo $wdir
+> echo $wdir
 ```
 
 |Variable|Description|
@@ -120,6 +120,8 @@ echo $wdir
 ### Commands
 
 These are builtin commands. You can use system command in `importedCommand` list.
+
+If you want to call a system command that isn't in `importedCommand` list, use `>` prefix like `>ls`.
 
 |Command|Description|
 |-|-|
@@ -202,6 +204,7 @@ You can use these varibles in command:
 
 - The `Makefile` use `SHELL` varible in Windows (as well as `PY`), so if you are in Linux, change it before use `make`.
 - To build and upload the package, this requires these modules setuptools, wheel, twine. You can try `make prepare` to install these modules.
+- Maybe there are some differences between win's command and linux's command, so feel free to modify `Makefile` when you meet some errors.
 
 ```sh
 # Run

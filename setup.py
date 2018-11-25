@@ -54,6 +54,7 @@ setup(
     install_requires=[
         "prompt_toolkit>=2.0.7",
         "click>=7.0",
-        "watchdog>=0.9.0"
+        "watchdog>=0.9.0",
+        "pygments>=2.2.0"
     ]
 )

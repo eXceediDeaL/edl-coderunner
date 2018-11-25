@@ -7,3 +7,4 @@ pytest-html
 prompt_toolkit
 click
 watchdog
+pygments

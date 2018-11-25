@@ -1,4 +1,4 @@
-.PHONY : build clean prepare upload uptest redoc install uninstall
+.PHONY : build clean prepare upload uptest redoc install uninstall test cover run
 
 PY = python
 SHELL = powershell.exe
@@ -18,13 +18,17 @@ run :
 	cd src ; $(PY) -m ecr $(RARG)
 
 test : 
-	cd src ; $(PY) -m test --html=./docs/dev/reports/test/index.html --self-contained-html
+	# cd src ; $(PY) -m test --html=./docs/dev/reports/test/index.html --self-contained-html
 	# pytest --html=./docs/dev/reports/test/index.html --self-contained-html
+	$(PY) setup.py install
+	-cd temp ; mkdir testC
+	cd ./temp/testC ; ecr -c 'init'
+	-rm -r ./temp/testC/*
 
 cover : 
-	cd src ; coverage run --source=ecr -m test quiet
-	cd src ; coverage report
-	cd src ; coverage html -d ../docs/dev/reports/coverage/
+	# cd src ; coverage run --source=ecr -m test quiet
+	# cd src ; coverage report
+	# cd src ; coverage html -d ../docs/dev/reports/coverage/
 
 redoc : test cover
 
