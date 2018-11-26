@@ -247,6 +247,19 @@
 <span id="L237" class="lineno"><a class="lineno" href="#L237">237</a></span>
 <span id="L238" class="lineno"><a class="lineno" href="#L238">238</a></span>
 <span id="L239" class="lineno"><a class="lineno" href="#L239">239</a></span>
+<span id="L240" class="lineno"><a class="lineno" href="#L240">240</a></span>
+<span id="L241" class="lineno"><a class="lineno" href="#L241">241</a></span>
+<span id="L242" class="lineno"><a class="lineno" href="#L242">242</a></span>
+<span id="L243" class="lineno"><a class="lineno" href="#L243">243</a></span>
+<span id="L244" class="lineno"><a class="lineno" href="#L244">244</a></span>
+<span id="L245" class="lineno"><a class="lineno" href="#L245">245</a></span>
+<span id="L246" class="lineno"><a class="lineno" href="#L246">246</a></span>
+<span id="L247" class="lineno"><a class="lineno" href="#L247">247</a></span>
+<span id="L248" class="lineno"><a class="lineno" href="#L248">248</a></span>
+<span id="L249" class="lineno"><a class="lineno" href="#L249">249</a></span>
+<span id="L250" class="lineno"><a class="lineno" href="#L250">250</a></span>
+<span id="L251" class="lineno"><a class="lineno" href="#L251">251</a></span>
+<span id="L252" class="lineno"><a class="lineno" href="#L252">252</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">from argparse import ArgumentParser, Namespace</span>
 <span class="line-empty" title="No Anys on this line!">import sys</span>
@@ -315,6 +328,9 @@ Explicit (x3)">    cmd_new.add_argument("file", nargs="?", default=None, type=st
 Explicit (x3)">    cmd_new.add_argument("-e", "--edit", action="store_true",</span>
 <span class="line-empty" title="No Anys on this line!">                         default=False, help="Edit the file")</span>
 <span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_new.add_argument("-d", "--dir", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="As directory")</span>
+<span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">    cmd_new.set_defaults(func=new)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
@@ -322,6 +338,9 @@ Explicit (x1)">    cmd_now = subpars.add_parser("now", help="Change current file
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x3)">    cmd_now.add_argument("file", nargs="?", default=None, type=str,</span>
 <span class="line-empty" title="No Anys on this line!">                         help="Set current file (clear for none)")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_now.add_argument("-d", "--dir", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="As directory")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">    cmd_now.set_defaults(func=now)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -336,6 +355,9 @@ Explicit (x3)">    cmd_run.add_argument(</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x3)">    cmd_run.add_argument("-w", "--watch", action="store_true",</span>
 <span class="line-empty" title="No Anys on this line!">                         default=False, help="Watch the file and run auto till Ctrl-C")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_run.add_argument("-d", "--dir", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="As directory")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">    cmd_run.set_defaults(func=run)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -354,6 +376,9 @@ Explicit (x3)">    cmd_judge.add_argument("-w", "--watch", action="store_true",<
 Explicit (x3)">    cmd_judge.add_argument("-r", "--re", action="store_true",</span>
 <span class="line-empty" title="No Anys on this line!">                           default=False, help="Re-execute before judge")</span>
 <span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_judge.add_argument("-d", "--dir", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="As directory")</span>
+<span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">    cmd_judge.set_defaults(func=judge)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
@@ -364,6 +389,9 @@ Explicit (x3)">    cmd_edit.add_argument(</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x3)">    cmd_edit.add_argument("-n", "--now", action="store_true",</span>
 <span class="line-empty" title="No Anys on this line!">                          default=False, help="Set the file as current")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_edit.add_argument("-d", "--dir", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="As directory")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">    cmd_edit.set_defaults(func=edit)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -549,9 +577,13 @@ Explicit (x1)">        return executeCommand(baseCmd.command)</span>
 <span class="line-precise" title="No Anys on this line!">    helper.printHead()</span>
 <span class="line-empty" title="No Anys on this line!">    while True:</span>
 <span class="line-empty" title="No Anys on this line!">        try:</span>
-<span class="line-precise" title="No Anys on this line!">            curfile = shared.man.currentFile \</span>
-<span class="line-precise" title="No Anys on this line!">                if shared.man and shared.man.currentFile \</span>
-<span class="line-empty" title="No Anys on this line!">                else ""</span>
+<span class="line-precise" title="No Anys on this line!">            curfile = ""</span>
+<span class="line-precise" title="No Anys on this line!">            if shared.man and shared.man.currentFile:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                if shared.man.currentFile.type == manager.WorkItemType.File:</span>
+<span class="line-precise" title="No Anys on this line!">                    curfile = shared.man.currentFile.name</span>
+<span class="line-empty" title="No Anys on this line!">                else:</span>
+<span class="line-precise" title="No Anys on this line!">                    curfile = "@" + shared.man.currentFile.name</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)">            oricmd = str(console.inputCommand(</span>
 <span class="line-precise" title="No Anys on this line!">                curfile + defaultPrompt,</span>

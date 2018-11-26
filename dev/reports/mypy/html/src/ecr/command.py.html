@@ -303,14 +303,42 @@
 <span id="L293" class="lineno"><a class="lineno" href="#L293">293</a></span>
 <span id="L294" class="lineno"><a class="lineno" href="#L294">294</a></span>
 <span id="L295" class="lineno"><a class="lineno" href="#L295">295</a></span>
+<span id="L296" class="lineno"><a class="lineno" href="#L296">296</a></span>
+<span id="L297" class="lineno"><a class="lineno" href="#L297">297</a></span>
+<span id="L298" class="lineno"><a class="lineno" href="#L298">298</a></span>
+<span id="L299" class="lineno"><a class="lineno" href="#L299">299</a></span>
+<span id="L300" class="lineno"><a class="lineno" href="#L300">300</a></span>
+<span id="L301" class="lineno"><a class="lineno" href="#L301">301</a></span>
+<span id="L302" class="lineno"><a class="lineno" href="#L302">302</a></span>
+<span id="L303" class="lineno"><a class="lineno" href="#L303">303</a></span>
+<span id="L304" class="lineno"><a class="lineno" href="#L304">304</a></span>
+<span id="L305" class="lineno"><a class="lineno" href="#L305">305</a></span>
+<span id="L306" class="lineno"><a class="lineno" href="#L306">306</a></span>
+<span id="L307" class="lineno"><a class="lineno" href="#L307">307</a></span>
+<span id="L308" class="lineno"><a class="lineno" href="#L308">308</a></span>
+<span id="L309" class="lineno"><a class="lineno" href="#L309">309</a></span>
+<span id="L310" class="lineno"><a class="lineno" href="#L310">310</a></span>
+<span id="L311" class="lineno"><a class="lineno" href="#L311">311</a></span>
+<span id="L312" class="lineno"><a class="lineno" href="#L312">312</a></span>
+<span id="L313" class="lineno"><a class="lineno" href="#L313">313</a></span>
+<span id="L314" class="lineno"><a class="lineno" href="#L314">314</a></span>
+<span id="L315" class="lineno"><a class="lineno" href="#L315">315</a></span>
+<span id="L316" class="lineno"><a class="lineno" href="#L316">316</a></span>
+<span id="L317" class="lineno"><a class="lineno" href="#L317">317</a></span>
+<span id="L318" class="lineno"><a class="lineno" href="#L318">318</a></span>
+<span id="L319" class="lineno"><a class="lineno" href="#L319">319</a></span>
+<span id="L320" class="lineno"><a class="lineno" href="#L320">320</a></span>
+<span id="L321" class="lineno"><a class="lineno" href="#L321">321</a></span>
+<span id="L322" class="lineno"><a class="lineno" href="#L322">322</a></span>
+<span id="L323" class="lineno"><a class="lineno" href="#L323">323</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import time</span>
-<span class="line-empty" title="No Anys on this line!">from typing import cast</span>
+<span class="line-empty" title="No Anys on this line!">from typing import cast, Tuple</span>
 <span class="line-empty" title="No Anys on this line!">from argparse import Namespace</span>
 <span class="line-empty" title="No Anys on this line!">from watchdog.events import FileSystemEventHandler</span>
 <span class="line-empty" title="No Anys on this line!">from .helper import loadMan, printHead</span>
-<span class="line-empty" title="No Anys on this line!">from .core import manager, WorkManager</span>
+<span class="line-empty" title="No Anys on this line!">from .core import manager, WorkManager, WorkItem, WorkItemType</span>
 <span class="line-empty" title="No Anys on this line!">from .ui import SwitchState, color</span>
 <span class="line-empty" title="No Anys on this line!">from . import ReturnCode, shared, ui</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -374,7 +402,7 @@ Explicit (x1)">    return ReturnCode.OK</span>
 Explicit (x1)">        return ReturnCode.UNLOADED</span>
 <span class="line-precise" title="No Anys on this line!">    tman: WorkManager = cast(WorkManager, shared.man)</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">    tman.currentFile = args.file</span>
+Explicit (x2)">    tman.setCurrent(args.file, args.dir)</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">    return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -385,17 +413,19 @@ Explicit (x1)">    return ReturnCode.OK</span>
 Explicit (x1)">        return ReturnCode.UNLOADED</span>
 <span class="line-precise" title="No Anys on this line!">    tman: WorkManager = cast(WorkManager, shared.man)</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x2)">    file = args.file</span>
+Explicit (x1)">    if not args.file and not tman.currentFile:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">        ui.console.write("Please set file first")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        return ReturnCode.ERROR</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">    if not file:</span>
+Explicit (x3)">    file = args.file if args.file else cast(WorkItem, tman.currentFile).name</span>
+<span class="line-precise" title="No Anys on this line!">    result = tman.newCode(tman.getWorkItem(</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">        file = tman.currentFile</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x1)
-Explicit (x1)">    result = tman.newCode(file)</span>
+Explicit (x3)">        args.file, args.dir) if args.file else None)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    if result:</span>
-<span class="line-any" title="Any Types on this line: 
-Explicit (x1)">        tman.currentFile = file</span>
+<span class="line-precise" title="No Anys on this line!">        tman.currentFile = result</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">        printFileCreate(file)</span>
 <span class="line-any" title="Any Types on this line: 
@@ -424,13 +454,16 @@ Unannotated (x2)">        ui.console.write("Please set file first")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        return ReturnCode.ERROR</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x2)">    file = args.file</span>
+Explicit (x1)">    if not args.file and not tman.currentFile:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">        ui.console.write("Please set file first")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        return ReturnCode.ERROR</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">    if not file:</span>
+Explicit (x3)">    file = args.file if args.file else cast(WorkItem, tman.currentFile).name</span>
+<span class="line-precise" title="No Anys on this line!">    result = tman.edit(tman.getWorkItem(</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">        file = tman.currentFile</span>
-<span class="line-any" title="Any Types on this line: 
-Explicit (x1)">    result = tman.edit(file)</span>
+Explicit (x3)">        args.file, args.dir) if args.file else None)</span>
 <span class="line-precise" title="No Anys on this line!">    if result:</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">        printFileModify(file)</span>
@@ -479,13 +512,28 @@ Unannotated (x2)">        super().on_deleted(event)</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">        super().on_modified(event)</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x8)">        if os.path.split(event.src_path)[-1] == self.file:</span>
+Unannotated (x11)">        if not self.file or os.path.split(event.src_path)[-1] == self.file:</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x4)">            self.state = not self.state</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">            if self.state:  # one modify raise two event</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x3)">                self.func()</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def getItem(tman: WorkManager, args: Namespace)-&gt;Tuple[WorkItem, str]:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">    if args.file:</span>
+<span class="line-precise" title="No Anys on this line!">        item = tman.getWorkItem(</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)">            args.file, args.dir)</span>
+<span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-precise" title="No Anys on this line!">        item = tman.getWorkItem(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            cast(WorkItem, tman.currentFile).name, cast(WorkItem, tman.currentFile).type == WorkItemType.Directory)</span>
+<span class="line-precise" title="No Anys on this line!">        tman.currentFile = item</span>
+<span class="line-precise" title="No Anys on this line!">    file = cast(WorkItem, item).name</span>
+<span class="line-precise" title="No Anys on this line!">    return cast(WorkItem, item), file</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def run(args: Namespace)-&gt;ReturnCode:</span>
@@ -524,12 +572,13 @@ Explicit (x1)">        return ReturnCode.ERROR</span>
 <span class="line-empty" title="No Anys on this line!">        elif tman.runner.canInput:</span>
 <span class="line-empty" title="No Anys on this line!">            tman.runner.input(cmd)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">    result = ret[0] if len(ret) &gt; 0 else False"""</span>
+<span class="line-empty" title="No Anys on this line!">    result = ret[0] if len(ret) &gt; 0 else False """</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">    if not args.watch:</span>
+<span class="line-precise" title="No Anys on this line!">        item, file = getItem(tman,args)</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x2)">        result = tman.execute(io=args.io, file=args.file)</span>
+Explicit (x1)">        result = tman.execute(io=args.io, item=item)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">        if not result:</span>
 <span class="line-precise" title="Any Types on this line: 
@@ -539,30 +588,38 @@ Explicit (x1)">            return ReturnCode.RUNERR</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)">        file = args.file if args.file else cast(</span>
+<span class="line-precise" title="No Anys on this line!">            WorkItem, tman.currentFile).name</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="No Anys on this line!">        def func():</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">            item, file = getItem(tman,args)</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">            ui.console.clear()</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">            ui.console.info(f"Watching", end=" ")</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">            printFileModify(file)</span>
+Unannotated (x2)">            printFileModify(file)</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x5)">            result = tman.execute(io=args.io, file=args.file)</span>
+Unannotated (x5)">            result = tman.execute(io=args.io, item=item)</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x1)">            if not result:</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">                ui.console.error("Running failed")</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">        from watchdog.observers import Observer</span>
-<span class="line-any" title="Any Types on this line: 
-Explicit (x3)">        file = args.file if args.file else tman.currentFile</span>
-<span class="line-precise" title="No Anys on this line!">        path = tman.workingDirectory</span>
-<span class="line-any" title="Any Types on this line: 
+<span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)
-Explicit (x3)">        ui.console.info(f"Watching {file} (press ctrl+c to end)")</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x3)
-Explicit (x1)">        event_handler = RunWatchEventHandler(file, func)</span>
+Explicit (x2)">        ui.console.info(f"Watching {file} (press ctrl+c to end)")</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        path = tman.workingDirectory if item.type == WorkItemType.File else item.path</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">        event_handler = RunWatchEventHandler(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)
+Unannotated (x1)">            file if item.type == WorkItemType.File else None, func)</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x3)">        observer = Observer()</span>
 <span class="line-any" title="Any Types on this line: 
@@ -597,10 +654,11 @@ Explicit (x1)">        return ReturnCode.ERROR</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">    if not args.watch:</span>
+<span class="line-precise" title="No Anys on this line!">        item, file = getItem(tman,args)</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">        result = tman.judge(reexecute=args.re,</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x2)">                            file=args.file, judger=args.judger)</span>
+Explicit (x1)">                            item=item, judger=args.judger)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">        if not result:</span>
 <span class="line-precise" title="Any Types on this line: 
@@ -613,17 +671,23 @@ Unannotated (x1)">            ui.console.ok("Judging passed")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">            return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)">        file = args.file if args.file else cast(</span>
+<span class="line-precise" title="No Anys on this line!">            WorkItem, tman.currentFile).name</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="No Anys on this line!">        def func():</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">            item, file = getItem(tman,args)</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">            ui.console.clear()</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">            ui.console.info(f"Watching", end=" ")</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">            printFileModify(file)</span>
+Unannotated (x2)">            printFileModify(file)</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x4)">            result = tman.judge(reexecute=args.re,</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x2)">                                file=args.file, judger=args.judger)</span>
+Unannotated (x2)">                                item=item, judger=args.judger)</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x1)">            if not result:</span>
 <span class="line-any" title="Any Types on this line: 
@@ -639,15 +703,16 @@ Unannotated (x1)
 Explicit (x1)">                return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">        from watchdog.observers import Observer</span>
-<span class="line-any" title="Any Types on this line: 
-Explicit (x3)">        file = args.file if args.file else tman.currentFile</span>
-<span class="line-precise" title="No Anys on this line!">        path = tman.workingDirectory</span>
-<span class="line-any" title="Any Types on this line: 
+<span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)
-Explicit (x3)">        ui.console.info(f"Watching {file} (press ctrl+c to end)")</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x3)
-Explicit (x1)">        event_handler = RunWatchEventHandler(file, func)</span>
+Explicit (x2)">        ui.console.info(f"Watching {file} (press ctrl+c to end)")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        path = tman.workingDirectory if item.type == WorkItemType.File else item.path</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">        event_handler = RunWatchEventHandler(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)
+Unannotated (x1)">            file if item.type == WorkItemType.File else None, func)</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x3)">        observer = Observer()</span>
 <span class="line-any" title="Any Types on this line: 

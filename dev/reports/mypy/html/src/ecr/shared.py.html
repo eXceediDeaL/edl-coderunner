@@ -25,20 +25,26 @@
 <span id="L15" class="lineno"><a class="lineno" href="#L15">15</a></span>
 <span id="L16" class="lineno"><a class="lineno" href="#L16">16</a></span>
 <span id="L17" class="lineno"><a class="lineno" href="#L17">17</a></span>
+<span id="L18" class="lineno"><a class="lineno" href="#L18">18</a></span>
+<span id="L19" class="lineno"><a class="lineno" href="#L19">19</a></span>
+<span id="L20" class="lineno"><a class="lineno" href="#L20">20</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import Optional</span>
 <span class="line-empty" title="No Anys on this line!">from .core import WorkManager, path</span>
 <span class="line-empty" title="No Anys on this line!">from .core.types import VariableMapping</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">version = "0.0.2"</span>
+<span class="line-precise" title="No Anys on this line!">version = "0.0.2.7"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">cwd: Optional[str] = None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">man: Optional[WorkManager] = None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">variables: VariableMapping = {</span>
-<span class="line-precise" title="No Anys on this line!">    "current": lambda: man.currentFile if man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "current": lambda: man.currentFile.name if man and man.currentFile else None,</span>
 <span class="line-precise" title="No Anys on this line!">    "wdir": lambda: man.workingDirectory if man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "edir": lambda: path.getMainPath(man.workingDirectory) if man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "jdir": lambda: path.getJudgerPath(man.workingDirectory) if man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "tdir": lambda: path.getTemplatePath(man.workingDirectory) if man else None,</span>
 <span class="line-precise" title="No Anys on this line!">    "config": lambda: path.getConfigPath(man.workingDirectory) if man else None,</span>
 <span class="line-precise" title="No Anys on this line!">    "input": lambda: path.getFileInputPath(man.workingDirectory) if man else None,</span>
 <span class="line-precise" title="No Anys on this line!">    "output": lambda: path.getFileOutputPath(man.workingDirectory) if man else None,</span>

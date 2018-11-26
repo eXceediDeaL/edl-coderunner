@@ -102,6 +102,7 @@
 <span id="L92" class="lineno"><a class="lineno" href="#L92">92</a></span>
 <span id="L93" class="lineno"><a class="lineno" href="#L93">93</a></span>
 <span id="L94" class="lineno"><a class="lineno" href="#L94">94</a></span>
+<span id="L95" class="lineno"><a class="lineno" href="#L95">95</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import List</span>
 <span class="line-empty" title="No Anys on this line!">from .types import ExecutorMapping, CommandMapping, JudgerMapping</span>
@@ -127,19 +128,19 @@
 <span class="line-precise" title="No Anys on this line!">executors: ExecutorMapping = {</span>
 <span class="line-empty" title="No Anys on this line!">    "c": [</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">        f"gcc {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",</span>
+Explicit (x4)">        f"gcc -O2 -Wall -std=c11 {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}} -lm",</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">        f"./{{{CMDVAR_FileNameWithoutExt}}}"</span>
 <span class="line-empty" title="No Anys on this line!">    ],</span>
 <span class="line-empty" title="No Anys on this line!">    "cpp": [</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">        f"g++ {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",</span>
+Explicit (x4)">        f"g++ -O2 -Wall -std=c++14 {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}} -lm",</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">        f"./{{{CMDVAR_FileNameWithoutExt}}}"</span>
 <span class="line-empty" title="No Anys on this line!">    ],</span>
 <span class="line-empty" title="No Anys on this line!">    "java": [</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">        f"javac {{{CMDVAR_FileName}}}",</span>
+Explicit (x2)">        f"javac -encoding utf8 {{{CMDVAR_FileName}}}",</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">        f"java {{{CMDVAR_FileNameWithoutExt}}}"</span>
 <span class="line-empty" title="No Anys on this line!">    ],</span>
@@ -147,13 +148,13 @@ Explicit (x2)">        f"java {{{CMDVAR_FileNameWithoutExt}}}"</span>
 Explicit (x2)">    "python": [f"python {{{CMDVAR_FileName}}}"],</span>
 <span class="line-empty" title="No Anys on this line!">    "pascal": [</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">        f"fpc {{{CMDVAR_FileName}}}",</span>
+Explicit (x4)">        f"fpc -O2 {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">        f"./{{{CMDVAR_FileNameWithoutExt}}}"</span>
 <span class="line-empty" title="No Anys on this line!">    ],</span>
 <span class="line-empty" title="No Anys on this line!">    "objective-c": [</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">        f"gcc -framework Cocoa {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",</span>
+Explicit (x4)">        f"gcc -O2 -Wall -framework Cocoa {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">        f"./{{{CMDVAR_FileNameWithoutExt}}}"</span>
 <span class="line-empty" title="No Anys on this line!">    ],</span>
@@ -163,6 +164,8 @@ Explicit (x2)">    "javascript": [f"node {{{CMDVAR_FileName}}}"],</span>
 Explicit (x2)">    "ruby": [f"ruby {{{CMDVAR_FileName}}}"],</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">    "go": [f"go run {{{CMDVAR_FileName}}}"],</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x2)">    "php": [f"php {{{CMDVAR_FileName}}}"],</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">    "shellscript": [f"bash {{{CMDVAR_FileName}}}"],</span>
 <span class="line-precise" title="Any Types on this line: 

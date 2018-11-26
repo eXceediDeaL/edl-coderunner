@@ -412,6 +412,49 @@
 <span id="L402" class="lineno"><a class="lineno" href="#L402">402</a></span>
 <span id="L403" class="lineno"><a class="lineno" href="#L403">403</a></span>
 <span id="L404" class="lineno"><a class="lineno" href="#L404">404</a></span>
+<span id="L405" class="lineno"><a class="lineno" href="#L405">405</a></span>
+<span id="L406" class="lineno"><a class="lineno" href="#L406">406</a></span>
+<span id="L407" class="lineno"><a class="lineno" href="#L407">407</a></span>
+<span id="L408" class="lineno"><a class="lineno" href="#L408">408</a></span>
+<span id="L409" class="lineno"><a class="lineno" href="#L409">409</a></span>
+<span id="L410" class="lineno"><a class="lineno" href="#L410">410</a></span>
+<span id="L411" class="lineno"><a class="lineno" href="#L411">411</a></span>
+<span id="L412" class="lineno"><a class="lineno" href="#L412">412</a></span>
+<span id="L413" class="lineno"><a class="lineno" href="#L413">413</a></span>
+<span id="L414" class="lineno"><a class="lineno" href="#L414">414</a></span>
+<span id="L415" class="lineno"><a class="lineno" href="#L415">415</a></span>
+<span id="L416" class="lineno"><a class="lineno" href="#L416">416</a></span>
+<span id="L417" class="lineno"><a class="lineno" href="#L417">417</a></span>
+<span id="L418" class="lineno"><a class="lineno" href="#L418">418</a></span>
+<span id="L419" class="lineno"><a class="lineno" href="#L419">419</a></span>
+<span id="L420" class="lineno"><a class="lineno" href="#L420">420</a></span>
+<span id="L421" class="lineno"><a class="lineno" href="#L421">421</a></span>
+<span id="L422" class="lineno"><a class="lineno" href="#L422">422</a></span>
+<span id="L423" class="lineno"><a class="lineno" href="#L423">423</a></span>
+<span id="L424" class="lineno"><a class="lineno" href="#L424">424</a></span>
+<span id="L425" class="lineno"><a class="lineno" href="#L425">425</a></span>
+<span id="L426" class="lineno"><a class="lineno" href="#L426">426</a></span>
+<span id="L427" class="lineno"><a class="lineno" href="#L427">427</a></span>
+<span id="L428" class="lineno"><a class="lineno" href="#L428">428</a></span>
+<span id="L429" class="lineno"><a class="lineno" href="#L429">429</a></span>
+<span id="L430" class="lineno"><a class="lineno" href="#L430">430</a></span>
+<span id="L431" class="lineno"><a class="lineno" href="#L431">431</a></span>
+<span id="L432" class="lineno"><a class="lineno" href="#L432">432</a></span>
+<span id="L433" class="lineno"><a class="lineno" href="#L433">433</a></span>
+<span id="L434" class="lineno"><a class="lineno" href="#L434">434</a></span>
+<span id="L435" class="lineno"><a class="lineno" href="#L435">435</a></span>
+<span id="L436" class="lineno"><a class="lineno" href="#L436">436</a></span>
+<span id="L437" class="lineno"><a class="lineno" href="#L437">437</a></span>
+<span id="L438" class="lineno"><a class="lineno" href="#L438">438</a></span>
+<span id="L439" class="lineno"><a class="lineno" href="#L439">439</a></span>
+<span id="L440" class="lineno"><a class="lineno" href="#L440">440</a></span>
+<span id="L441" class="lineno"><a class="lineno" href="#L441">441</a></span>
+<span id="L442" class="lineno"><a class="lineno" href="#L442">442</a></span>
+<span id="L443" class="lineno"><a class="lineno" href="#L443">443</a></span>
+<span id="L444" class="lineno"><a class="lineno" href="#L444">444</a></span>
+<span id="L445" class="lineno"><a class="lineno" href="#L445">445</a></span>
+<span id="L446" class="lineno"><a class="lineno" href="#L446">446</a></span>
+<span id="L447" class="lineno"><a class="lineno" href="#L447">447</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import shutil</span>
@@ -423,7 +466,7 @@
 <span class="line-empty" title="No Anys on this line!">import yaml</span>
 <span class="line-empty" title="No Anys on this line!">import click</span>
 <span class="line-empty" title="No Anys on this line!">from prompt_toolkit.application import run_in_terminal</span>
-<span class="line-empty" title="No Anys on this line!">from .types import ExecutorMapping, CommandMapping, JudgerMapping</span>
+<span class="line-empty" title="No Anys on this line!">from .types import ExecutorMapping, CommandMapping, JudgerMapping, CommandList</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui import color</span>
 <span class="line-empty" title="No Anys on this line!">from . import defaultData</span>
 <span class="line-empty" title="No Anys on this line!">from . import path as ecrpath</span>
@@ -440,6 +483,8 @@
 <span class="line-precise" title="No Anys on this line!">fileextToLanguage: Dict[str, str] = {</span>
 <span class="line-empty" title="No Anys on this line!">    "c": "c",</span>
 <span class="line-empty" title="No Anys on this line!">    "cpp": "cpp",</span>
+<span class="line-empty" title="No Anys on this line!">    "cs": "csharp",</span>
+<span class="line-empty" title="No Anys on this line!">    "fs": "fsharp",</span>
 <span class="line-empty" title="No Anys on this line!">    "py": "python",</span>
 <span class="line-empty" title="No Anys on this line!">    "java": "java",</span>
 <span class="line-empty" title="No Anys on this line!">    "pas": "pascal",</span>
@@ -447,6 +492,7 @@
 <span class="line-empty" title="No Anys on this line!">    "js": "javascript",</span>
 <span class="line-empty" title="No Anys on this line!">    "rb": "ruby",</span>
 <span class="line-empty" title="No Anys on this line!">    "go": "go",</span>
+<span class="line-empty" title="No Anys on this line!">    "php": "php",</span>
 <span class="line-empty" title="No Anys on this line!">    "sh": "shellscript",</span>
 <span class="line-empty" title="No Anys on this line!">    "ps1": "powershell",</span>
 <span class="line-empty" title="No Anys on this line!">}</span>
@@ -483,6 +529,21 @@ Explicit (x2)">        return " ".join([man.defaultShell, f'"{cmd}"'])</span>
 <span class="line-precise" title="No Anys on this line!">    Success: int = 0</span>
 <span class="line-precise" title="No Anys on this line!">    Error: int = 1</span>
 <span class="line-precise" title="No Anys on this line!">    TimeOut: int = 2</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">class WorkItemType(Enum):</span>
+<span class="line-precise" title="No Anys on this line!">    File: int = 0</span>
+<span class="line-precise" title="No Anys on this line!">    Directory: int = 1</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">class WorkItem:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    def __init__(self, path: str, name: str, types: WorkItemType = WorkItemType.File):</span>
+<span class="line-precise" title="No Anys on this line!">        self.path: str = path</span>
+<span class="line-precise" title="No Anys on this line!">        self.name: str = name</span>
+<span class="line-precise" title="No Anys on this line!">        self.type: WorkItemType = types</span>
+<span class="line-precise" title="No Anys on this line!">        self.run: Optional[CommandList] = None</span>
+<span class="line-precise" title="No Anys on this line!">        self.judge: Optional[CommandList] = None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-imprecise" title="Any Types on this line: 
@@ -553,13 +614,48 @@ Explicit (x1)">            return (RunResult.Error, self.proc.returncode)</span>
 Explicit (x1)">        return (RunResult.Success, self.proc.returncode)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def initializeCodeDirectory(path: str)-&gt;None:</span>
+<span class="line-imprecise" title="Any Types on this line: 
+Omitted Generics (x2)">    config: Dict[str, Optional[List]] = {</span>
+<span class="line-empty" title="No Anys on this line!">        "run": None,</span>
+<span class="line-empty" title="No Anys on this line!">        "judge": None,</span>
+<span class="line-empty" title="No Anys on this line!">    }</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)
+Explicit (x1)">    with open(ecrpath.getCodeDirConfigPath(path), "w", encoding='utf-8') as f:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x3)
+Unannotated (x2)
+Omitted Generics (x1)">        f.write(yaml.dump(config, indent=4,</span>
+<span class="line-empty" title="No Anys on this line!">                          default_flow_style=False))</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def loadCodeDirectory(path: str, name: str)-&gt;Optional[WorkItem]:</span>
+<span class="line-empty" title="No Anys on this line!">    try:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        ret = WorkItem(path, name, WorkItemType.Directory)</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)
+Explicit (x1)">        with open(ecrpath.getCodeDirConfigPath(path), "r", encoding='utf-8') as f:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x3)
+Unannotated (x1)">            config = yaml.load(f.read())</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)">            ret.judge = config["judge"]</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)">            ret.run = config["run"]</span>
+<span class="line-precise" title="No Anys on this line!">        return ret</span>
+<span class="line-empty" title="No Anys on this line!">    except:</span>
+<span class="line-empty" title="No Anys on this line!">        return None</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">class WorkManager:</span>
 <span class="line-precise" title="No Anys on this line!">    def __init__(self, path: str):</span>
 <span class="line-precise" title="No Anys on this line!">        self.workingDirectory: str = path</span>
 <span class="line-precise" title="No Anys on this line!">        self.executorMap: ExecutorMapping = {}</span>
 <span class="line-precise" title="No Anys on this line!">        self.judgerMap: JudgerMapping = {}</span>
 <span class="line-precise" title="No Anys on this line!">        self.tempFileFilter: List[str] = []</span>
-<span class="line-precise" title="No Anys on this line!">        self.currentFile: Optional[str] = None</span>
+<span class="line-precise" title="No Anys on this line!">        self.currentFile: Optional[WorkItem] = None</span>
 <span class="line-precise" title="No Anys on this line!">        self.importedCommand: CommandMapping = {}</span>
 <span class="line-precise" title="No Anys on this line!">        self.defaultShell: Optional[str] = None</span>
 <span class="line-precise" title="No Anys on this line!">        self.defaultIO: str = defaultData.io</span>
@@ -570,37 +666,64 @@ Explicit (x1)">        self.state: WorkManagerState = WorkManagerState.Empty</sp
 <span class="line-precise" title="No Anys on this line!">        self.runner: Optional[Runner] = None</span>
 <span class="line-precise" title="No Anys on this line!">        self.defaultEditor: Optional[str] = None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">    def newCode(self, file=None)-&gt;bool:</span>
-<span class="line-empty" title="No Anys on this line!">        try:</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">            if not file:</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">                file = self.currentFile</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">            assert file</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">            ext = ecrpath.getFileExt(file)</span>
-<span class="line-precise" title="No Anys on this line!">            lang = fileextToLanguage[ext] if ext in fileextToLanguage else None</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">            dstPath = os.path.join(self.workingDirectory, file)</span>
-<span class="line-precise" title="No Anys on this line!">            tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(</span>
+<span class="line-precise" title="No Anys on this line!">    def getWorkItem(self, name: str, isdir: bool) -&gt; Optional[WorkItem]:</span>
+<span class="line-precise" title="No Anys on this line!">        path = os.path.join(self.workingDirectory, name)</span>
+<span class="line-precise" title="No Anys on this line!">        if isdir:</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">                self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")</span>
+Omitted Generics (x1)">            if not os.path.isdir(path):</span>
 <span class="line-precise" title="Any Types on this line: 
-Omitted Generics (x1)">            if tempPath and os.path.exists(tempPath):</span>
-<span class="line-precise" title="No Anys on this line!">                shutil.copyfile(tempPath, dstPath)</span>
+Explicit (x1)">                return WorkItem(path, name, WorkItemType.Directory)</span>
 <span class="line-empty" title="No Anys on this line!">            else:</span>
+<span class="line-precise" title="No Anys on this line!">                return loadCodeDirectory(path, name)</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="No Anys on this line!">            return WorkItem(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                self.workingDirectory, name, WorkItemType.File)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    def setCurrent(self, item: str, isdir: bool) -&gt; bool:</span>
+<span class="line-precise" title="No Anys on this line!">        if item == None:</span>
+<span class="line-precise" title="No Anys on this line!">            self.currentFile = None</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="No Anys on this line!">            self.currentFile = self.getWorkItem(item, isdir)</span>
+<span class="line-empty" title="No Anys on this line!">        return True</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    def newCode(self, item: Optional[WorkItem] = None)-&gt;Optional[WorkItem]:</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-precise" title="No Anys on this line!">            if not item:</span>
+<span class="line-precise" title="No Anys on this line!">                item = self.currentFile</span>
+<span class="line-precise" title="No Anys on this line!">            assert item</span>
+<span class="line-precise" title="No Anys on this line!">            dstPath = os.path.join(self.workingDirectory, item.name)</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            if item.type == WorkItemType.Directory:</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)">                os.mkdir(dstPath)</span>
+<span class="line-precise" title="No Anys on this line!">                initializeCodeDirectory(dstPath)</span>
+<span class="line-empty" title="No Anys on this line!">            else:</span>
+<span class="line-precise" title="No Anys on this line!">                ext = ecrpath.getFileExt(item.name)</span>
+<span class="line-precise" title="No Anys on this line!">                lang = fileextToLanguage[ext] if ext in fileextToLanguage else None</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">                tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">                    self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)">                if tempPath and os.path.exists(tempPath):</span>
+<span class="line-precise" title="No Anys on this line!">                    shutil.copyfile(tempPath, dstPath)</span>
+<span class="line-empty" title="No Anys on this line!">                else:</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)
-Explicit (x1)">                open(dstPath, "w").close()</span>
-<span class="line-empty" title="No Anys on this line!">            return True</span>
+Explicit (x1)">                    open(dstPath, "w").close()</span>
+<span class="line-precise" title="No Anys on this line!">            return item</span>
 <span class="line-empty" title="No Anys on this line!">        except:</span>
-<span class="line-empty" title="No Anys on this line!">            return False</span>
+<span class="line-empty" title="No Anys on this line!">            return None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">    def edit(self, file: Optional[str] = None)-&gt;bool:</span>
+<span class="line-precise" title="No Anys on this line!">    def edit(self, item: Optional[WorkItem] = None)-&gt;bool:</span>
 <span class="line-empty" title="No Anys on this line!">        try:</span>
-<span class="line-precise" title="No Anys on this line!">            click.edit(filename=file, editor=self.defaultEditor)</span>
+<span class="line-precise" title="No Anys on this line!">            if not item:</span>
+<span class="line-precise" title="No Anys on this line!">                item = self.currentFile</span>
+<span class="line-precise" title="No Anys on this line!">            titem: WorkItem = cast(WorkItem, item)</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            if titem.type == WorkItemType.File:</span>
+<span class="line-precise" title="No Anys on this line!">                click.edit(filename=titem.name, editor=self.defaultEditor)</span>
 <span class="line-empty" title="No Anys on this line!">            return True</span>
 <span class="line-empty" title="No Anys on this line!">        except:</span>
 <span class="line-empty" title="No Anys on this line!">            return False</span>
@@ -618,33 +741,16 @@ Omitted Generics (x1)">                        os.remove(os.path.join(self.worki
 <span class="line-empty" title="No Anys on this line!">                except:</span>
 <span class="line-empty" title="No Anys on this line!">                    pass</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">    def execute(self, io: Optional[str] = None, file: Optional[str] = None)-&gt;bool:</span>
-<span class="line-precise" title="No Anys on this line!">        if not io:</span>
-<span class="line-precise" title="No Anys on this line!">            io = self.defaultIO</span>
-<span class="line-precise" title="No Anys on this line!">        if not file:</span>
-<span class="line-precise" title="No Anys on this line!">            file = self.currentFile</span>
+<span class="line-precise" title="No Anys on this line!">    def __runCommands(self, io: str, commands: CommandList, variables: Dict[str, str], wdir: Optional[str] = None) -&gt; bool:</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x3)">        errf = color.useRed("×")</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x3)">        passf = color.useGreen("√")</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">        fileNameWithoutExt, fileext = cast(</span>
-<span class="line-imprecise" title="Any Types on this line: 
-Special Form (x2)">            Tuple[str, str], os.path.splitext(file))</span>
-<span class="line-precise" title="No Anys on this line!">        lang = fileextToLanguage[fileext[1:]]</span>
-<span class="line-precise" title="No Anys on this line!">        cmds = self.executorMap[lang]</span>
-<span class="line-precise" title="No Anys on this line!">        formats = {</span>
-<span class="line-precise" title="No Anys on this line!">            defaultData.CMDVAR_FileName: file,</span>
-<span class="line-precise" title="No Anys on this line!">            defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,</span>
-<span class="line-empty" title="No Anys on this line!">        }</span>
-<span class="line-precise" title="No Anys on this line!">        sumStep = len(cmds)</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)
-Explicit (x2)">        ui.console.info(f"Running {file}")</span>
-<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">        isSuccess = True</span>
+<span class="line-precise" title="No Anys on this line!">        sumStep = len(commands)</span>
+<span class="line-precise" title="No Anys on this line!">        cwd = wdir if wdir else self.workingDirectory</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">        for ind, bcmd in enumerate(cmds):</span>
+<span class="line-precise" title="No Anys on this line!">        for ind, bcmd in enumerate(commands):</span>
 <span class="line-precise" title="No Anys on this line!">            if not isSuccess:</span>
 <span class="line-empty" title="No Anys on this line!">                break</span>
 <span class="line-precise" title="No Anys on this line!">            cmd, timelimit = None, None</span>
@@ -654,7 +760,7 @@ Special Form (x1)">            if not isinstance(bcmd, str):</span>
 <span class="line-empty" title="No Anys on this line!">            else:</span>
 <span class="line-precise" title="No Anys on this line!">                cmd, timelimit = bcmd, self.defaultTimeLimit</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">            _cmd = cmd.format(**formats)</span>
+Explicit (x2)">            _cmd = cmd.format(**variables)</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x2)">            ui.console.write(</span>
 <span class="line-any" title="Any Types on this line: 
@@ -674,7 +780,7 @@ Special Form (x3)
 Explicit (x3)">                    proc = subprocess.Popen(</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)">                        getSystemCommand(_cmd, self),</span>
-<span class="line-precise" title="No Anys on this line!">                        cwd=self.workingDirectory,</span>
+<span class="line-precise" title="No Anys on this line!">                        cwd=cwd,</span>
 <span class="line-precise" title="No Anys on this line!">                        stdin=None if io[0] == "s"</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)
@@ -691,7 +797,7 @@ Special Form (x3)
 Explicit (x3)">                    proc = subprocess.Popen(</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)">                        getSystemCommand(_cmd, self),</span>
-<span class="line-precise" title="No Anys on this line!">                        cwd=self.workingDirectory,</span>
+<span class="line-precise" title="No Anys on this line!">                        cwd=cwd,</span>
 <span class="line-empty" title="No Anys on this line!">                        stdin=None, stdout=None, stderr=None)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">                self.runner = Runner(proc=proc, io=io, timelimit=timelimit)</span>
@@ -732,106 +838,81 @@ Unannotated (x2)">                        ui.console.write()</span>
 <span class="line-precise" title="No Anys on this line!">        self.runner = None</span>
 <span class="line-precise" title="No Anys on this line!">        return isSuccess</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">    def judge(self, file: Optional[str] = None,</span>
+<span class="line-precise" title="No Anys on this line!">    def execute(self, io: Optional[str] = None, item: Optional[WorkItem] = None)-&gt;bool:</span>
+<span class="line-precise" title="No Anys on this line!">        if not io:</span>
+<span class="line-precise" title="No Anys on this line!">            io = self.defaultIO</span>
+<span class="line-precise" title="No Anys on this line!">        if not item:</span>
+<span class="line-precise" title="No Anys on this line!">            item = self.currentFile</span>
+<span class="line-precise" title="No Anys on this line!">        titem: WorkItem = cast(WorkItem, item)</span>
+<span class="line-precise" title="No Anys on this line!">        cmds: Optional[CommandList] = None</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        if titem.type == WorkItemType.File:</span>
+<span class="line-precise" title="No Anys on this line!">            file = titem.name</span>
+<span class="line-precise" title="No Anys on this line!">            fileNameWithoutExt, fileext = cast(</span>
+<span class="line-imprecise" title="Any Types on this line: 
+Special Form (x2)">                Tuple[str, str], os.path.splitext(file))</span>
+<span class="line-precise" title="No Anys on this line!">            lang = fileextToLanguage[fileext[1:]]</span>
+<span class="line-precise" title="No Anys on this line!">            cmds = self.executorMap[lang]</span>
+<span class="line-precise" title="No Anys on this line!">            formats = {</span>
+<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_FileName: file,</span>
+<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,</span>
+<span class="line-empty" title="No Anys on this line!">            }</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)
+Explicit (x2)">            ui.console.info(f"Running {file}")</span>
+<span class="line-precise" title="No Anys on this line!">            return self.__runCommands(io, cmds, formats)</span>
+<span class="line-empty" title="No Anys on this line!">        else:  # directory</span>
+<span class="line-precise" title="No Anys on this line!">            cmds = titem.run</span>
+<span class="line-precise" title="No Anys on this line!">            formats = {</span>
+<span class="line-empty" title="No Anys on this line!">            }</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)
+Explicit (x2)">            ui.console.info(f"Running {titem.name}")</span>
+<span class="line-precise" title="No Anys on this line!">            if cmds:</span>
+<span class="line-precise" title="No Anys on this line!">                return self.__runCommands(io, cmds, formats, wdir=titem.path)</span>
+<span class="line-empty" title="No Anys on this line!">            else:</span>
+<span class="line-empty" title="No Anys on this line!">                return True</span>
+<span class="line-empty" title="No Anys on this line!">        return False</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    def judge(self, item: Optional[WorkItem] = None,</span>
 <span class="line-empty" title="No Anys on this line!">              reexecute: bool = False, judger: Optional[str] = None) -&gt; bool:</span>
-<span class="line-precise" title="No Anys on this line!">        if not file:</span>
-<span class="line-precise" title="No Anys on this line!">            file = self.currentFile</span>
+<span class="line-precise" title="No Anys on this line!">        if not item:</span>
+<span class="line-precise" title="No Anys on this line!">            item = self.currentFile</span>
 <span class="line-precise" title="No Anys on this line!">        if not judger:</span>
 <span class="line-precise" title="No Anys on this line!">            judger = self.defaultJudger</span>
 <span class="line-precise" title="No Anys on this line!">        if reexecute:</span>
-<span class="line-precise" title="No Anys on this line!">            if not self.execute(defaultData.CIO_FIFO, file):</span>
+<span class="line-precise" title="No Anys on this line!">            if not self.execute(defaultData.CIO_FIFO, item):</span>
 <span class="line-empty" title="No Anys on this line!">                return False</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-any" title="Any Types on this line: 
-Unimported (x3)">        errf = color.useRed("×")</span>
-<span class="line-any" title="Any Types on this line: 
-Unimported (x3)">        passf = color.useGreen("√")</span>
+<span class="line-precise" title="No Anys on this line!">        titem: WorkItem = cast(WorkItem, item)</span>
+<span class="line-precise" title="No Anys on this line!">        cmds: Optional[CommandList] = None</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        if titem.type == WorkItemType.File:</span>
+<span class="line-precise" title="No Anys on this line!">            cmds = self.judgerMap[judger]</span>
+<span class="line-precise" title="No Anys on this line!">            formats = {</span>
+<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.workingDirectory),</span>
+<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.workingDirectory),</span>
+<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),</span>
+<span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">        # fileNameWithoutExt, fileext = cast(</span>
-<span class="line-empty" title="No Anys on this line!">        # Tuple[str, str], os.path.splitext(file))</span>
-<span class="line-empty" title="No Anys on this line!">        # lang = fileextToLanguage[fileext[1:]]</span>
-<span class="line-precise" title="No Anys on this line!">        cmds = self.judgerMap[judger]</span>
-<span class="line-precise" title="No Anys on this line!">        formats = {</span>
-<span class="line-precise" title="No Anys on this line!">            defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.workingDirectory),</span>
-<span class="line-precise" title="No Anys on this line!">            defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.workingDirectory),</span>
-<span class="line-precise" title="No Anys on this line!">            defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),</span>
-<span class="line-empty" title="No Anys on this line!">        }</span>
-<span class="line-precise" title="No Anys on this line!">        sumStep = len(cmds)</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)
-Explicit (x2)">        ui.console.info(f"Judging {file}")</span>
+Explicit (x2)">            ui.console.info(f"Judging {titem.name}")</span>
+<span class="line-precise" title="No Anys on this line!">            return self.__runCommands(defaultData.CIO_SISO, cmds, formats)</span>
+<span class="line-empty" title="No Anys on this line!">        else:  # directory</span>
+<span class="line-precise" title="No Anys on this line!">            cmds = titem.judge</span>
+<span class="line-precise" title="No Anys on this line!">            formats = {</span>
+<span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">        isSuccess = True</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">        for ind, bcmd in enumerate(cmds):</span>
-<span class="line-precise" title="No Anys on this line!">            if not isSuccess:</span>
-<span class="line-empty" title="No Anys on this line!">                break</span>
-<span class="line-precise" title="No Anys on this line!">            cmd, timelimit = None, None</span>
 <span class="line-precise" title="Any Types on this line: 
-Special Form (x1)">            if not isinstance(bcmd, str):</span>
-<span class="line-unanalyzed" title="No Anys on this line!">                cmd, timelimit = bcmd</span>
+Unannotated (x1)
+Explicit (x2)">            ui.console.info(f"Judging {titem.name}")</span>
+<span class="line-precise" title="No Anys on this line!">            if cmds:</span>
+<span class="line-precise" title="No Anys on this line!">                return self.__runCommands(defaultData.CIO_SISO, cmds, formats, wdir=titem.path)</span>
 <span class="line-empty" title="No Anys on this line!">            else:</span>
-<span class="line-precise" title="No Anys on this line!">                cmd, timelimit = bcmd, self.defaultTimeLimit</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">            _cmd = cmd.format(**formats)</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">            ui.console.write(</span>
-<span class="line-any" title="Any Types on this line: 
-Unimported (x2)
-Explicit (x2)">                "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")</span>
-<span class="line-precise" title="No Anys on this line!">            proc = None</span>
-<span class="line-precise" title="No Anys on this line!">            rresult, retcode = None, None</span>
-<span class="line-empty" title="No Anys on this line!">            try:</span>
-<span class="line-precise" title="No Anys on this line!">                if ind == sumStep - 1:  # last command</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                    ui.console.write("-"*20)</span>
-<span class="line-precise" title="Any Types on this line: 
-Omitted Generics (x3)
-Special Form (x3)
-Explicit (x3)">                proc = subprocess.Popen(</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">                    getSystemCommand(_cmd, self),</span>
-<span class="line-precise" title="No Anys on this line!">                    cwd=self.workingDirectory,</span>
-<span class="line-empty" title="No Anys on this line!">                    stdin=None, stdout=None, stderr=None)</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">                self.runner = Runner(</span>
-<span class="line-precise" title="No Anys on this line!">                    proc=proc, io=defaultData.CIO_SISO, timelimit=timelimit)</span>
-<span class="line-precise" title="No Anys on this line!">                rresult, retcode = self.runner.run()</span>
-<span class="line-precise" title="No Anys on this line!">            except BaseException:</span>
-<span class="line-precise" title="No Anys on this line!">                self.runner = None</span>
-<span class="line-precise" title="No Anys on this line!">                isSuccess = False</span>
-<span class="line-empty" title="No Anys on this line!">            finally:</span>
-<span class="line-precise" title="No Anys on this line!">                if ind == sumStep - 1:  # last command</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                    ui.console.write("-"*20)</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                ui.console.write(</span>
-<span class="line-empty" title="No Anys on this line!">                    "   -&gt;",</span>
-<span class="line-any" title="Any Types on this line: 
-Unimported (x2)">                    passf if retcode == 0 else errf,</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">                    f"{round(cast(Runner,self.runner).usedTime*1000)/1000}s")</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">                if rresult != RunResult.Success:</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                    ui.console.write(</span>
-<span class="line-any" title="Any Types on this line: 
-Unimported (x2)
-Explicit (x2)">                        "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",</span>
-<span class="line-any" title="Any Types on this line: 
-Unimported (x2)">                        _cmd, " -&gt; ", color.useRed(str(retcode)), sep="", end=" ")</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">                    if rresult == RunResult.TimeOut:</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x2)
-Unimported (x2)">                        ui.console.write(color.useRed("Time out"))</span>
-<span class="line-empty" title="No Anys on this line!">                    else:</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                        ui.console.write()</span>
-<span class="line-precise" title="No Anys on this line!">                    self.runner = None</span>
-<span class="line-precise" title="No Anys on this line!">                    isSuccess = False</span>
-<span class="line-precise" title="No Anys on this line!">        self.runner = None</span>
-<span class="line-precise" title="No Anys on this line!">        return isSuccess</span>
+<span class="line-empty" title="No Anys on this line!">                return True</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def load(basepath: str) -&gt; Optional[WorkManager]:</span>
