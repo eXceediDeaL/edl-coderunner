@@ -8,7 +8,7 @@ from enum import Enum
 import yaml
 import click
 from prompt_toolkit.application import run_in_terminal
-from .types import ExecutorMapping, CommandMapping, JudgerMapping
+from .types import ExecutorMapping, CommandMapping, JudgerMapping, CommandList
 from ..ui import color
 from . import defaultData
 from . import path as ecrpath
@@ -25,6 +25,8 @@ CONST_defaultJudger: str = "defaultJudger"
 fileextToLanguage: Dict[str, str] = {
     "c": "c",
     "cpp": "cpp",
+    "cs": "csharp",
+    "fs": "fsharp",
     "py": "python",
     "java": "java",
     "pas": "pascal",
@@ -32,6 +34,7 @@ fileextToLanguage: Dict[str, str] = {
     "js": "javascript",
     "rb": "ruby",
     "go": "go",
+    "php": "php",
     "sh": "shellscript",
     "ps1": "powershell",
 }
@@ -63,6 +66,20 @@ class RunResult(Enum):
     Success: int = 0
     Error: int = 1
     TimeOut: int = 2
+
+
+class WorkItemType(Enum):
+    File: int = 0
+    Directory: int = 1
+
+
+class WorkItem:
+    def __init__(self, path: str, name: str, types: WorkItemType = WorkItemType.File):
+        self.path: str = path
+        self.name: str = name
+        self.type: WorkItemType = types
+        self.run: Optional[CommandList] = None
+        self.judge: Optional[CommandList] = None
 
 
 def safeOutput(*values: List)->None:
@@ -121,13 +138,35 @@ class Runner:
         return (RunResult.Success, self.proc.returncode)
 
 
+def initializeCodeDirectory(path: str)->None:
+    config: Dict[str, Optional[List]] = {
+        "run": None,
+        "judge": None,
+    }
+    with open(ecrpath.getCodeDirConfigPath(path), "w", encoding='utf-8') as f:
+        f.write(yaml.dump(config, indent=4,
+                          default_flow_style=False))
+
+
+def loadCodeDirectory(path: str, name: str)->Optional[WorkItem]:
+    try:
+        ret = WorkItem(path, name, WorkItemType.Directory)
+        with open(ecrpath.getCodeDirConfigPath(path), "r", encoding='utf-8') as f:
+            config = yaml.load(f.read())
+            ret.judge = config["judge"]
+            ret.run = config["run"]
+        return ret
+    except:
+        return None
+
+
 class WorkManager:
     def __init__(self, path: str):
         self.workingDirectory: str = path
         self.executorMap: ExecutorMapping = {}
         self.judgerMap: JudgerMapping = {}
         self.tempFileFilter: List[str] = []
-        self.currentFile: Optional[str] = None
+        self.currentFile: Optional[WorkItem] = None
         self.importedCommand: CommandMapping = {}
         self.defaultShell: Optional[str] = None
         self.defaultIO: str = defaultData.io
@@ -137,27 +176,54 @@ class WorkManager:
         self.runner: Optional[Runner] = None
         self.defaultEditor: Optional[str] = None
 
-    def newCode(self, file=None)->bool:
-        try:
-            if not file:
-                file = self.currentFile
-            assert file
-            ext = ecrpath.getFileExt(file)
-            lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
-            dstPath = os.path.join(self.workingDirectory, file)
-            tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(
-                self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
-            if tempPath and os.path.exists(tempPath):
-                shutil.copyfile(tempPath, dstPath)
+    def getWorkItem(self, name: str, isdir: bool) -> Optional[WorkItem]:
+        path = os.path.join(self.workingDirectory, name)
+        if isdir:
+            if not os.path.isdir(path):
+                return WorkItem(path, name, WorkItemType.Directory)
             else:
-                open(dstPath, "w").close()
-            return True
-        except:
-            return False
+                return loadCodeDirectory(path, name)
+        else:
+            return WorkItem(
+                self.workingDirectory, name, WorkItemType.File)
 
-    def edit(self, file: Optional[str] = None)->bool:
+    def setCurrent(self, item: str, isdir: bool) -> bool:
+        if item == None:
+            self.currentFile = None
+        else:
+            self.currentFile = self.getWorkItem(item, isdir)
+        return True
+
+    def newCode(self, item: Optional[WorkItem] = None)->Optional[WorkItem]:
         try:
-            click.edit(filename=file, editor=self.defaultEditor)
+            if not item:
+                item = self.currentFile
+            assert item
+            dstPath = os.path.join(self.workingDirectory, item.name)
+            if item.type == WorkItemType.Directory:
+                os.mkdir(dstPath)
+                initializeCodeDirectory(dstPath)
+            else:
+                ext = ecrpath.getFileExt(item.name)
+                lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
+
+                tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(
+                    self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
+                if tempPath and os.path.exists(tempPath):
+                    shutil.copyfile(tempPath, dstPath)
+                else:
+                    open(dstPath, "w").close()
+            return item
+        except:
+            return None
+
+    def edit(self, item: Optional[WorkItem] = None)->bool:
+        try:
+            if not item:
+                item = self.currentFile
+            titem: WorkItem = cast(WorkItem, item)
+            if titem.type == WorkItemType.File:
+                click.edit(filename=titem.name, editor=self.defaultEditor)
             return True
         except:
             return False
@@ -174,28 +240,14 @@ class WorkManager:
                 except:
                     pass
 
-    def execute(self, io: Optional[str] = None, file: Optional[str] = None)->bool:
-        if not io:
-            io = self.defaultIO
-        if not file:
-            file = self.currentFile
+    def __runCommands(self, io: str, commands: CommandList, variables: Dict[str, str], wdir: Optional[str] = None) -> bool:
         errf = color.useRed("×")
         passf = color.useGreen("√")
-
-        fileNameWithoutExt, fileext = cast(
-            Tuple[str, str], os.path.splitext(file))
-        lang = fileextToLanguage[fileext[1:]]
-        cmds = self.executorMap[lang]
-        formats = {
-            defaultData.CMDVAR_FileName: file,
-            defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,
-        }
-        sumStep = len(cmds)
-        ui.console.info(f"Running {file}")
-
         isSuccess = True
+        sumStep = len(commands)
+        cwd = wdir if wdir else self.workingDirectory
 
-        for ind, bcmd in enumerate(cmds):
+        for ind, bcmd in enumerate(commands):
             if not isSuccess:
                 break
             cmd, timelimit = None, None
@@ -203,7 +255,7 @@ class WorkManager:
                 cmd, timelimit = bcmd
             else:
                 cmd, timelimit = bcmd, self.defaultTimeLimit
-            _cmd = cmd.format(**formats)
+            _cmd = cmd.format(**variables)
             ui.console.write(
                 "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
             proc = None
@@ -215,7 +267,7 @@ class WorkManager:
                     ui.console.write("-"*20)
                     proc = subprocess.Popen(
                         getSystemCommand(_cmd, self),
-                        cwd=self.workingDirectory,
+                        cwd=cwd,
                         stdin=None if io[0] == "s"
                         else open(ecrpath.getFileInputPath(self.workingDirectory), "r"),
                         stdout=None if io[1] == "s"
@@ -224,7 +276,7 @@ class WorkManager:
                 else:
                     proc = subprocess.Popen(
                         getSystemCommand(_cmd, self),
-                        cwd=self.workingDirectory,
+                        cwd=cwd,
                         stdin=None, stdout=None, stderr=None)
 
                 self.runner = Runner(proc=proc, io=io, timelimit=timelimit)
@@ -252,79 +304,70 @@ class WorkManager:
         self.runner = None
         return isSuccess
 
-    def judge(self, file: Optional[str] = None,
+    def execute(self, io: Optional[str] = None, item: Optional[WorkItem] = None)->bool:
+        if not io:
+            io = self.defaultIO
+        if not item:
+            item = self.currentFile
+        titem: WorkItem = cast(WorkItem, item)
+        cmds: Optional[CommandList] = None
+        if titem.type == WorkItemType.File:
+            file = titem.name
+            fileNameWithoutExt, fileext = cast(
+                Tuple[str, str], os.path.splitext(file))
+            lang = fileextToLanguage[fileext[1:]]
+            cmds = self.executorMap[lang]
+            formats = {
+                defaultData.CMDVAR_FileName: file,
+                defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,
+            }
+
+            ui.console.info(f"Running {file}")
+            return self.__runCommands(io, cmds, formats)
+        else:  # directory
+            cmds = titem.run
+            formats = {
+            }
+
+            ui.console.info(f"Running {titem.name}")
+            if cmds:
+                return self.__runCommands(io, cmds, formats, wdir=titem.path)
+            else:
+                return True
+        return False
+
+    def judge(self, item: Optional[WorkItem] = None,
               reexecute: bool = False, judger: Optional[str] = None) -> bool:
-        if not file:
-            file = self.currentFile
+        if not item:
+            item = self.currentFile
         if not judger:
             judger = self.defaultJudger
         if reexecute:
-            if not self.execute(defaultData.CIO_FIFO, file):
+            if not self.execute(defaultData.CIO_FIFO, item):
                 return False
 
-        errf = color.useRed("×")
-        passf = color.useGreen("√")
+        titem: WorkItem = cast(WorkItem, item)
+        cmds: Optional[CommandList] = None
+        if titem.type == WorkItemType.File:
+            cmds = self.judgerMap[judger]
+            formats = {
+                defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.workingDirectory),
+                defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.workingDirectory),
+                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),
+            }
 
-        # fileNameWithoutExt, fileext = cast(
-        # Tuple[str, str], os.path.splitext(file))
-        # lang = fileextToLanguage[fileext[1:]]
-        cmds = self.judgerMap[judger]
-        formats = {
-            defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.workingDirectory),
-            defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.workingDirectory),
-            defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),
-        }
-        sumStep = len(cmds)
-        ui.console.info(f"Judging {file}")
+            ui.console.info(f"Judging {titem.name}")
+            return self.__runCommands(defaultData.CIO_SISO, cmds, formats)
+        else:  # directory
+            cmds = titem.judge
+            formats = {
+            }
 
-        isSuccess = True
-
-        for ind, bcmd in enumerate(cmds):
-            if not isSuccess:
-                break
-            cmd, timelimit = None, None
-            if not isinstance(bcmd, str):
-                cmd, timelimit = bcmd
+            ui.console.info(f"Judging {titem.name}")
+            if cmds:
+                return self.__runCommands(defaultData.CIO_SISO, cmds, formats, wdir=titem.path)
             else:
-                cmd, timelimit = bcmd, self.defaultTimeLimit
-            _cmd = cmd.format(**formats)
-            ui.console.write(
-                "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
-            proc = None
-            rresult, retcode = None, None
-            try:
-                if ind == sumStep - 1:  # last command
-                    ui.console.write("-"*20)
-                proc = subprocess.Popen(
-                    getSystemCommand(_cmd, self),
-                    cwd=self.workingDirectory,
-                    stdin=None, stdout=None, stderr=None)
-
-                self.runner = Runner(
-                    proc=proc, io=defaultData.CIO_SISO, timelimit=timelimit)
-                rresult, retcode = self.runner.run()
-            except BaseException:
-                self.runner = None
-                isSuccess = False
-            finally:
-                if ind == sumStep - 1:  # last command
-                    ui.console.write("-"*20)
-                ui.console.write(
-                    "   ->",
-                    passf if retcode == 0 else errf,
-                    f"{round(cast(Runner,self.runner).usedTime*1000)/1000}s")
-                if rresult != RunResult.Success:
-                    ui.console.write(
-                        "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
-                        _cmd, " -> ", color.useRed(str(retcode)), sep="", end=" ")
-                    if rresult == RunResult.TimeOut:
-                        ui.console.write(color.useRed("Time out"))
-                    else:
-                        ui.console.write()
-                    self.runner = None
-                    isSuccess = False
-        self.runner = None
-        return isSuccess
+                return True
 
 
 def load(basepath: str) -> Optional[WorkManager]:

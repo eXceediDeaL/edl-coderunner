@@ -51,11 +51,15 @@ def getITParser()->ITParser:
     cmd_new.add_argument("file", nargs="?", default=None, type=str)
     cmd_new.add_argument("-e", "--edit", action="store_true",
                          default=False, help="Edit the file")
+    cmd_new.add_argument("-d", "--dir", action="store_true",
+                         default=False, help="As directory")
     cmd_new.set_defaults(func=new)
 
     cmd_now = subpars.add_parser("now", help="Change current file")
     cmd_now.add_argument("file", nargs="?", default=None, type=str,
                          help="Set current file (clear for none)")
+    cmd_now.add_argument("-d", "--dir", action="store_true",
+                         default=False, help="As directory")
     cmd_now.set_defaults(func=now)
 
     cmd_run = subpars.add_parser("run", help="Run code file")
@@ -65,6 +69,8 @@ def getITParser()->ITParser:
         "file", nargs="?", default=None, help="File name (only for this command)")
     cmd_run.add_argument("-w", "--watch", action="store_true",
                          default=False, help="Watch the file and run auto till Ctrl-C")
+    cmd_run.add_argument("-d", "--dir", action="store_true",
+                         default=False, help="As directory")
     cmd_run.set_defaults(func=run)
 
     cmd_judge = subpars.add_parser("judge", help="Judge output data")
@@ -76,6 +82,8 @@ def getITParser()->ITParser:
                            default=False, help="Watch the file and judge auto till Ctrl-C")
     cmd_judge.add_argument("-r", "--re", action="store_true",
                            default=False, help="Re-execute before judge")
+    cmd_judge.add_argument("-d", "--dir", action="store_true",
+                         default=False, help="As directory")
     cmd_judge.set_defaults(func=judge)
 
     cmd_edit = subpars.add_parser("edit", help="Edit code file")
@@ -83,6 +91,8 @@ def getITParser()->ITParser:
         "file", nargs="?", default=None, help="File name (only for this command)")
     cmd_edit.add_argument("-n", "--now", action="store_true",
                           default=False, help="Set the file as current")
+    cmd_edit.add_argument("-d", "--dir", action="store_true",
+                         default=False, help="As directory")
     cmd_edit.set_defaults(func=edit)
 
     cmd_clean = subpars.add_parser("clean", help="Clean temp files")
@@ -214,9 +224,12 @@ def main()->int:  # pragma: no cover
     helper.printHead()
     while True:
         try:
-            curfile = shared.man.currentFile \
-                if shared.man and shared.man.currentFile \
-                else ""
+            curfile = ""
+            if shared.man and shared.man.currentFile:
+                if shared.man.currentFile.type == manager.WorkItemType.File:
+                    curfile = shared.man.currentFile.name
+                else:
+                    curfile = "@" + shared.man.currentFile.name
             oricmd = str(console.inputCommand(
                 curfile + defaultPrompt,
                 completer=getCommandCompleter(), complete_in_thread=False))

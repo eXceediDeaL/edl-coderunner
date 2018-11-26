@@ -14,7 +14,7 @@ uninstall :
 	$(PY) -m pip uninstall edl-cr -y
 
 run : 
-	-mkdir ./temp/debug
+	-cd . ; mkdir temp/debug
 	cd src ; $(PY) -m ecr $(RARG)
 
 lint : 
@@ -25,7 +25,7 @@ lint :
 # pytest --html=./docs/dev/reports/test/index.html --self-contained-html
 test : 
 	$(PY) setup.py install -q
-	-mkdir ./temp/testC
+	-cd . ; mkdir temp/testC
 	cd ./temp/testC ; ecr -c 'init'
 	-rm -r ./temp/testC/*
 

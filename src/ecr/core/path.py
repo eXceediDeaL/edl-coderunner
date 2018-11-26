@@ -37,6 +37,10 @@ def getFileStdPath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "std.data")
 
 
+def getCodeDirConfigPath(basepath: str) -> str:
+    return os.path.join(basepath, "config.yml")
+
+
 def getFileExt(filename: str) -> str:
     return os.path.splitext(filename)[1][1:]
 

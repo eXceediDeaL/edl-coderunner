@@ -1,8 +1,10 @@
 from typing import List, Dict, Callable, Optional
 
-ExecutorMapping = Dict[str, List[str]]
+CommandList = List[str]
 
-JudgerMapping = Dict[str, List[str]]
+ExecutorMapping = Dict[str, CommandList]
+
+JudgerMapping = Dict[str, CommandList]
 
 CommandMapping = Dict[str, str]
 

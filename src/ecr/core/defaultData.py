@@ -21,29 +21,30 @@ CMDVAR_RealFile: str = "realFile"
 
 executors: ExecutorMapping = {
     "c": [
-        f"gcc {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
+        f"gcc -O2 -Wall -std=c11 {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}} -lm",
         f"./{{{CMDVAR_FileNameWithoutExt}}}"
     ],
     "cpp": [
-        f"g++ {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
+        f"g++ -O2 -Wall -std=c++14 {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}} -lm",
         f"./{{{CMDVAR_FileNameWithoutExt}}}"
     ],
     "java": [
-        f"javac {{{CMDVAR_FileName}}}",
+        f"javac -encoding utf8 {{{CMDVAR_FileName}}}",
         f"java {{{CMDVAR_FileNameWithoutExt}}}"
     ],
     "python": [f"python {{{CMDVAR_FileName}}}"],
     "pascal": [
-        f"fpc {{{CMDVAR_FileName}}}",
+        f"fpc -O2 {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
         f"./{{{CMDVAR_FileNameWithoutExt}}}"
     ],
     "objective-c": [
-        f"gcc -framework Cocoa {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
+        f"gcc -O2 -Wall -framework Cocoa {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
         f"./{{{CMDVAR_FileNameWithoutExt}}}"
     ],
     "javascript": [f"node {{{CMDVAR_FileName}}}"],
     "ruby": [f"ruby {{{CMDVAR_FileName}}}"],
     "go": [f"go run {{{CMDVAR_FileName}}}"],
+    "php": [f"php {{{CMDVAR_FileName}}}"],
     "shellscript": [f"bash {{{CMDVAR_FileName}}}"],
     "powershell": [f"powershell -ExecutionPolicy ByPass -File {{{CMDVAR_FileName}}}"]
 }

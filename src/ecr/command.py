@@ -1,10 +1,10 @@
 import os
 import time
-from typing import cast
+from typing import cast, Tuple
 from argparse import Namespace
 from watchdog.events import FileSystemEventHandler
 from .helper import loadMan, printHead
-from .core import manager, WorkManager
+from .core import manager, WorkManager, WorkItem, WorkItemType
 from .ui import SwitchState, color
 from . import ReturnCode, shared, ui
 
@@ -55,7 +55,7 @@ def now(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
     tman: WorkManager = cast(WorkManager, shared.man)
-    tman.currentFile = args.file
+    tman.setCurrent(args.file, args.dir)
     return ReturnCode.OK
 
 
@@ -63,12 +63,15 @@ def new(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
     tman: WorkManager = cast(WorkManager, shared.man)
-    file = args.file
-    if not file:
-        file = tman.currentFile
-    result = tman.newCode(file)
+    if not args.file and not tman.currentFile:
+        ui.console.write("Please set file first")
+        return ReturnCode.ERROR
+    file = args.file if args.file else cast(WorkItem, tman.currentFile).name
+    result = tman.newCode(tman.getWorkItem(
+        args.file, args.dir) if args.file else None)
+
     if result:
-        tman.currentFile = file
+        tman.currentFile = result
         printFileCreate(file)
         if args.edit:
             return edit(Namespace(file=file, now=False))
@@ -85,10 +88,12 @@ def edit(args: Namespace)->ReturnCode:
     if not args.file and not tman.currentFile:
         ui.console.write("Please set file first")
         return ReturnCode.ERROR
-    file = args.file
-    if not file:
-        file = tman.currentFile
-    result = tman.edit(file)
+    if not args.file and not tman.currentFile:
+        ui.console.write("Please set file first")
+        return ReturnCode.ERROR
+    file = args.file if args.file else cast(WorkItem, tman.currentFile).name
+    result = tman.edit(tman.getWorkItem(
+        args.file, args.dir) if args.file else None)
     if result:
         printFileModify(file)
         if args.now:
@@ -122,10 +127,22 @@ class RunWatchEventHandler(FileSystemEventHandler):
 
     def on_modified(self, event):
         super().on_modified(event)
-        if os.path.split(event.src_path)[-1] == self.file:
+        if not self.file or os.path.split(event.src_path)[-1] == self.file:
             self.state = not self.state
             if self.state:  # one modify raise two event
                 self.func()
+
+
+def getItem(tman: WorkManager, args: Namespace)->Tuple[WorkItem, str]:
+    if args.file:
+        item = tman.getWorkItem(
+            args.file, args.dir)
+    else:
+        item = tman.getWorkItem(
+            cast(WorkItem, tman.currentFile).name, cast(WorkItem, tman.currentFile).type == WorkItemType.Directory)
+        tman.currentFile = item
+    file = cast(WorkItem, item).name
+    return cast(WorkItem, item), file
 
 
 def run(args: Namespace)->ReturnCode:
@@ -160,29 +177,35 @@ def run(args: Namespace)->ReturnCode:
         elif tman.runner.canInput:
             tman.runner.input(cmd)
 
-    result = ret[0] if len(ret) > 0 else False"""
+    result = ret[0] if len(ret) > 0 else False """
 
     if not args.watch:
-        result = tman.execute(io=args.io, file=args.file)
+        item, file = getItem(tman,args)
+        result = tman.execute(io=args.io, item=item)
 
         if not result:
             ui.console.error("Running failed")
             return ReturnCode.RUNERR
         return ReturnCode.OK
     else:
+        file = args.file if args.file else cast(
+            WorkItem, tman.currentFile).name
+
         def func():
+            item, file = getItem(tman,args)
             ui.console.clear()
             ui.console.info(f"Watching", end=" ")
             printFileModify(file)
-            result = tman.execute(io=args.io, file=args.file)
+            result = tman.execute(io=args.io, item=item)
             if not result:
                 ui.console.error("Running failed")
 
         from watchdog.observers import Observer
-        file = args.file if args.file else tman.currentFile
-        path = tman.workingDirectory
         ui.console.info(f"Watching {file} (press ctrl+c to end)")
-        event_handler = RunWatchEventHandler(file, func)
+
+        path = tman.workingDirectory if item.type == WorkItemType.File else item.path
+        event_handler = RunWatchEventHandler(
+            file if item.type == WorkItemType.File else None, func)
         observer = Observer()
         observer.schedule(event_handler, path, recursive=False)
         observer.start()
@@ -205,8 +228,9 @@ def judge(args: Namespace)->ReturnCode:
         return ReturnCode.ERROR
 
     if not args.watch:
+        item, file = getItem(tman,args)
         result = tman.judge(reexecute=args.re,
-                            file=args.file, judger=args.judger)
+                            item=item, judger=args.judger)
 
         if not result:
             ui.console.error("Judging failed")
@@ -215,12 +239,16 @@ def judge(args: Namespace)->ReturnCode:
             ui.console.ok("Judging passed")
             return ReturnCode.OK
     else:
+        file = args.file if args.file else cast(
+            WorkItem, tman.currentFile).name
+
         def func():
+            item, file = getItem(tman,args)
             ui.console.clear()
             ui.console.info(f"Watching", end=" ")
             printFileModify(file)
             result = tman.judge(reexecute=args.re,
-                                file=args.file, judger=args.judger)
+                                item=item, judger=args.judger)
             if not result:
                 ui.console.error("Judging failed")
                 return ReturnCode.JUDGEERR
@@ -229,10 +257,10 @@ def judge(args: Namespace)->ReturnCode:
                 return ReturnCode.OK
 
         from watchdog.observers import Observer
-        file = args.file if args.file else tman.currentFile
-        path = tman.workingDirectory
         ui.console.info(f"Watching {file} (press ctrl+c to end)")
-        event_handler = RunWatchEventHandler(file, func)
+        path = tman.workingDirectory if item.type == WorkItemType.File else item.path
+        event_handler = RunWatchEventHandler(
+            file if item.type == WorkItemType.File else None, func)
         observer = Observer()
         observer.schedule(event_handler, path, recursive=False)
         observer.start()

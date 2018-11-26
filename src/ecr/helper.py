@@ -30,7 +30,7 @@ varFormatRE = re.compile(r'\$(?P<name>[a-zA-Z_]\w*)')
 
 def bashVarToPythonVar(m)->str:
     s = m.groupdict()
-    return "{" + s["name"] + "}"
+    return "'{" + s["name"] + "}'"
 
 
 def formatWithVars(oristr: str, var: VariableMapping)->str:

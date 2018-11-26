@@ -29,7 +29,7 @@ class PathCompleter(Completer):
 
     def get_completions(self, document, complete_event):
         text = document.text_before_cursor.split()
-        if text:
+        if not text:
             return
         text = text[-1]
 

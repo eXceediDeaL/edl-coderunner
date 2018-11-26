@@ -102,6 +102,31 @@ a.cpp> judge b.cpp -r
 a.cpp> judge -w -r
 ```
 
+### Use Directory
+
+Not only use files, you can also use directories to create a unique environment for codes.
+
+```sh
+# Create a new directory env
+> new project -d
+
+# Set a directory env for current
+> now project -d
+
+# Run
+@project> run
+
+# Judge
+@project> judge
+```
+
+For `run` and `judge` commands, it will use the command list in `config.yml` in the directory. You can write your own commands in it.
+
+```yaml
+judge: null
+run: null
+```
+
 ### Input and Output
 
 The file input is at `.ecr/input.data`, and the file output is at `.ecr/output.data`.
@@ -127,6 +152,9 @@ You can use builtin variables just like in bash:
 |Variable|Description|
 |-|-|
 |`wdir`|Working directory|
+|`edir`|ECR directory|
+|`jdir`|Judger directory|
+|`tdir`|Template directory|
 |`current`|Current file|
 |`input`|Input file|
 |`output`|Output file|
@@ -142,11 +170,11 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |-|-|
 |`init`|Initialize ECR data|
 |`clear`|Clear ECR data|
-|`new [file] [-e --edit]`|Create new code file|
-|`now [file]`|Change current file|
-|`edit [file] [-n --now]`|Edit code file|
-|`run [file] [-io --io] [-w]`|Run code file|
-|`judge [file] [-r --re] [-w] [-j --judger]`|Judge output data|
+|`new [file] [-e --edit] [-d --dir]`|Create new code file|
+|`now [file] [-d --dir]`|Change current file|
+|`edit [file] [-n --now] [-d --dir]`|Edit code file|
+|`run [file] [-io --io] [-w] [-d --dir]`|Run code file|
+|`judge [file] [-r --re] [-w] [-j --judger] [-d --dir]`|Judge output data|
 |`clean`|Clean temp files|
 |`pwd`|Print working directory|
 |`cd`|Change working directory|
