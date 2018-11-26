@@ -12,25 +12,32 @@ timeLimit: int = 10
 editor: str = "vim"
 judger: str = "diff"
 
+CMDVAR_FileName: str = "fileName"
+CMDVAR_FileNameWithoutExt: str = "fileNameWithoutExt"
+CMDVAR_JudgerDir: str = "judgerDir"
+CMDVAR_ExpectFile: str = "expectFile"
+CMDVAR_RealFile: str = "realFile"
+
+
 executors: ExecutorMapping = {
-    "c": ["gcc {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
-    "cpp": ["g++ {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
-    "java": ["javac {fileName}", "java {fileNameWithoutExt}"],
-    "python": ["python {fileName}"],
-    "pascal": ["fpc {fileName}", "./{fileNameWithoutExt}"],
+    "c": [f"gcc {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}", f"./{{{CMDVAR_FileNameWithoutExt}}}"],
+    "cpp": [f"g++ {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}", f"./{{{CMDVAR_FileNameWithoutExt}}}"],
+    "java": [f"javac {{{CMDVAR_FileName}}}", f"java {{{CMDVAR_FileNameWithoutExt}}}"],
+    "python": [f"python {{{CMDVAR_FileName}}}"],
+    "pascal": [f"fpc {{{CMDVAR_FileName}}}", f"./{{{CMDVAR_FileNameWithoutExt}}}"],
     "objective-c": [
-        "gcc -framework Cocoa {fileName} -o {fileNameWithoutExt}",
-        "./{fileNameWithoutExt}"
+        f"gcc -framework Cocoa {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
+        f"./{{{CMDVAR_FileNameWithoutExt}}}"
     ],
-    "javascript": ["node {fileName}"],
-    "ruby": ["ruby {filename}"],
-    "go": ["go run {filename}"],
-    "shellscript": ["bash {filename}"],
-    "powershell": ["powershell -ExecutionPolicy ByPass -File {filename}"]
+    "javascript": [f"node {{{CMDVAR_FileName}}}"],
+    "ruby": [f"ruby {{{CMDVAR_FileName}}}"],
+    "go": [f"go run {{{CMDVAR_FileName}}}"],
+    "shellscript": [f"bash {{{CMDVAR_FileName}}}"],
+    "powershell": [f"powershell -ExecutionPolicy ByPass -File {{{CMDVAR_FileName}}}"]
 }
 
 judgers: JudgerMapping = {
-    "diff": ["diff {expectFile} {realFile}"],
+    "diff": [f"python -u {{{CMDVAR_JudgerDir}}}/diff.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"],
 }
 
 tempFileFilter: List[str] = ["exe", "o", "class", "out"]
@@ -70,46 +77,4 @@ importedCommand: CommandMapping = {
     "date": "date",
     "man": "man",
     "make": "make",
-}
-
-codeTemplate: CodeTemplateMapping = {
-    "c":
-    """#include <stdio.h>
-int main()
-{
-    return 0;
-}""",
-    "cpp":
-    """#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-using namespace std;
-int main()
-{
-
-    return EXIT_SUCCESS;
-} """,
-    "java": """import java.util.Scanner;
-
-public class Main {
-    public static void main(String[] args) {
-        
-    }
-}
-""",
-    "python": """def main():
-
-    return 0
-
-if __name__ == "__main__":
-    exit(main())
-
-""",
-    "pascal": """program pro(Input, Output);
-var
-
-begin
-    
-end.
-""",
 }

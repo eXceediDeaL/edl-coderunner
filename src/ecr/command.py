@@ -9,9 +9,9 @@ from .ui import SwitchState, color
 from . import ReturnCode, shared, ui
 
 __all__ = ["init", "new", "now", "pwd", "cd", "clear",
-           "getVersion", "shutdown", "run", "clean", "cls", "edit", "debug"]
+           "getVersion", "shutdown", "run", "clean", "cls", "edit", "debug", "judge"]
 cmds = ["init", "new", "now", "pwd", "cd", "clear",
-        "version", "run", "clean", "cls", "exit", "edit", "debug"]
+        "version", "run", "clean", "cls", "exit", "edit", "debug", "judge"]
 
 
 def printFileModify(file: str)->None:
@@ -196,6 +196,56 @@ def run(args: Namespace)->ReturnCode:
         return ReturnCode.OK
 
 
+def judge(args: Namespace)->ReturnCode:
+    if not assertInited():
+        return ReturnCode.UNLOADED
+    tman: WorkManager = cast(WorkManager, shared.man)
+    if not args.file and not tman.currentFile:
+        ui.console.write("Please set file first")
+        return ReturnCode.ERROR
+
+    if not args.watch:
+        result = tman.judge(reexecute=args.re,
+                            file=args.file, judger=args.judger)
+
+        if not result:
+            ui.console.error("Judging failed")
+            return ReturnCode.JUDGEERR
+        else:
+            ui.console.ok("Judging passed")
+            return ReturnCode.OK
+    else:
+        def func():
+            ui.console.clear()
+            ui.console.info(f"Watching", end=" ")
+            printFileModify(file)
+            result = tman.judge(reexecute=args.re,
+                                file=args.file, judger=args.judger)
+            if not result:
+                ui.console.error("Judging failed")
+                return ReturnCode.JUDGEERR
+            else:
+                ui.console.ok("Judging passed")
+                return ReturnCode.OK
+
+        from watchdog.observers import Observer
+        file = args.file if args.file else tman.currentFile
+        path = tman.workingDirectory
+        ui.console.info(f"Watching {file} (press ctrl+c to end)")
+        event_handler = RunWatchEventHandler(file, func)
+        observer = Observer()
+        observer.schedule(event_handler, path, recursive=False)
+        observer.start()
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            observer.stop()
+            ui.console.info("Watching end.")
+        observer.join()
+        return ReturnCode.OK
+
+
 def clean(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     if not assertInited():
         return ReturnCode.UNLOADED
@@ -237,7 +287,7 @@ def cls(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     return ReturnCode.OK
 
 
-def debug(args: Namespace) -> ReturnCode: # pylint: disable=W0613
+def debug(args: Namespace) -> ReturnCode:  # pylint: disable=W0613
     import json
     ui.console.write(json.dumps(
         cast(WorkManager, shared.man).__dict__, default=str, indent=4))

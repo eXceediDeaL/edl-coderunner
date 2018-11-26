@@ -12,8 +12,10 @@ def getConfigPath(basepath: str) -> str:
 def getExecutorPath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "executor.yml")
 
+
 def getJudgerConfigPath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "judger.yml")
+
 
 def getTemplatePath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "templates")
@@ -21,6 +23,7 @@ def getTemplatePath(basepath: str) -> str:
 
 def getJudgerPath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "judgers")
+
 
 def getFileInputPath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "input.data")
@@ -36,3 +39,11 @@ def getFileStdPath(basepath: str) -> str:
 
 def getFileExt(filename: str) -> str:
     return os.path.splitext(filename)[1][1:]
+
+
+def getCoreJudgerPath() -> str:
+    return os.path.join(os.path.dirname(__file__), "judgers")
+
+
+def getCoreTemplatePath() -> str:
+    return os.path.join(os.path.dirname(__file__), "templates")

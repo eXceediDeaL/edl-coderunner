@@ -8,7 +8,7 @@ from .core import manager, defaultData, getSystemCommand
 from .core.defaultData import CIO_Types
 from .ui import cli, console
 from .command import new, now, shutdown, run, getVersion, \
-    init, pwd, cd, clear, clean, cls, edit, debug
+    init, pwd, cd, clear, clean, cls, edit, debug, judge
 from . import helper, shared, command, ReturnCode, ui
 
 itParser: ArgumentParser = ArgumentParser()
@@ -66,6 +66,17 @@ def getITParser()->ITParser:
     cmd_run.add_argument("-w", "--watch", action="store_true",
                          default=False, help="Watch the file and run auto till Ctrl-C")
     cmd_run.set_defaults(func=run)
+
+    cmd_judge = subpars.add_parser("judge", help="Judge output data")
+    cmd_judge.add_argument(
+        "file", nargs="?", default=None, help="File name (only for this command)")
+    cmd_judge.add_argument("-j", "--judger",
+                         default=None, help="Judger")
+    cmd_judge.add_argument("-w", "--watch", action="store_true",
+                           default=False, help="Watch the file and judge auto till Ctrl-C")
+    cmd_judge.add_argument("-r", "--re", action="store_true",
+                           default=False, help="Re-execute before judge")
+    cmd_judge.set_defaults(func=judge)
 
     cmd_edit = subpars.add_parser("edit", help="Edit code file")
     cmd_edit.add_argument(

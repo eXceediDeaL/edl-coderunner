@@ -187,8 +187,8 @@ class WorkManager:
         lang = fileextToLanguage[fileext[1:]]
         cmds = self.executorMap[lang]
         formats = {
-            "fileName": file,
-            "fileNameWithoutExt": fileNameWithoutExt,
+            defaultData.CMDVAR_FileName: file,
+            defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,
         }
         sumStep = len(cmds)
         ui.console.info(f"Running {file}")
@@ -242,7 +242,7 @@ class WorkManager:
                 if rresult != RunResult.Success:
                     ui.console.write(
                         "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
-                        _cmd, " -> ", retcode, sep="", end=" ")
+                        _cmd, " -> ", color.useRed(str(retcode)), sep="", end=" ")
                     if rresult == RunResult.TimeOut:
                         ui.console.write(color.useRed("Time out"))
                     else:
@@ -269,8 +269,9 @@ class WorkManager:
         lang = fileextToLanguage[fileext[1:]]
         cmds = self.judgerMap[judger]
         formats = {
-            "expectFile": ecrpath.getFileStdPath(self.workingDirectory),
-            "realFile": ecrpath.getFileOutputPath(self.workingDirectory),
+            defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.workingDirectory),
+            defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.workingDirectory),
+            defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),
         }
         sumStep = len(cmds)
         ui.console.info(f"Judging {file}")
@@ -291,6 +292,8 @@ class WorkManager:
             proc = None
             rresult, retcode = None, None
             try:
+                if ind == sumStep - 1:  # last command
+                    ui.console.write("-"*20)
                 proc = subprocess.Popen(
                     getSystemCommand(_cmd, self),
                     cwd=self.workingDirectory,
@@ -303,6 +306,8 @@ class WorkManager:
                 self.runner = None
                 isSuccess = False
             finally:
+                if ind == sumStep - 1:  # last command
+                    ui.console.write("-"*20)
                 ui.console.write(
                     "   ->",
                     passf if retcode == 0 else errf,
@@ -310,7 +315,7 @@ class WorkManager:
                 if rresult != RunResult.Success:
                     ui.console.write(
                         "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
-                        _cmd, " -> ", retcode, sep="", end=" ")
+                        _cmd, " -> ", color.useRed(str(retcode)), sep="", end=" ")
                     if rresult == RunResult.TimeOut:
                         ui.console.write(color.useRed("Time out"))
                     else:
@@ -358,14 +363,18 @@ def initialize(basepath: str)->None:
     oipath = ecrpath.getMainPath(basepath)
     os.mkdir(oipath)
 
-    templatePath = ecrpath.getTemplatePath(basepath)
-    os.mkdir(templatePath)
-    os.mkdir(ecrpath.getJudgerPath(basepath))
+    # templatePath = ecrpath.getTemplatePath(basepath)
+    # os.mkdir(templatePath)
+    # for k, v in defaultData.codeTemplate.items():
+    # with open(os.path.join(templatePath, f"{TEMPLATE_NAME}.{languageToFileext[k]}"),
+    #   "w", encoding='utf-8') as f:
+    # f.write(v)
 
-    for k, v in defaultData.codeTemplate.items():
-        with open(os.path.join(templatePath, f"{TEMPLATE_NAME}.{languageToFileext[k]}"),
-                  "w", encoding='utf-8') as f:
-            f.write(v)
+    # os.mkdir(ecrpath.getJudgerPath(basepath))
+    shutil.copytree(ecrpath.getCoreJudgerPath(),
+                    ecrpath.getJudgerPath(basepath))
+    shutil.copytree(ecrpath.getCoreTemplatePath(),
+                    ecrpath.getTemplatePath(basepath))
 
     executors = defaultData.executors
     with open(ecrpath.getExecutorPath(basepath), "w", encoding='utf-8') as f:

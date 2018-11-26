@@ -9,4 +9,5 @@ class ReturnCode(enum.Enum):
     ERROR: int = -1
     UNLOADED: int = 1
     RUNERR: int = 2
-    EXIT: int = 3
+    JUDGEERR: int = 3
+    EXIT: int = 4

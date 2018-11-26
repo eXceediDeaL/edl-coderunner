@@ -89,9 +89,24 @@ a.cpp> run -io fs
 a.cpp> run -w
 ```
 
+If you give `input.data` and `std.data` for input data and standard output data, use `judge` to run and judge output data.
+
+```sh
+# run a.cpp's output
+a.cpp> judge
+
+# run and judge b.cpp's output
+a.cpp> judge b.cpp -r
+
+# watch the file a.cpp and run&judge auto
+a.cpp> judge -w -r
+```
+
 ### Input and Output
 
 The file input is at `.ecr/input.data`, and the file output is at `.ecr/output.data`.
+
+The standard output data for judging is at `.ecr/std.data`
 
 ### Clean
 
@@ -131,6 +146,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |`now [file]`|Change current file|
 |`edit [file] [-n --now]`|Edit code file|
 |`run [file] [-io --io] [-w]`|Run code file|
+|`judge [file] [-r --re] [-w] [-j --judger]`|Judge output data|
 |`clean`|Clean temp files|
 |`pwd`|Print working directory|
 |`cd`|Change working directory|
@@ -150,6 +166,9 @@ This file contains basic config.
 ```yaml
 # The default editor
 defaultEditor: vim
+
+# The default judger's name
+defaultJudger: diff
 
 # The default IO when run
 defaultIO: ss
@@ -194,6 +213,24 @@ cpp:
 - ./{fileNameWithoutExt}
 ```
 
+## judger.yml
+
+This file gives the way to judge.
+
+You can use these varibles in command:
+
+- `judgerDir` The directory path for judgers. It will be pointed to `$wdir/.ecr/judgers`
+- `expectFile` The expect output file
+- `realFile` The real output file
+
+```yaml
+diff: # Judger name
+- python -u {judgerDir}/diff.py {expectFile} {realFile}
+```
+
+## judgers/
+
+This directory contains some judgers, you can 
 
 # Developing
 
