@@ -1,0 +1,583 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../../../mypy-html.css">
+</head>
+<body>
+<h2>ecr.__main__</h2>
+<table>
+<caption>src\ecr\__main__.py</caption>
+<tbody><tr>
+<td class="table-lines"><pre><span id="L1" class="lineno"><a class="lineno" href="#L1">1</a></span>
+<span id="L2" class="lineno"><a class="lineno" href="#L2">2</a></span>
+<span id="L3" class="lineno"><a class="lineno" href="#L3">3</a></span>
+<span id="L4" class="lineno"><a class="lineno" href="#L4">4</a></span>
+<span id="L5" class="lineno"><a class="lineno" href="#L5">5</a></span>
+<span id="L6" class="lineno"><a class="lineno" href="#L6">6</a></span>
+<span id="L7" class="lineno"><a class="lineno" href="#L7">7</a></span>
+<span id="L8" class="lineno"><a class="lineno" href="#L8">8</a></span>
+<span id="L9" class="lineno"><a class="lineno" href="#L9">9</a></span>
+<span id="L10" class="lineno"><a class="lineno" href="#L10">10</a></span>
+<span id="L11" class="lineno"><a class="lineno" href="#L11">11</a></span>
+<span id="L12" class="lineno"><a class="lineno" href="#L12">12</a></span>
+<span id="L13" class="lineno"><a class="lineno" href="#L13">13</a></span>
+<span id="L14" class="lineno"><a class="lineno" href="#L14">14</a></span>
+<span id="L15" class="lineno"><a class="lineno" href="#L15">15</a></span>
+<span id="L16" class="lineno"><a class="lineno" href="#L16">16</a></span>
+<span id="L17" class="lineno"><a class="lineno" href="#L17">17</a></span>
+<span id="L18" class="lineno"><a class="lineno" href="#L18">18</a></span>
+<span id="L19" class="lineno"><a class="lineno" href="#L19">19</a></span>
+<span id="L20" class="lineno"><a class="lineno" href="#L20">20</a></span>
+<span id="L21" class="lineno"><a class="lineno" href="#L21">21</a></span>
+<span id="L22" class="lineno"><a class="lineno" href="#L22">22</a></span>
+<span id="L23" class="lineno"><a class="lineno" href="#L23">23</a></span>
+<span id="L24" class="lineno"><a class="lineno" href="#L24">24</a></span>
+<span id="L25" class="lineno"><a class="lineno" href="#L25">25</a></span>
+<span id="L26" class="lineno"><a class="lineno" href="#L26">26</a></span>
+<span id="L27" class="lineno"><a class="lineno" href="#L27">27</a></span>
+<span id="L28" class="lineno"><a class="lineno" href="#L28">28</a></span>
+<span id="L29" class="lineno"><a class="lineno" href="#L29">29</a></span>
+<span id="L30" class="lineno"><a class="lineno" href="#L30">30</a></span>
+<span id="L31" class="lineno"><a class="lineno" href="#L31">31</a></span>
+<span id="L32" class="lineno"><a class="lineno" href="#L32">32</a></span>
+<span id="L33" class="lineno"><a class="lineno" href="#L33">33</a></span>
+<span id="L34" class="lineno"><a class="lineno" href="#L34">34</a></span>
+<span id="L35" class="lineno"><a class="lineno" href="#L35">35</a></span>
+<span id="L36" class="lineno"><a class="lineno" href="#L36">36</a></span>
+<span id="L37" class="lineno"><a class="lineno" href="#L37">37</a></span>
+<span id="L38" class="lineno"><a class="lineno" href="#L38">38</a></span>
+<span id="L39" class="lineno"><a class="lineno" href="#L39">39</a></span>
+<span id="L40" class="lineno"><a class="lineno" href="#L40">40</a></span>
+<span id="L41" class="lineno"><a class="lineno" href="#L41">41</a></span>
+<span id="L42" class="lineno"><a class="lineno" href="#L42">42</a></span>
+<span id="L43" class="lineno"><a class="lineno" href="#L43">43</a></span>
+<span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
+<span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
+<span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
+<span id="L47" class="lineno"><a class="lineno" href="#L47">47</a></span>
+<span id="L48" class="lineno"><a class="lineno" href="#L48">48</a></span>
+<span id="L49" class="lineno"><a class="lineno" href="#L49">49</a></span>
+<span id="L50" class="lineno"><a class="lineno" href="#L50">50</a></span>
+<span id="L51" class="lineno"><a class="lineno" href="#L51">51</a></span>
+<span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
+<span id="L53" class="lineno"><a class="lineno" href="#L53">53</a></span>
+<span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
+<span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
+<span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
+<span id="L57" class="lineno"><a class="lineno" href="#L57">57</a></span>
+<span id="L58" class="lineno"><a class="lineno" href="#L58">58</a></span>
+<span id="L59" class="lineno"><a class="lineno" href="#L59">59</a></span>
+<span id="L60" class="lineno"><a class="lineno" href="#L60">60</a></span>
+<span id="L61" class="lineno"><a class="lineno" href="#L61">61</a></span>
+<span id="L62" class="lineno"><a class="lineno" href="#L62">62</a></span>
+<span id="L63" class="lineno"><a class="lineno" href="#L63">63</a></span>
+<span id="L64" class="lineno"><a class="lineno" href="#L64">64</a></span>
+<span id="L65" class="lineno"><a class="lineno" href="#L65">65</a></span>
+<span id="L66" class="lineno"><a class="lineno" href="#L66">66</a></span>
+<span id="L67" class="lineno"><a class="lineno" href="#L67">67</a></span>
+<span id="L68" class="lineno"><a class="lineno" href="#L68">68</a></span>
+<span id="L69" class="lineno"><a class="lineno" href="#L69">69</a></span>
+<span id="L70" class="lineno"><a class="lineno" href="#L70">70</a></span>
+<span id="L71" class="lineno"><a class="lineno" href="#L71">71</a></span>
+<span id="L72" class="lineno"><a class="lineno" href="#L72">72</a></span>
+<span id="L73" class="lineno"><a class="lineno" href="#L73">73</a></span>
+<span id="L74" class="lineno"><a class="lineno" href="#L74">74</a></span>
+<span id="L75" class="lineno"><a class="lineno" href="#L75">75</a></span>
+<span id="L76" class="lineno"><a class="lineno" href="#L76">76</a></span>
+<span id="L77" class="lineno"><a class="lineno" href="#L77">77</a></span>
+<span id="L78" class="lineno"><a class="lineno" href="#L78">78</a></span>
+<span id="L79" class="lineno"><a class="lineno" href="#L79">79</a></span>
+<span id="L80" class="lineno"><a class="lineno" href="#L80">80</a></span>
+<span id="L81" class="lineno"><a class="lineno" href="#L81">81</a></span>
+<span id="L82" class="lineno"><a class="lineno" href="#L82">82</a></span>
+<span id="L83" class="lineno"><a class="lineno" href="#L83">83</a></span>
+<span id="L84" class="lineno"><a class="lineno" href="#L84">84</a></span>
+<span id="L85" class="lineno"><a class="lineno" href="#L85">85</a></span>
+<span id="L86" class="lineno"><a class="lineno" href="#L86">86</a></span>
+<span id="L87" class="lineno"><a class="lineno" href="#L87">87</a></span>
+<span id="L88" class="lineno"><a class="lineno" href="#L88">88</a></span>
+<span id="L89" class="lineno"><a class="lineno" href="#L89">89</a></span>
+<span id="L90" class="lineno"><a class="lineno" href="#L90">90</a></span>
+<span id="L91" class="lineno"><a class="lineno" href="#L91">91</a></span>
+<span id="L92" class="lineno"><a class="lineno" href="#L92">92</a></span>
+<span id="L93" class="lineno"><a class="lineno" href="#L93">93</a></span>
+<span id="L94" class="lineno"><a class="lineno" href="#L94">94</a></span>
+<span id="L95" class="lineno"><a class="lineno" href="#L95">95</a></span>
+<span id="L96" class="lineno"><a class="lineno" href="#L96">96</a></span>
+<span id="L97" class="lineno"><a class="lineno" href="#L97">97</a></span>
+<span id="L98" class="lineno"><a class="lineno" href="#L98">98</a></span>
+<span id="L99" class="lineno"><a class="lineno" href="#L99">99</a></span>
+<span id="L100" class="lineno"><a class="lineno" href="#L100">100</a></span>
+<span id="L101" class="lineno"><a class="lineno" href="#L101">101</a></span>
+<span id="L102" class="lineno"><a class="lineno" href="#L102">102</a></span>
+<span id="L103" class="lineno"><a class="lineno" href="#L103">103</a></span>
+<span id="L104" class="lineno"><a class="lineno" href="#L104">104</a></span>
+<span id="L105" class="lineno"><a class="lineno" href="#L105">105</a></span>
+<span id="L106" class="lineno"><a class="lineno" href="#L106">106</a></span>
+<span id="L107" class="lineno"><a class="lineno" href="#L107">107</a></span>
+<span id="L108" class="lineno"><a class="lineno" href="#L108">108</a></span>
+<span id="L109" class="lineno"><a class="lineno" href="#L109">109</a></span>
+<span id="L110" class="lineno"><a class="lineno" href="#L110">110</a></span>
+<span id="L111" class="lineno"><a class="lineno" href="#L111">111</a></span>
+<span id="L112" class="lineno"><a class="lineno" href="#L112">112</a></span>
+<span id="L113" class="lineno"><a class="lineno" href="#L113">113</a></span>
+<span id="L114" class="lineno"><a class="lineno" href="#L114">114</a></span>
+<span id="L115" class="lineno"><a class="lineno" href="#L115">115</a></span>
+<span id="L116" class="lineno"><a class="lineno" href="#L116">116</a></span>
+<span id="L117" class="lineno"><a class="lineno" href="#L117">117</a></span>
+<span id="L118" class="lineno"><a class="lineno" href="#L118">118</a></span>
+<span id="L119" class="lineno"><a class="lineno" href="#L119">119</a></span>
+<span id="L120" class="lineno"><a class="lineno" href="#L120">120</a></span>
+<span id="L121" class="lineno"><a class="lineno" href="#L121">121</a></span>
+<span id="L122" class="lineno"><a class="lineno" href="#L122">122</a></span>
+<span id="L123" class="lineno"><a class="lineno" href="#L123">123</a></span>
+<span id="L124" class="lineno"><a class="lineno" href="#L124">124</a></span>
+<span id="L125" class="lineno"><a class="lineno" href="#L125">125</a></span>
+<span id="L126" class="lineno"><a class="lineno" href="#L126">126</a></span>
+<span id="L127" class="lineno"><a class="lineno" href="#L127">127</a></span>
+<span id="L128" class="lineno"><a class="lineno" href="#L128">128</a></span>
+<span id="L129" class="lineno"><a class="lineno" href="#L129">129</a></span>
+<span id="L130" class="lineno"><a class="lineno" href="#L130">130</a></span>
+<span id="L131" class="lineno"><a class="lineno" href="#L131">131</a></span>
+<span id="L132" class="lineno"><a class="lineno" href="#L132">132</a></span>
+<span id="L133" class="lineno"><a class="lineno" href="#L133">133</a></span>
+<span id="L134" class="lineno"><a class="lineno" href="#L134">134</a></span>
+<span id="L135" class="lineno"><a class="lineno" href="#L135">135</a></span>
+<span id="L136" class="lineno"><a class="lineno" href="#L136">136</a></span>
+<span id="L137" class="lineno"><a class="lineno" href="#L137">137</a></span>
+<span id="L138" class="lineno"><a class="lineno" href="#L138">138</a></span>
+<span id="L139" class="lineno"><a class="lineno" href="#L139">139</a></span>
+<span id="L140" class="lineno"><a class="lineno" href="#L140">140</a></span>
+<span id="L141" class="lineno"><a class="lineno" href="#L141">141</a></span>
+<span id="L142" class="lineno"><a class="lineno" href="#L142">142</a></span>
+<span id="L143" class="lineno"><a class="lineno" href="#L143">143</a></span>
+<span id="L144" class="lineno"><a class="lineno" href="#L144">144</a></span>
+<span id="L145" class="lineno"><a class="lineno" href="#L145">145</a></span>
+<span id="L146" class="lineno"><a class="lineno" href="#L146">146</a></span>
+<span id="L147" class="lineno"><a class="lineno" href="#L147">147</a></span>
+<span id="L148" class="lineno"><a class="lineno" href="#L148">148</a></span>
+<span id="L149" class="lineno"><a class="lineno" href="#L149">149</a></span>
+<span id="L150" class="lineno"><a class="lineno" href="#L150">150</a></span>
+<span id="L151" class="lineno"><a class="lineno" href="#L151">151</a></span>
+<span id="L152" class="lineno"><a class="lineno" href="#L152">152</a></span>
+<span id="L153" class="lineno"><a class="lineno" href="#L153">153</a></span>
+<span id="L154" class="lineno"><a class="lineno" href="#L154">154</a></span>
+<span id="L155" class="lineno"><a class="lineno" href="#L155">155</a></span>
+<span id="L156" class="lineno"><a class="lineno" href="#L156">156</a></span>
+<span id="L157" class="lineno"><a class="lineno" href="#L157">157</a></span>
+<span id="L158" class="lineno"><a class="lineno" href="#L158">158</a></span>
+<span id="L159" class="lineno"><a class="lineno" href="#L159">159</a></span>
+<span id="L160" class="lineno"><a class="lineno" href="#L160">160</a></span>
+<span id="L161" class="lineno"><a class="lineno" href="#L161">161</a></span>
+<span id="L162" class="lineno"><a class="lineno" href="#L162">162</a></span>
+<span id="L163" class="lineno"><a class="lineno" href="#L163">163</a></span>
+<span id="L164" class="lineno"><a class="lineno" href="#L164">164</a></span>
+<span id="L165" class="lineno"><a class="lineno" href="#L165">165</a></span>
+<span id="L166" class="lineno"><a class="lineno" href="#L166">166</a></span>
+<span id="L167" class="lineno"><a class="lineno" href="#L167">167</a></span>
+<span id="L168" class="lineno"><a class="lineno" href="#L168">168</a></span>
+<span id="L169" class="lineno"><a class="lineno" href="#L169">169</a></span>
+<span id="L170" class="lineno"><a class="lineno" href="#L170">170</a></span>
+<span id="L171" class="lineno"><a class="lineno" href="#L171">171</a></span>
+<span id="L172" class="lineno"><a class="lineno" href="#L172">172</a></span>
+<span id="L173" class="lineno"><a class="lineno" href="#L173">173</a></span>
+<span id="L174" class="lineno"><a class="lineno" href="#L174">174</a></span>
+<span id="L175" class="lineno"><a class="lineno" href="#L175">175</a></span>
+<span id="L176" class="lineno"><a class="lineno" href="#L176">176</a></span>
+<span id="L177" class="lineno"><a class="lineno" href="#L177">177</a></span>
+<span id="L178" class="lineno"><a class="lineno" href="#L178">178</a></span>
+<span id="L179" class="lineno"><a class="lineno" href="#L179">179</a></span>
+<span id="L180" class="lineno"><a class="lineno" href="#L180">180</a></span>
+<span id="L181" class="lineno"><a class="lineno" href="#L181">181</a></span>
+<span id="L182" class="lineno"><a class="lineno" href="#L182">182</a></span>
+<span id="L183" class="lineno"><a class="lineno" href="#L183">183</a></span>
+<span id="L184" class="lineno"><a class="lineno" href="#L184">184</a></span>
+<span id="L185" class="lineno"><a class="lineno" href="#L185">185</a></span>
+<span id="L186" class="lineno"><a class="lineno" href="#L186">186</a></span>
+<span id="L187" class="lineno"><a class="lineno" href="#L187">187</a></span>
+<span id="L188" class="lineno"><a class="lineno" href="#L188">188</a></span>
+<span id="L189" class="lineno"><a class="lineno" href="#L189">189</a></span>
+<span id="L190" class="lineno"><a class="lineno" href="#L190">190</a></span>
+<span id="L191" class="lineno"><a class="lineno" href="#L191">191</a></span>
+<span id="L192" class="lineno"><a class="lineno" href="#L192">192</a></span>
+<span id="L193" class="lineno"><a class="lineno" href="#L193">193</a></span>
+<span id="L194" class="lineno"><a class="lineno" href="#L194">194</a></span>
+<span id="L195" class="lineno"><a class="lineno" href="#L195">195</a></span>
+<span id="L196" class="lineno"><a class="lineno" href="#L196">196</a></span>
+<span id="L197" class="lineno"><a class="lineno" href="#L197">197</a></span>
+<span id="L198" class="lineno"><a class="lineno" href="#L198">198</a></span>
+<span id="L199" class="lineno"><a class="lineno" href="#L199">199</a></span>
+<span id="L200" class="lineno"><a class="lineno" href="#L200">200</a></span>
+<span id="L201" class="lineno"><a class="lineno" href="#L201">201</a></span>
+<span id="L202" class="lineno"><a class="lineno" href="#L202">202</a></span>
+<span id="L203" class="lineno"><a class="lineno" href="#L203">203</a></span>
+<span id="L204" class="lineno"><a class="lineno" href="#L204">204</a></span>
+<span id="L205" class="lineno"><a class="lineno" href="#L205">205</a></span>
+<span id="L206" class="lineno"><a class="lineno" href="#L206">206</a></span>
+<span id="L207" class="lineno"><a class="lineno" href="#L207">207</a></span>
+<span id="L208" class="lineno"><a class="lineno" href="#L208">208</a></span>
+<span id="L209" class="lineno"><a class="lineno" href="#L209">209</a></span>
+<span id="L210" class="lineno"><a class="lineno" href="#L210">210</a></span>
+<span id="L211" class="lineno"><a class="lineno" href="#L211">211</a></span>
+<span id="L212" class="lineno"><a class="lineno" href="#L212">212</a></span>
+<span id="L213" class="lineno"><a class="lineno" href="#L213">213</a></span>
+<span id="L214" class="lineno"><a class="lineno" href="#L214">214</a></span>
+<span id="L215" class="lineno"><a class="lineno" href="#L215">215</a></span>
+<span id="L216" class="lineno"><a class="lineno" href="#L216">216</a></span>
+<span id="L217" class="lineno"><a class="lineno" href="#L217">217</a></span>
+<span id="L218" class="lineno"><a class="lineno" href="#L218">218</a></span>
+<span id="L219" class="lineno"><a class="lineno" href="#L219">219</a></span>
+<span id="L220" class="lineno"><a class="lineno" href="#L220">220</a></span>
+<span id="L221" class="lineno"><a class="lineno" href="#L221">221</a></span>
+<span id="L222" class="lineno"><a class="lineno" href="#L222">222</a></span>
+<span id="L223" class="lineno"><a class="lineno" href="#L223">223</a></span>
+<span id="L224" class="lineno"><a class="lineno" href="#L224">224</a></span>
+<span id="L225" class="lineno"><a class="lineno" href="#L225">225</a></span>
+<span id="L226" class="lineno"><a class="lineno" href="#L226">226</a></span>
+<span id="L227" class="lineno"><a class="lineno" href="#L227">227</a></span>
+<span id="L228" class="lineno"><a class="lineno" href="#L228">228</a></span>
+<span id="L229" class="lineno"><a class="lineno" href="#L229">229</a></span>
+<span id="L230" class="lineno"><a class="lineno" href="#L230">230</a></span>
+<span id="L231" class="lineno"><a class="lineno" href="#L231">231</a></span>
+<span id="L232" class="lineno"><a class="lineno" href="#L232">232</a></span>
+<span id="L233" class="lineno"><a class="lineno" href="#L233">233</a></span>
+<span id="L234" class="lineno"><a class="lineno" href="#L234">234</a></span>
+<span id="L235" class="lineno"><a class="lineno" href="#L235">235</a></span>
+<span id="L236" class="lineno"><a class="lineno" href="#L236">236</a></span>
+<span id="L237" class="lineno"><a class="lineno" href="#L237">237</a></span>
+<span id="L238" class="lineno"><a class="lineno" href="#L238">238</a></span>
+<span id="L239" class="lineno"><a class="lineno" href="#L239">239</a></span>
+</pre></td>
+<td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">from argparse import ArgumentParser, Namespace</span>
+<span class="line-empty" title="No Anys on this line!">import sys</span>
+<span class="line-empty" title="No Anys on this line!">import os</span>
+<span class="line-empty" title="No Anys on this line!">import shlex</span>
+<span class="line-empty" title="No Anys on this line!">from typing import List, NoReturn</span>
+<span class="line-empty" title="No Anys on this line!">import prompt_toolkit</span>
+<span class="line-empty" title="No Anys on this line!">from .core import manager, defaultData, getSystemCommand</span>
+<span class="line-empty" title="No Anys on this line!">from .core.defaultData import CIO_Types</span>
+<span class="line-empty" title="No Anys on this line!">from .ui import cli, console</span>
+<span class="line-empty" title="No Anys on this line!">from .command import new, now, shutdown, run, getVersion, \</span>
+<span class="line-empty" title="No Anys on this line!">    init, pwd, cd, clear, clean, cls, edit, debug, judge</span>
+<span class="line-empty" title="No Anys on this line!">from . import helper, shared, command, ReturnCode, ui</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">itParser: ArgumentParser = ArgumentParser()</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">class BasicError(Exception):</span>
+<span class="line-any" title="No Anys on this line!">    def __init__(self, message):</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">        super().__init__()</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        self.message = message</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="No Anys on this line!">    def __str__(self):</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)">        return self.message</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">class ITParser(ArgumentParser):</span>
+<span class="line-any" title="No Anys on this line!">    def error(self, message):</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        raise BasicError(message)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="No Anys on this line!">    def exit(self, status=0, message=None):</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">        if message:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">            self._print_message(message, sys.stderr)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">builtinCmdLists: List[str] = list(command.cmds)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def getITParser()-&gt;ITParser:</span>
+<span class="line-precise" title="No Anys on this line!">    parser = ITParser(</span>
+<span class="line-empty" title="No Anys on this line!">        prog="", description="Code Runner", add_help=True)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    subpars = parser.add_subparsers()</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_init = subpars.add_parser("init", help="Initialize ECR data")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_init.set_defaults(func=init)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_clear = subpars.add_parser("clear", help="Clear ECR data")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_clear.set_defaults(func=clear)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_new = subpars.add_parser("new", help="Create new code file")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_new.add_argument("file", nargs="?", default=None, type=str)</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_new.add_argument("-e", "--edit", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="Edit the file")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_new.set_defaults(func=new)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_now = subpars.add_parser("now", help="Change current file")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_now.add_argument("file", nargs="?", default=None, type=str,</span>
+<span class="line-empty" title="No Anys on this line!">                         help="Set current file (clear for none)")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_now.set_defaults(func=now)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_run = subpars.add_parser("run", help="Run code file")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_run.add_argument("-io", "--io", choices=CIO_Types,</span>
+<span class="line-empty" title="No Anys on this line!">                         default=None, help="Change input and output")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_run.add_argument(</span>
+<span class="line-empty" title="No Anys on this line!">        "file", nargs="?", default=None, help="File name (only for this command)")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_run.add_argument("-w", "--watch", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="Watch the file and run auto till Ctrl-C")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_run.set_defaults(func=run)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_judge = subpars.add_parser("judge", help="Judge output data")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_judge.add_argument(</span>
+<span class="line-empty" title="No Anys on this line!">        "file", nargs="?", default=None, help="File name (only for this command)")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_judge.add_argument("-j", "--judger",</span>
+<span class="line-empty" title="No Anys on this line!">                           default=None, help="Judger")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_judge.add_argument("-w", "--watch", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                           default=False, help="Watch the file and judge auto till Ctrl-C")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_judge.add_argument("-r", "--re", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                           default=False, help="Re-execute before judge")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_judge.set_defaults(func=judge)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_edit = subpars.add_parser("edit", help="Edit code file")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_edit.add_argument(</span>
+<span class="line-empty" title="No Anys on this line!">        "file", nargs="?", default=None, help="File name (only for this command)")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_edit.add_argument("-n", "--now", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                          default=False, help="Set the file as current")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_edit.set_defaults(func=edit)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_clean = subpars.add_parser("clean", help="Clean temp files")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_clean.set_defaults(func=clean)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_pwd = subpars.add_parser("pwd", help="Print working directory")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_pwd.set_defaults(func=pwd)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_cd = subpars.add_parser("cd", help="Change working directory")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    cmd_cd.add_argument("path")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_cd.set_defaults(func=cd)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_version = subpars.add_parser("version", help="Get version")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_version.set_defaults(func=getVersion)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">    # cmd_help = subpars.add_parser("help", help="Help")</span>
+<span class="line-empty" title="No Anys on this line!">    # cmd_help.set_defaults(func=gethelp)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_cls = subpars.add_parser("cls", help="Clear console")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_cls.set_defaults(func=cls)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_exit = subpars.add_parser("exit", help="Exit")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_exit.set_defaults(func=shutdown)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_debug = subpars.add_parser("debug", help="Debug for developing")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    cmd_debug.set_defaults(func=debug)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    return parser</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)">def doSyscall(cmd, message)-&gt;int:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)">    console.info(message, end=" ")</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">    console.write(cmd)</span>
+<span class="line-any" title="Any Types on this line: 
+Omitted Generics (x1)
+Unannotated (x2)">    retCode = os.system(getSystemCommand(cmd, shared.man))</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">    console.info(f"System command exited:", end=" ")</span>
+<span class="line-precise" title="No Anys on this line!">    if retCode == 0:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">        console.write(retCode)</span>
+<span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">        console.error(retCode)</span>
+<span class="line-precise" title="No Anys on this line!">    return retCode</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">defaultPrompt = "&gt; "</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def mainInit()-&gt;None:</span>
+<span class="line-empty" title="No Anys on this line!">    global itParser</span>
+<span class="line-empty" title="No Anys on this line!">    from prompt_toolkit import PromptSession</span>
+<span class="line-empty" title="No Anys on this line!">    from pygments.lexers.shell import BashLexer</span>
+<span class="line-empty" title="No Anys on this line!">    from prompt_toolkit.lexers import PygmentsLexer</span>
+<span class="line-empty" title="No Anys on this line!">    from prompt_toolkit.auto_suggest import AutoSuggestFromHistory</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    itParser = getITParser()</span>
+<span class="line-precise" title="No Anys on this line!">    shared.cwd = os.getcwd()</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    if manager.hasInitialized(shared.cwd):</span>
+<span class="line-precise" title="No Anys on this line!">        helper.loadMan()</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x3)">    cliInputSession = PromptSession(</span>
+<span class="line-precise" title="No Anys on this line!">        message=defaultPrompt,</span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x3)">        lexer=PygmentsLexer(BashLexer),</span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x2)">        auto_suggest=AutoSuggestFromHistory())</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x2)">    ui.console = cli.CLI(inputCommandSession=cliInputSession)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def executeCommand(oricmd: str)-&gt;int:</span>
+<span class="line-precise" title="No Anys on this line!">    cargs = shlex.split(oricmd)</span>
+<span class="line-precise" title="No Anys on this line!">    if not cargs:</span>
+<span class="line-empty" title="No Anys on this line!">        return 0</span>
+<span class="line-precise" title="No Anys on this line!">    if cargs[0].startswith("&gt;"):</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">        return doSyscall(oricmd[1:], "Call system command:")</span>
+<span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-precise" title="No Anys on this line!">            cmd = itParser.parse_args(cargs)</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">        except BasicError as e:  # when parse failed, parser will call exit()</span>
+<span class="line-precise" title="No Anys on this line!">            importedCommand = shared.man.importedCommand if shared.man \</span>
+<span class="line-precise" title="No Anys on this line!">                else defaultData.importedCommand</span>
+<span class="line-precise" title="No Anys on this line!">            if cargs[0] in importedCommand:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">                return doSyscall(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">                    f"{importedCommand[cargs[0]]} {' '.join(cargs[1:])}", "Imported command:")</span>
+<span class="line-empty" title="No Anys on this line!">            else:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">                console.warning("We can't recognize this command:")</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)
+Explicit (x2)">                console.write(f"  {e}")</span>
+<span class="line-precise" title="No Anys on this line!">                if console.confirm("Do you mean a system command?",</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x2)">                                   [cli.SwitchState.Yes, cli.SwitchState.No])\</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                        == cli.SwitchState.Yes:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">                    return doSyscall(oricmd, "Call system command:")</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            if hasattr(cmd, "func"):</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x3)">                return cmd.func(cmd).value</span>
+<span class="line-empty" title="No Anys on this line!">    return 0</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x1)">def getCommandCompleter()-&gt;prompt_toolkit.completion.Completer:</span>
+<span class="line-empty" title="No Anys on this line!">    from prompt_toolkit.completion import WordCompleter, merge_completers</span>
+<span class="line-precise" title="No Anys on this line!">    cmdLists = list(builtinCmdLists)</span>
+<span class="line-precise" title="No Anys on this line!">    if shared.man:</span>
+<span class="line-precise" title="No Anys on this line!">        cmdLists += shared.man.importedCommand.keys()</span>
+<span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-precise" title="No Anys on this line!">        cmdLists += defaultData.importedCommand</span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x3)">    wc = WordCompleter(cmdLists, ignore_case=True)</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x5)">    pc = ui.PathCompleter()</span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x3)">    return merge_completers([wc, pc])</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def main()-&gt;int:  # pragma: no cover</span>
+<span class="line-empty" title="No Anys on this line!">    global itParser</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    baseParser = ArgumentParser(</span>
+<span class="line-empty" title="No Anys on this line!">        prog="ecr", description="Code Runner")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    baseParser.add_argument("-v", "--version", default=False, action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                            help="Get version")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    baseParser.add_argument("-d", "--dir", default=None,</span>
+<span class="line-empty" title="No Anys on this line!">                            help="Set working directory")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    baseParser.add_argument(</span>
+<span class="line-empty" title="No Anys on this line!">        "-c", "--command", default=None, help="Execute command")</span>
+<span class="line-precise" title="No Anys on this line!">    baseCmd = baseParser.parse_args()</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">    if baseCmd.version:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)">        return getVersion(Namespace()).value</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">    if baseCmd.dir:</span>
+<span class="line-any" title="Any Types on this line: 
+Omitted Generics (x1)
+Explicit (x1)">        os.chdir(baseCmd.dir)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    mainInit()</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">    if baseCmd.command:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">        return executeCommand(baseCmd.command)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    helper.printHead()</span>
+<span class="line-empty" title="No Anys on this line!">    while True:</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-precise" title="No Anys on this line!">            curfile = shared.man.currentFile \</span>
+<span class="line-precise" title="No Anys on this line!">                if shared.man and shared.man.currentFile \</span>
+<span class="line-empty" title="No Anys on this line!">                else ""</span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x2)">            oricmd = str(console.inputCommand(</span>
+<span class="line-precise" title="No Anys on this line!">                curfile + defaultPrompt,</span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x2)">                completer=getCommandCompleter(), complete_in_thread=False))</span>
+<span class="line-precise" title="No Anys on this line!">            oricmd = helper.formatWithVars(oricmd, shared.variables)</span>
+<span class="line-precise" title="No Anys on this line!">        except KeyboardInterrupt:</span>
+<span class="line-empty" title="No Anys on this line!">            continue</span>
+<span class="line-precise" title="No Anys on this line!">        except EOFError:</span>
+<span class="line-empty" title="No Anys on this line!">            break</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x3)">        if executeCommand(oricmd) == ReturnCode.EXIT.value:</span>
+<span class="line-empty" title="No Anys on this line!">            break</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">    return 0</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def outmain()-&gt;NoReturn:  # pragma: no cover</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    exit(int(main()))</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">if __name__ == "__main__":  # pragma: no cover</span>
+<span class="line-precise" title="No Anys on this line!">    outmain()</span>
+</pre></td>
+</tr></tbody>
+</table>
+</body>
+</html>

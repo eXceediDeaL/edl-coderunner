@@ -4,5 +4,7 @@ A CLI tool to run code.
 
 # Dev
 
-- [Test Report](./dev/reports/test/index.html)
-- [Coverage Report](./dev/reports/coverage/index.html)
+- [Mypy Type Check Coverage Report](./dev/reports/mypy/index.html)
+
+<!-- Test Report: ./dev/reports/test/index.html
+Coverage Report: ./dev/reports/coverage/index.html -->
