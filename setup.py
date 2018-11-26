@@ -15,7 +15,7 @@ long_description = read('README.md')
 
 setup(
     name="edl-cr",
-    version="0.0.2",
+    version="0.0.2.5",
     description="A CLI tool to run code",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -42,7 +42,12 @@ setup(
         where="src",
         exclude=[],
     ),
-    package_data={},
+    package_data={
+        "ecr": [
+            "core/judgers/*",
+            "core/templates/*"
+        ],
+    },
     entry_points={
         "console_scripts": [
             "ecr = ecr.__main__:outmain",
