@@ -9,5 +9,6 @@ click
 watchdog
 pygments
 pylint
+lxml
 mypy
 PyYAML

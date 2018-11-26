@@ -71,7 +71,7 @@ def getITParser()->ITParser:
     cmd_judge.add_argument(
         "file", nargs="?", default=None, help="File name (only for this command)")
     cmd_judge.add_argument("-j", "--judger",
-                         default=None, help="Judger")
+                           default=None, help="Judger")
     cmd_judge.add_argument("-w", "--watch", action="store_true",
                            default=False, help="Watch the file and judge auto till Ctrl-C")
     cmd_judge.add_argument("-r", "--re", action="store_true",

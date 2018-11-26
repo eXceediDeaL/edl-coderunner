@@ -14,18 +14,18 @@ uninstall :
 	$(PY) -m pip uninstall edl-cr -y
 
 run : 
-	-cd temp ; mkdir debug
+	-mkdir ./temp/debug
 	cd src ; $(PY) -m ecr $(RARG)
 
 lint : 
 	-cd src ; pylint --rcfile=../pylint.conf ecr
-	-mypy ./src/ecr
+	-mypy ./src/ecr --ignore-missing-imports --html-report ./docs/dev/reports/mypy
 
 # cd src ; $(PY) -m test --html=./docs/dev/reports/test/index.html --self-contained-html
 # pytest --html=./docs/dev/reports/test/index.html --self-contained-html
 test : 
 	$(PY) setup.py install -q
-	-cd temp ; mkdir testC
+	-mkdir ./temp/testC
 	cd ./temp/testC ; ecr -c 'init'
 	-rm -r ./temp/testC/*
 

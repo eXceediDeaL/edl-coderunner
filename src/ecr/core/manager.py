@@ -252,7 +252,8 @@ class WorkManager:
         self.runner = None
         return isSuccess
 
-    def judge(self, file: Optional[str] = None, reexecute: bool = False, judger: Optional[str] = None) -> bool:
+    def judge(self, file: Optional[str] = None,
+              reexecute: bool = False, judger: Optional[str] = None) -> bool:
         if not file:
             file = self.currentFile
         if not judger:
@@ -264,9 +265,9 @@ class WorkManager:
         errf = color.useRed("×")
         passf = color.useGreen("√")
 
-        fileNameWithoutExt, fileext = cast(
-            Tuple[str, str], os.path.splitext(file))
-        lang = fileextToLanguage[fileext[1:]]
+        # fileNameWithoutExt, fileext = cast(
+        # Tuple[str, str], os.path.splitext(file))
+        # lang = fileextToLanguage[fileext[1:]]
         cmds = self.judgerMap[judger]
         formats = {
             defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.workingDirectory),

@@ -1,5 +1,5 @@
 from typing import List
-from .types import ExecutorMapping, CommandMapping, CodeTemplateMapping, JudgerMapping
+from .types import ExecutorMapping, CommandMapping, JudgerMapping
 
 CIO_SISO: str = "ss"
 CIO_SIFO: str = "sf"
@@ -20,11 +20,23 @@ CMDVAR_RealFile: str = "realFile"
 
 
 executors: ExecutorMapping = {
-    "c": [f"gcc {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}", f"./{{{CMDVAR_FileNameWithoutExt}}}"],
-    "cpp": [f"g++ {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}", f"./{{{CMDVAR_FileNameWithoutExt}}}"],
-    "java": [f"javac {{{CMDVAR_FileName}}}", f"java {{{CMDVAR_FileNameWithoutExt}}}"],
+    "c": [
+        f"gcc {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
+        f"./{{{CMDVAR_FileNameWithoutExt}}}"
+    ],
+    "cpp": [
+        f"g++ {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
+        f"./{{{CMDVAR_FileNameWithoutExt}}}"
+    ],
+    "java": [
+        f"javac {{{CMDVAR_FileName}}}",
+        f"java {{{CMDVAR_FileNameWithoutExt}}}"
+    ],
     "python": [f"python {{{CMDVAR_FileName}}}"],
-    "pascal": [f"fpc {{{CMDVAR_FileName}}}", f"./{{{CMDVAR_FileNameWithoutExt}}}"],
+    "pascal": [
+        f"fpc {{{CMDVAR_FileName}}}",
+        f"./{{{CMDVAR_FileNameWithoutExt}}}"
+    ],
     "objective-c": [
         f"gcc -framework Cocoa {{{CMDVAR_FileName}}} -o {{{CMDVAR_FileNameWithoutExt}}}",
         f"./{{{CMDVAR_FileNameWithoutExt}}}"
@@ -37,7 +49,9 @@ executors: ExecutorMapping = {
 }
 
 judgers: JudgerMapping = {
-    "diff": [f"python -u {{{CMDVAR_JudgerDir}}}/diff.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"],
+    "diff": [
+        f"python -u {{{CMDVAR_JudgerDir}}}/diff.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"
+    ],
 }
 
 tempFileFilter: List[str] = ["exe", "o", "class", "out"]
