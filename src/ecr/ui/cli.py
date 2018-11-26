@@ -1,6 +1,6 @@
 from enum import Enum
-import click
 from typing import Dict, List, Optional
+import click
 from pygments.lexers.shell import BashLexer
 from prompt_toolkit import prompt, print_formatted_text, PromptSession
 from prompt_toolkit.lexers import PygmentsLexer

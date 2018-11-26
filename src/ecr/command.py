@@ -27,7 +27,7 @@ def printFileDelete(file: str)->None:
 
 
 def assertInited()->bool:
-    if shared.man is None:
+    if not shared.man:
         ui.console.error("Not have any ecr directory")
         return False
     return True
@@ -64,7 +64,7 @@ def new(args: Namespace)->ReturnCode:
         return ReturnCode.UNLOADED
     tman: WorkManager = cast(WorkManager, shared.man)
     file = args.file
-    if file is None:
+    if not file:
         file = tman.currentFile
     result = tman.newCode(file)
     if result:
@@ -82,11 +82,11 @@ def edit(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
     tman: WorkManager = cast(WorkManager, shared.man)
-    if args.file is None and tman.currentFile is None:
+    if not args.file and not tman.currentFile:
         ui.console.write("Please set file first")
         return ReturnCode.ERROR
     file = args.file
-    if file is None:
+    if not file:
         file = tman.currentFile
     result = tman.edit(file)
     if result:
@@ -132,7 +132,7 @@ def run(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
     tman: WorkManager = cast(WorkManager, shared.man)
-    if args.file is None and tman.currentFile is None:
+    if not args.file and not tman.currentFile:
         ui.console.write("Please set file first")
         return ReturnCode.ERROR
 
@@ -148,7 +148,7 @@ def run(args: Namespace)->ReturnCode:
     new_thread = threading.Thread(target=func, args=(ret,))
     new_thread.start()
 
-    while tman.runner is None:
+    while not tman.runner:
         pass
 
     while tman.runner != None and tman.runner.isRunning:
@@ -237,9 +237,9 @@ def cls(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     return ReturnCode.OK
 
 
-def debug(args: Namespace) -> ReturnCode:
+def debug(args: Namespace) -> ReturnCode: # pylint: disable=W0613
     import json
     ui.console.write(json.dumps(
-        cast(WorkManager, shared.man).__dict__, default=lambda x: str(x), indent=4))
+        cast(WorkManager, shared.man).__dict__, default=str, indent=4))
 
     return ReturnCode.OK

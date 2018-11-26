@@ -1,11 +1,11 @@
 import os
-import yaml
 import shutil
 import subprocess
 import time
 import platform
 from typing import cast, Dict, List, Optional, Tuple, Callable
 from enum import Enum
+import yaml
 import click
 from prompt_toolkit.application import run_in_terminal
 from .types import ExecutorMapping, CommandMapping
@@ -95,7 +95,7 @@ class Runner:
             self.communicate(timeout=self.timeLimit)
             # pylint: disable=W0105
             """else:  # stdout for async
-                while self.proc.poll() is None and self.isRunning:
+                while not self.proc.poll() and self.isRunning:
                     if self.timeLimit != None and time.time() - bg_time > self.timeLimit:
                         raise subprocess.TimeoutExpired(
                             self.proc.cmd, self.timeLimit)
@@ -136,7 +136,7 @@ class WorkManager:
 
     def newCode(self, file=None)->bool:
         try:
-            if file is None:
+            if not file:
                 file = self.currentFile
             assert file
             ext = ecrpath.getFileExt(file)
@@ -172,9 +172,9 @@ class WorkManager:
                     pass
 
     def execute(self, io: Optional[str] = None, file: Optional[str] = None)->bool:
-        if io is None:
+        if not io:
             io = self.defaultIO
-        if file is None:
+        if not file:
             file = self.currentFile
         errf = color.useRed("×")
         passf = color.useGreen("√")

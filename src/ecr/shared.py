@@ -9,9 +9,9 @@ cwd: Optional[str] = None
 man: Optional[WorkManager] = None
 
 variables: VariableMapping = {
-    "current": lambda: None if man is None else man.currentFile,
-    "wdir": lambda: None if man is None else man.workingDirectory,
-    "config": lambda: None if man is None else path.getConfigPath(man.workingDirectory),
-    "input": lambda: None if man is None else path.getFileInputPath(man.workingDirectory),
-    "output": lambda: None if man is None else path.getFileOutputPath(man.workingDirectory),
+    "current": lambda: man.currentFile if man else None,
+    "wdir": lambda: man.workingDirectory if man else None,
+    "config": lambda: path.getConfigPath(man.workingDirectory) if man else None,
+    "input": lambda: path.getFileInputPath(man.workingDirectory) if man else None,
+    "output": lambda: path.getFileOutputPath(man.workingDirectory) if man else None,
 }

@@ -7,7 +7,8 @@ import prompt_toolkit
 from .core import manager, defaultData, getSystemCommand
 from .core.defaultData import CIO_Types
 from .ui import cli, console
-from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls, edit, debug
+from .command import new, now, shutdown, run, getVersion, \
+    init, pwd, cd, clear, clean, cls, edit, debug
 from . import helper, shared, command, ReturnCode, ui
 
 itParser: ArgumentParser = ArgumentParser()
