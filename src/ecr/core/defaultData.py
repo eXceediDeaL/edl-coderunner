@@ -1,5 +1,5 @@
 from typing import List
-from .types import ExecutorMapping, CommandMapping, CodeTemplateMapping
+from .types import ExecutorMapping, CommandMapping, CodeTemplateMapping, JudgerMapping
 
 CIO_SISO: str = "ss"
 CIO_SIFO: str = "sf"
@@ -10,6 +10,7 @@ CIO_Types: List[str] = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
 io: str = CIO_SISO
 timeLimit: int = 10
 editor: str = "vim"
+judger: str = "diff"
 
 executors: ExecutorMapping = {
     "c": ["gcc {fileName} -o {fileNameWithoutExt}", "./{fileNameWithoutExt}"],
@@ -26,6 +27,10 @@ executors: ExecutorMapping = {
     "go": ["go run {filename}"],
     "shellscript": ["bash {filename}"],
     "powershell": ["powershell -ExecutionPolicy ByPass -File {filename}"]
+}
+
+judgers: JudgerMapping = {
+    "diff": ["diff {expectFile} {realFile}"],
 }
 
 tempFileFilter: List[str] = ["exe", "o", "class", "out"]
