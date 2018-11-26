@@ -7,7 +7,7 @@ import prompt_toolkit
 from .core import manager, defaultData, getSystemCommand
 from .core.defaultData import CIO_Types
 from .ui import cli, console
-from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls, edit
+from .command import new, now, shutdown, run, getVersion, init, pwd, cd, clear, clean, cls, edit, debug
 from . import helper, shared, command, ReturnCode, ui
 
 itParser: ArgumentParser = ArgumentParser()
@@ -94,6 +94,9 @@ def getITParser()->ITParser:
 
     cmd_exit = subpars.add_parser("exit", help="Exit")
     cmd_exit.set_defaults(func=shutdown)
+
+    cmd_debug = subpars.add_parser("debug", help="Debug for developing")
+    cmd_debug.set_defaults(func=debug)
 
     return parser
 

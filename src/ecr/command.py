@@ -9,9 +9,9 @@ from .ui import SwitchState, color
 from . import ReturnCode, shared, ui
 
 __all__ = ["init", "new", "now", "pwd", "cd", "clear",
-           "getVersion", "shutdown", "run", "clean", "cls", "edit"]
+           "getVersion", "shutdown", "run", "clean", "cls", "edit", "debug"]
 cmds = ["init", "new", "now", "pwd", "cd", "clear",
-        "version", "run", "clean", "cls", "exit", "edit"]
+        "version", "run", "clean", "cls", "exit", "edit", "debug"]
 
 
 def printFileModify(file: str)->None:
@@ -234,4 +234,12 @@ def cd(args: Namespace)->ReturnCode:
 
 def cls(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     ui.console.clear()
+    return ReturnCode.OK
+
+
+def debug(args: Namespace) -> ReturnCode:
+    import json
+    ui.console.write(json.dumps(
+        cast(WorkManager, shared.man).__dict__, default=lambda x: str(x), indent=4))
+
     return ReturnCode.OK

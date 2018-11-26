@@ -1,5 +1,5 @@
 import os
-import json
+import yaml
 import shutil
 import subprocess
 import time
@@ -257,10 +257,10 @@ def load(basepath: str) -> Optional[WorkManager]:
     ret = WorkManager(basepath)
     try:
         with open(ecrpath.getExecutorPath(basepath), "r", encoding='utf-8') as f:
-            ret.executorMap = json.loads(f.read())
+            ret.executorMap = yaml.load(f.read())
 
         with open(ecrpath.getConfigPath(basepath), "r", encoding='utf-8') as f:
-            config = json.loads(f.read())
+            config = yaml.load(f.read())
             ret.tempFileFilter = config[CONST_tempFileFilter]
             ret.importedCommand = config[CONST_importedCommand]
             ret.defaultShell = config[CONST_defaultShell]
@@ -292,7 +292,8 @@ def initialize(basepath: str)->None:
             f.write(v)
     executors = defaultData.executors
     with open(ecrpath.getExecutorPath(basepath), "w", encoding='utf-8') as f:
-        f.write(json.dumps(executors, indent=4))
+        f.write(yaml.dump(executors, indent=4,
+                          default_flow_style=False))
 
     open(ecrpath.getFileInputPath(basepath), "w").close()
     open(ecrpath.getFileOutputPath(basepath), "w").close()
@@ -305,4 +306,5 @@ def initialize(basepath: str)->None:
               CONST_defaultEditor: defaultData.editor}
 
     with open(ecrpath.getConfigPath(basepath), "w", encoding='utf-8') as f:
-        f.write(json.dumps(config, indent=4))
+        f.write(yaml.dump(config, indent=4,
+                          default_flow_style=False))

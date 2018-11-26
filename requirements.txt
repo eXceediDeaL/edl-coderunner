@@ -10,3 +10,4 @@ watchdog
 pygments
 pylint
 mypy
+PyYAML

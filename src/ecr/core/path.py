@@ -5,11 +5,11 @@ def getMainPath(basepath: str)->str:
 
 
 def getConfigPath(basepath: str) -> str:
-    return os.path.join(getMainPath(basepath), "config.json")
+    return os.path.join(getMainPath(basepath), "config.yml")
 
 
 def getExecutorPath(basepath: str) -> str:
-    return os.path.join(getMainPath(basepath), "executor.json")
+    return os.path.join(getMainPath(basepath), "executor.yml")
 
 
 def getTemplatePath(basepath: str) -> str:

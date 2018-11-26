@@ -143,41 +143,39 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 
 The config files is at `.ecr/`
 
-## config.json
+## config.yml
 
 This file contains basic config.
 
-```json
-{
-    // File extension name to be cleaned
-    "tempFileFilter": [
-        "exe",
-        "o",
-        "class",
-        "out"
-    ],
+```yaml
+# The default editor
+defaultEditor: vim
 
-    // Map name to system command
-    "importedCommand": {
-        "ls": "ls",
-        "cls": "clear"
-    },
+# The default IO when run
+defaultIO: ss
 
-    // The default shell to execute command
-    "defaultShell": "powershell -c",
+# The default shell to execute command
+defaultShell: powershell -c
 
-    // The default IO when run
-    "defaultIO": "ss",
+# The default time limit for every step when run
+defaultTimeLimit: 10
 
-    // The default time limit for every step when run
-    "defaultTimeLimit": 5,
+# Map name to system command
+importedCommand:
+    bash: bash
+    cat: cat
+    copy: copy
+    cp: cp
 
-    // The default editor
-    "defaultEditor": "vim"
-}
+# File extension name to be cleaned
+tempFileFilter:
+- exe
+- o
+- class
+- out
 ```
 
-## executor.json
+## executor.yml
 
 This file gives the way to run a code file.
 
@@ -186,17 +184,14 @@ You can use these varibles in command:
 - `fileName` The code file name
 - `fileNameWithoutExt` The code file name without extension
 
-```json
-{
-    "c": [
-        "gcc {fileName} -o {fileNameWithoutExt}",
-        "./{fileNameWithoutExt}"
-    ],
-    "cpp": [
-        "g++ {fileName} -o {fileNameWithoutExt}",
-        "./{fileNameWithoutExt}"
-    ],
-}
+```yaml
+c:
+- gcc {fileName} -o {fileNameWithoutExt}
+- ./{fileNameWithoutExt}
+
+cpp:
+- g++ {fileName} -o {fileNameWithoutExt}
+- ./{fileNameWithoutExt}
 ```
 
 
