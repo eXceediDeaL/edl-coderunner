@@ -182,6 +182,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |`cls`|Clear console|
 |`exit`|Exit|
 |`-h --help`|Get help|
+|`debug [-os --os] [-c --config]`|Show debug data|
 
 # Config
 

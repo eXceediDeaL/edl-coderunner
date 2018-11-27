@@ -180,7 +180,7 @@ def run(args: Namespace)->ReturnCode:
     result = ret[0] if len(ret) > 0 else False """
 
     if not args.watch:
-        item, file = getItem(tman,args)
+        item, file = getItem(tman, args)
         result = tman.execute(io=args.io, item=item)
 
         if not result:
@@ -192,7 +192,7 @@ def run(args: Namespace)->ReturnCode:
             WorkItem, tman.currentFile).name
 
         def func():
-            item, file = getItem(tman,args)
+            item, file = getItem(tman, args)
             ui.console.clear()
             ui.console.info(f"Watching", end=" ")
             printFileModify(file)
@@ -228,7 +228,7 @@ def judge(args: Namespace)->ReturnCode:
         return ReturnCode.ERROR
 
     if not args.watch:
-        item, file = getItem(tman,args)
+        item, file = getItem(tman, args)
         result = tman.judge(reexecute=args.re,
                             item=item, judger=args.judger)
 
@@ -243,7 +243,7 @@ def judge(args: Namespace)->ReturnCode:
             WorkItem, tman.currentFile).name
 
         def func():
-            item, file = getItem(tman,args)
+            item, file = getItem(tman, args)
             ui.console.clear()
             ui.console.info(f"Watching", end=" ")
             printFileModify(file)
@@ -316,8 +316,19 @@ def cls(args: Namespace)->ReturnCode:  # pylint: disable=W0613
 
 
 def debug(args: Namespace) -> ReturnCode:  # pylint: disable=W0613
-    import json
-    ui.console.write(json.dumps(
-        cast(WorkManager, shared.man).__dict__, default=str, indent=4))
-
+    if args.config:
+        ui.console.info("Config loaded for current directory")
+        import json
+        ui.console.write(json.dumps(
+            cast(WorkManager, shared.man).__dict__, default=str, indent=4))
+    if args.os:
+        ui.console.info("Platform information")
+        import platform
+        ui.console.write("Machine:", platform.machine(), platform.processor())
+        ui.console.write("Platform:", platform.platform())
+        ui.console.write("OS:", platform.system(),
+                         platform.version(), *(platform.architecture()))
+        ui.console.write("Python:", platform.python_version(),
+                         platform.python_implementation())
+        import pip
     return ReturnCode.OK

@@ -118,6 +118,10 @@ def getITParser()->ITParser:
     cmd_exit.set_defaults(func=shutdown)
 
     cmd_debug = subpars.add_parser("debug", help="Debug for developing")
+    cmd_debug.add_argument("-c", "--config", action="store_true",
+                         default=False, help="Show config data")
+    cmd_debug.add_argument("-os", "--os", action="store_true",
+                         default=False, help="Show OS data")
     cmd_debug.set_defaults(func=debug)
 
     return parser
