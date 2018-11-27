@@ -282,7 +282,6 @@ class WorkManager:
                 self.runner = Runner(proc=proc, io=io, timelimit=timelimit)
                 rresult, retcode = self.runner.run()
             except BaseException:
-                self.runner = None
                 isSuccess = False
             finally:
                 if ind == sumStep - 1:  # last command
