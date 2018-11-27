@@ -1,8 +1,9 @@
 from typing import Optional
+from . import core
 from .core import WorkManager, path
 from .core.types import VariableMapping
 
-version = "0.0.2.7"
+version = core.__version__
 
 cwd: Optional[str] = None
 

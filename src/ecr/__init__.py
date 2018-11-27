@@ -1,7 +1,7 @@
 import enum
-from . import shared
+from . import shared, core
 
-__version__ = shared.version
+__version__ = core.__version__
 
 
 class ReturnCode(enum.Enum):

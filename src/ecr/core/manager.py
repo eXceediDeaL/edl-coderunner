@@ -21,6 +21,7 @@ CONST_defaultIO: str = "defaultIO"
 CONST_defaultTimeLimit: str = "defaultTimeLimit"
 CONST_defaultEditor: str = "defaultEditor"
 CONST_defaultJudger: str = "defaultJudger"
+CONST_eVersion: str = "eVersion"
 
 fileextToLanguage: Dict[str, str] = {
     "c": "c",
@@ -138,7 +139,8 @@ class Runner:
         return (RunResult.Success, self.proc.returncode)
 
 
-def initializeCodeDirectory(path: str)->None:
+def initializeCodeDirectory(path: str) -> None:
+    os.mkdir(ecrpath.getCodeDirDataPath(path))
     config: Dict[str, Optional[List]] = {
         "run": None,
         "judge": None,
@@ -175,6 +177,8 @@ class WorkManager:
         self.state: WorkManagerState = WorkManagerState.Empty
         self.runner: Optional[Runner] = None
         self.defaultEditor: Optional[str] = None
+        from . import __version__
+        self.eVersion: str = __version__
 
     def getWorkItem(self, name: str, isdir: bool) -> Optional[WorkItem]:
         path = os.path.join(self.workingDirectory, name)
@@ -388,6 +392,7 @@ def load(basepath: str) -> Optional[WorkManager]:
             ret.defaultIO = config[CONST_defaultIO]
             ret.defaultEditor = config[CONST_defaultEditor]
             ret.defaultJudger = config[CONST_defaultJudger]
+            ret.eVersion = config[CONST_eVersion]
         ret.state = WorkManagerState.Loaded
     except:
         ret.state = WorkManagerState.LoadFailed
@@ -433,13 +438,16 @@ def initialize(basepath: str)->None:
     open(ecrpath.getFileOutputPath(basepath), "w").close()
     open(ecrpath.getFileStdPath(basepath), "w").close()
 
+    from . import __version__
+
     config = {CONST_tempFileFilter: defaultData.tempFileFilter,
               CONST_importedCommand: defaultData.importedCommand,
               CONST_defaultShell: "powershell -c" if platform.system() == "Windows" else None,
               CONST_defaultIO: defaultData.io,
               CONST_defaultTimeLimit: defaultData.timeLimit,
               CONST_defaultEditor: defaultData.editor,
-              CONST_defaultJudger: defaultData.judger}
+              CONST_defaultJudger: defaultData.judger,
+              CONST_eVersion: __version__}
 
     with open(ecrpath.getConfigPath(basepath), "w", encoding='utf-8') as f:
         f.write(yaml.dump(config, indent=4,
