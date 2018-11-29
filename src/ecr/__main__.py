@@ -6,7 +6,6 @@ from typing import List, NoReturn
 import prompt_toolkit
 from .core import manager, defaultData, getSystemCommand
 from .core.defaultData import CIO_Types
-from .ui import cli, console
 from .command import new, now, shutdown, run, getVersion, \
     init, pwd, cd, clear, clean, cls, edit, debug, judge
 from . import helper, shared, command, ReturnCode, ui
@@ -127,10 +126,11 @@ def getITParser()->ITParser:
     return parser
 
 
-def doSyscall(cmd, message)->int:
+def doSyscall(cmd, message) -> int:
+    console = ui.getConsole()
     console.info(message, end=" ")
     console.write(cmd)
-    retCode = os.system(getSystemCommand(cmd, shared.man))
+    retCode = os.system(getSystemCommand(cmd, shared.getManager()))
     console.info(f"System command exited:", end=" ")
     if retCode == 0:
         console.write(retCode)
@@ -150,9 +150,9 @@ def mainInit()->None:
     from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
     itParser = getITParser()
-    shared.cwd = os.getcwd()
+    shared.setCwd(os.getcwd())
 
-    if manager.hasInitialized(shared.cwd):
+    if manager.hasInitialized(shared.getCwd()):
         helper.loadMan()
 
     cliInputSession = PromptSession(
@@ -160,10 +160,11 @@ def mainInit()->None:
         lexer=PygmentsLexer(BashLexer),
         auto_suggest=AutoSuggestFromHistory())
 
-    ui.console = cli.CLI(inputCommandSession=cliInputSession)
+    ui.setConsole(ui.CLI(inputCommandSession=cliInputSession))
 
 
-def executeCommand(oricmd: str)->int:
+def executeCommand(oricmd: str) -> int:
+    console = ui.getConsole()
     cargs = shlex.split(oricmd)
     if not cargs:
         return 0
@@ -173,7 +174,8 @@ def executeCommand(oricmd: str)->int:
         try:
             cmd = itParser.parse_args(cargs)
         except BasicError as e:  # when parse failed, parser will call exit()
-            importedCommand = shared.man.importedCommand if shared.man \
+            man = shared.getManager()
+            importedCommand = man.importedCommand if man \
                 else defaultData.importedCommand
             if cargs[0] in importedCommand:
                 return doSyscall(
@@ -182,8 +184,8 @@ def executeCommand(oricmd: str)->int:
                 console.warning("We can't recognize this command:")
                 console.write(f"  {e}")
                 if console.confirm("Do you mean a system command?",
-                                   [cli.SwitchState.Yes, cli.SwitchState.No])\
-                        == cli.SwitchState.Yes:
+                                   [ui.SwitchState.Yes, ui.SwitchState.No])\
+                        == ui.SwitchState.Yes:
                     return doSyscall(oricmd, "Call system command:")
         else:
             if hasattr(cmd, "func"):
@@ -194,8 +196,9 @@ def executeCommand(oricmd: str)->int:
 def getCommandCompleter()->prompt_toolkit.completion.Completer:
     from prompt_toolkit.completion import WordCompleter, merge_completers
     cmdLists = list(builtinCmdLists)
-    if shared.man:
-        cmdLists += shared.man.importedCommand.keys()
+    man = shared.getManager()
+    if man:
+        cmdLists += man.importedCommand.keys()
     else:
         cmdLists += defaultData.importedCommand
     wc = WordCompleter(cmdLists, ignore_case=True)
@@ -229,15 +232,17 @@ def main()->int:  # pragma: no cover
     while True:
         try:
             curfile = ""
-            if shared.man and shared.man.currentFile:
-                if shared.man.currentFile.type == manager.WorkItemType.File:
-                    curfile = shared.man.currentFile.name
+            man = shared.getManager()
+            console = ui.getConsole()
+            if man and man.currentFile:
+                if man.currentFile.type == manager.WorkItemType.File:
+                    curfile = man.currentFile.name
                 else:
-                    curfile = "@" + shared.man.currentFile.name
+                    curfile = "@" + man.currentFile.name
             oricmd = str(console.inputCommand(
                 curfile + defaultPrompt,
                 completer=getCommandCompleter(), complete_in_thread=False))
-            oricmd = helper.formatWithVars(oricmd, shared.variables)
+            oricmd = helper.formatWithVars(oricmd, shared.getVariables())
         except KeyboardInterrupt:
             continue
         except EOFError:

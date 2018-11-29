@@ -1,5 +1,5 @@
 import re
-from typing import cast
+from typing import cast, Optional, Dict
 from .core import manager, WorkManager
 from .core.types import VariableMapping
 from .ui import color
@@ -8,24 +8,27 @@ from . import shared, ui
 
 def loadMan()->None:
     try:
-        shared.man = manager.load(cast(str, shared.cwd))
-        if shared.man and shared.man.eVersion != shared.version:
-            ui.console.warning(
-                f"The config's version ({shared.man.eVersion}) is not for current ecr ({shared.version}).")
+        shared.setManager(manager.load(cast(str, shared.getCwd())))
+        man = shared.getManager()
+        if man and man.eVersion != shared.getVersion():
+            ui.getConsole().warning(
+                f"The config's version ({man.eVersion}) is not for current ecr ({shared.getVersion()}).")
     except:
-        shared.man = None
+        shared.setManager(None)
 
 
-def printHead()->None:
-    assert not shared.man or shared.man.state != manager.WorkManagerState.Empty
-    tman: WorkManager = cast(WorkManager, shared.man)
-    if not shared.man:
-        ui.console.write("ECR", end=" ")
+def printHead() -> None:
+    man = shared.getManager()
+    assert not man or man.state != manager.WorkManagerState.Empty
+    tman: WorkManager = cast(WorkManager, man)
+    console = ui.getConsole()
+    if not man:
+        console.write("ECR", end=" ")
     elif tman.state == manager.WorkManagerState.Loaded:
-        ui.console.write(color.useGreen("ECR"), end=" ")
+        console.write(color.useGreen("ECR"), end=" ")
     elif tman.state == manager.WorkManagerState.LoadFailed:
-        ui.console.write(color.useRed("ECR"), end=" ")
-    ui.console.write(shared.cwd)
+        console.write(color.useRed("ECR"), end=" ")
+    console.write(shared.getCwd())
 
 
 varFormatRE = re.compile(r'\$(?P<name>[a-zA-Z_]\w*)')
@@ -36,10 +39,9 @@ def bashVarToPythonVar(m)->str:
     return "'{" + s["name"] + "}'"
 
 
-def formatWithVars(oristr: str, var: VariableMapping)->str:
+def formatWithVars(oristr: str, var: Dict[str, Optional[str]])->str:
     try:
-        tmp = {k: v() for k, v in var.items()}
         oristr = varFormatRE.sub(bashVarToPythonVar, oristr)
-        return oristr.format(**tmp)
+        return oristr.format(**var)
     except:
         return oristr

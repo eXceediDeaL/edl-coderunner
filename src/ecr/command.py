@@ -14,47 +14,52 @@ cmds = ["init", "new", "now", "pwd", "cd", "clear",
         "version", "run", "clean", "cls", "exit", "edit", "debug", "judge"]
 
 
-def printFileModify(file: str)->None:
-    ui.console.write(color.useYellow("M"), file)
+def printFileModify(file: str) -> None:
+    console = ui.getConsole()
+    console.write(color.useYellow("M"), file)
 
 
-def printFileCreate(file: str)->None:
-    ui.console.write(color.useGreen("+"), file)
+def printFileCreate(file: str) -> None:
+    console = ui.getConsole()
+    console.write(color.useGreen("+"), file)
 
 
-def printFileDelete(file: str)->None:
-    ui.console.write(color.useRed("-"), file)
+def printFileDelete(file: str) -> None:
+    console = ui.getConsole()
+    console.write(color.useRed("-"), file)
 
 
-def assertInited()->bool:
-    if not shared.man:
-        ui.console.error("Not have any ecr directory")
+def assertInited() -> bool:
+    console = ui.getConsole()
+    if not shared.getManager():
+        console.error("Not have any ecr directory")
         return False
     return True
 
 
 def init(args: Namespace)->ReturnCode:  # pylint: disable=W0613
-    manager.initialize(cast(str, shared.cwd))
+    manager.initialize(cast(str, shared.getCwd()))
     loadMan()
     printHead()
-    return ReturnCode.OK if shared.man else ReturnCode.UNLOADED
+    return ReturnCode.OK if shared.getManager() else ReturnCode.UNLOADED
 
 
 def clear(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     if not assertInited():
         return ReturnCode.UNLOADED
-    tman: WorkManager = cast(WorkManager, shared.man)
-    if ui.console.confirm("Do you want to clear ALL?",
+    tman: WorkManager = cast(WorkManager, shared.getManager())
+    console = ui.getConsole()
+    if console.confirm("Do you want to clear ALL?",
                           [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
         manager.clear(tman.workingDirectory)
-        shared.man = None
+        shared.setManager(None)
     return ReturnCode.OK
 
 
 def now(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
-    tman: WorkManager = cast(WorkManager, shared.man)
+    tman: WorkManager = cast(WorkManager, shared.getManager())
     tman.setCurrent(args.file, args.dir)
     return ReturnCode.OK
 
@@ -62,9 +67,10 @@ def now(args: Namespace)->ReturnCode:
 def new(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
-    tman: WorkManager = cast(WorkManager, shared.man)
+    tman: WorkManager = cast(WorkManager, shared.getManager)
+    console = ui.getConsole()
     if not args.file and not tman.currentFile:
-        ui.console.write("Please set file first")
+        console.write("Please set file first")
         return ReturnCode.ERROR
     file = args.file if args.file else cast(WorkItem, tman.currentFile).name
     result = tman.newCode(tman.getWorkItem(
@@ -77,19 +83,20 @@ def new(args: Namespace)->ReturnCode:
             return edit(Namespace(file=file, now=False))
         return ReturnCode.OK
     else:
-        ui.console.error(f"Can't create file {file}")
+        console.error(f"Can't create file {file}")
         return ReturnCode.ERROR
 
 
 def edit(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
-    tman: WorkManager = cast(WorkManager, shared.man)
+    tman: WorkManager = cast(WorkManager, shared.getManager())
+    console = ui.getConsole()
     if not args.file and not tman.currentFile:
-        ui.console.write("Please set file first")
+        console.write("Please set file first")
         return ReturnCode.ERROR
     if not args.file and not tman.currentFile:
-        ui.console.write("Please set file first")
+        console.write("Please set file first")
         return ReturnCode.ERROR
     file = args.file if args.file else cast(WorkItem, tman.currentFile).name
     result = tman.edit(tman.getWorkItem(
@@ -100,7 +107,7 @@ def edit(args: Namespace)->ReturnCode:
             return now(Namespace(file=file))
         return ReturnCode.OK
     else:
-        ui.console.error(f"Editing file error {file}")
+        console.error(f"Editing file error {file}")
         return ReturnCode.ERROR
     return ReturnCode.OK
 
@@ -148,9 +155,10 @@ def getItem(tman: WorkManager, args: Namespace)->Tuple[WorkItem, str]:
 def run(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
-    tman: WorkManager = cast(WorkManager, shared.man)
+    tman: WorkManager = cast(WorkManager, shared.getManager())
+    console = ui.getConsole()
     if not args.file and not tman.currentFile:
-        ui.console.write("Please set file first")
+        console.write("Please set file first")
         return ReturnCode.ERROR
 
     # pylint: disable=W0105
@@ -184,7 +192,7 @@ def run(args: Namespace)->ReturnCode:
         result = tman.execute(io=args.io, item=item)
 
         if not result:
-            ui.console.error("Running failed")
+            console.error("Running failed")
             return ReturnCode.RUNERR
         return ReturnCode.OK
     else:
@@ -193,15 +201,15 @@ def run(args: Namespace)->ReturnCode:
 
         def func():
             item, file = getItem(tman, args)
-            ui.console.clear()
-            ui.console.info(f"Watching", end=" ")
+            console.clear()
+            console.info(f"Watching", end=" ")
             printFileModify(file)
             result = tman.execute(io=args.io, item=item)
             if not result:
-                ui.console.error("Running failed")
+                console.error("Running failed")
 
         from watchdog.observers import Observer
-        ui.console.info(f"Watching {file} (press ctrl+c to end)")
+        console.info(f"Watching {file} (press ctrl+c to end)")
 
         path = tman.workingDirectory if item.type == WorkItemType.File else item.path
         event_handler = RunWatchEventHandler(
@@ -214,7 +222,7 @@ def run(args: Namespace)->ReturnCode:
                 time.sleep(1)
         except KeyboardInterrupt:
             observer.stop()
-            ui.console.info("Watching end.")
+            console.info("Watching end.")
         observer.join()
         return ReturnCode.OK
 
@@ -222,9 +230,10 @@ def run(args: Namespace)->ReturnCode:
 def judge(args: Namespace)->ReturnCode:
     if not assertInited():
         return ReturnCode.UNLOADED
-    tman: WorkManager = cast(WorkManager, shared.man)
+    tman: WorkManager = cast(WorkManager, shared.getManager())
+    console = ui.getConsole()
     if not args.file and not tman.currentFile:
-        ui.console.write("Please set file first")
+        console.write("Please set file first")
         return ReturnCode.ERROR
 
     if not args.watch:
@@ -233,10 +242,10 @@ def judge(args: Namespace)->ReturnCode:
                             item=item, judger=args.judger)
 
         if not result:
-            ui.console.error("Judging failed")
+            console.error("Judging failed")
             return ReturnCode.JUDGEERR
         else:
-            ui.console.ok("Judging passed")
+            console.ok("Judging passed")
             return ReturnCode.OK
     else:
         file = args.file if args.file else cast(
@@ -244,20 +253,20 @@ def judge(args: Namespace)->ReturnCode:
 
         def func():
             item, file = getItem(tman, args)
-            ui.console.clear()
-            ui.console.info(f"Watching", end=" ")
+            console.clear()
+            console.info(f"Watching", end=" ")
             printFileModify(file)
             result = tman.judge(reexecute=args.re,
                                 item=item, judger=args.judger)
             if not result:
-                ui.console.error("Judging failed")
+                console.error("Judging failed")
                 return ReturnCode.JUDGEERR
             else:
-                ui.console.ok("Judging passed")
+                console.ok("Judging passed")
                 return ReturnCode.OK
 
         from watchdog.observers import Observer
-        ui.console.info(f"Watching {file} (press ctrl+c to end)")
+        console.info(f"Watching {file} (press ctrl+c to end)")
         path = tman.workingDirectory if item.type == WorkItemType.File else item.path
         event_handler = RunWatchEventHandler(
             file if item.type == WorkItemType.File else None, func)
@@ -269,7 +278,7 @@ def judge(args: Namespace)->ReturnCode:
                 time.sleep(1)
         except KeyboardInterrupt:
             observer.stop()
-            ui.console.info("Watching end.")
+            console.info("Watching end.")
         observer.join()
         return ReturnCode.OK
 
@@ -277,7 +286,7 @@ def judge(args: Namespace)->ReturnCode:
 def clean(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     if not assertInited():
         return ReturnCode.UNLOADED
-    tman: WorkManager = cast(WorkManager, shared.man)
+    tman: WorkManager = cast(WorkManager, shared.getManager())
     tman.clean(rmHandler=printFileDelete)
     return ReturnCode.OK
 
@@ -286,51 +295,55 @@ def shutdown(args: Namespace)->ReturnCode:  # pylint: disable=W0613
     return ReturnCode.EXIT
 
 
-def pwd(args: Namespace)->ReturnCode:  # pylint: disable=W0613
-    ui.console.write(shared.cwd)
+def pwd(args: Namespace) -> ReturnCode:  # pylint: disable=W0613
+    console = ui.getConsole()
+    console.write(shared.getCwd())
     return ReturnCode.OK
 
 
-def getVersion(args: Namespace)->ReturnCode:  # pylint: disable=W0613
-    ui.console.write("edl-cr", shared.version)
-    ui.console.write("Copyright (C) eXceediDeal")
-    ui.console.write(
+def getVersion(args: Namespace) -> ReturnCode:  # pylint: disable=W0613
+    console = ui.getConsole()
+    console.write("edl-cr", shared.getVersion())
+    console.write("Copyright (C) eXceediDeal")
+    console.write(
         "License Apache-2.0, Source https://github.com/eXceediDeaL/edl-coderunner")
     return ReturnCode.OK
 
 
-def cd(args: Namespace)->ReturnCode:
+def cd(args: Namespace) -> ReturnCode:
+    console = ui.getConsole()
     if not os.path.exists(args.path):
-        ui.console.error("No this directory")
+        console.error("No this directory")
         return ReturnCode.ERROR
     os.chdir(args.path)
-    shared.cwd = os.getcwd()
+    shared.setCwd(os.getcwd())
     loadMan()
     printHead()
     return ReturnCode.OK
 
 
 def cls(args: Namespace)->ReturnCode:  # pylint: disable=W0613
-    ui.console.clear()
+    ui.getConsole().clear()
     return ReturnCode.OK
 
 
 def debug(args: Namespace) -> ReturnCode:  # pylint: disable=W0613
+    console = ui.getConsole()
     if args.config:
         if not assertInited():
             return ReturnCode.UNLOADED
-        ui.console.info("Config loaded for current directory")
+        console.info("Config loaded for current directory")
         import json
-        ui.console.write(json.dumps(
-            cast(WorkManager, shared.man).__dict__, default=str, indent=4))
+        console.write(json.dumps(
+            cast(WorkManager, shared.getManager()).__dict__, default=str, indent=4))
     if args.os:
-        ui.console.info("Platform information")
+        console.info("Platform information")
         import platform
-        ui.console.write("Machine:", platform.machine(), platform.processor())
-        ui.console.write("Platform:", platform.platform())
-        ui.console.write("OS:", platform.system(),
+        console.write("Machine:", platform.machine(), platform.processor())
+        console.write("Platform:", platform.platform())
+        console.write("OS:", platform.system(),
                          platform.version(), *(platform.architecture()))
-        ui.console.write("Python:", platform.python_version(),
+        console.write("Python:", platform.python_version(),
                          platform.python_implementation())
         import pip
     return ReturnCode.OK

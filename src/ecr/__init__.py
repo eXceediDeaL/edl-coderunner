@@ -1,5 +1,5 @@
 import enum
-from . import shared, core
+from . import core
 
 __version__ = core.__version__
 
