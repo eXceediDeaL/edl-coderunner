@@ -43,8 +43,8 @@ setup(
     ),
     package_data={
         "ecr": [
-            "core/judgers/*",
-            "core/templates/*"
+            "data/judgers/*",
+            "data/templates/*"
         ],
     },
     entry_points={

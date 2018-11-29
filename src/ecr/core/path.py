@@ -40,6 +40,7 @@ def getFileStdPath(basepath: str) -> str:
 def getCodeDirConfigPath(basepath: str) -> str:
     return os.path.join(basepath, "config.yml")
 
+
 def getCodeDirDataPath(basepath: str) -> str:
     return os.path.join(basepath, "data")
 
@@ -49,8 +50,8 @@ def getFileExt(filename: str) -> str:
 
 
 def getCoreJudgerPath() -> str:
-    return os.path.join(os.path.dirname(__file__), "judgers")
+    return os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "judgers")
 
 
 def getCoreTemplatePath() -> str:
-    return os.path.join(os.path.dirname(__file__), "templates")
+    return os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "templates")

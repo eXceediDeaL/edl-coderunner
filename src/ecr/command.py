@@ -317,6 +317,8 @@ def cls(args: Namespace)->ReturnCode:  # pylint: disable=W0613
 
 def debug(args: Namespace) -> ReturnCode:  # pylint: disable=W0613
     if args.config:
+        if not assertInited():
+            return ReturnCode.UNLOADED
         ui.console.info("Config loaded for current directory")
         import json
         ui.console.write(json.dumps(

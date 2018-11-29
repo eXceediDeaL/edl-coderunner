@@ -10,7 +10,7 @@ CIO_Types: List[str] = [CIO_SISO, CIO_SIFO, CIO_FISO, CIO_FIFO]
 io: str = CIO_SISO
 timeLimit: int = 10
 editor: str = "vim"
-judger: str = "diff"
+judger: str = "text"
 
 CMDVAR_FileName: str = "fileName"
 CMDVAR_FileNameWithoutExt: str = "fileNameWithoutExt"

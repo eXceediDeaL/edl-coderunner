@@ -97,9 +97,11 @@ class Runner:
         self.io: str = io
         self.canInput: bool = io[0] == "s"
 
-    def terminate(self)->None:
-        os.kill(self.proc.pid, 9)
+    def terminate(self) -> None:
+        self.proc.terminate()
+        # os.kill(self.proc.pid, 9)
         self.isRunning = False
+        self.proc.wait()
 
     def input(self, data: str)->None:
         self.proc.stdin.write(data.encode("utf-8"))

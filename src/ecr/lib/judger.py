@@ -48,7 +48,7 @@ def trimLineEnd(data: List[str]) -> List[str]:
     return [x.rstrip() for x in data]
 
 
-def judging(func: Callable[[DataItem, DataItem], Tuple[JudgeResult, Optional[str]]]) -> None:
+def judging(func: Callable[[DataItem, DataItem], Tuple[JudgeResult, Optional[str]]], autoload: bool = True) -> None:
     assertArgv()
-    files, data = getFileNames(), getFileContents()
+    files, data = getFileNames(), getFileContents() if autoload else ([], [])
     judged(*func(DataItem(files[0], data[0]), DataItem(files[1], data[1])))

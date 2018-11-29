@@ -83,7 +83,7 @@ def getITParser()->ITParser:
     cmd_judge.add_argument("-r", "--re", action="store_true",
                            default=False, help="Re-execute before judge")
     cmd_judge.add_argument("-d", "--dir", action="store_true",
-                         default=False, help="As directory")
+                           default=False, help="As directory")
     cmd_judge.set_defaults(func=judge)
 
     cmd_edit = subpars.add_parser("edit", help="Edit code file")
@@ -92,7 +92,7 @@ def getITParser()->ITParser:
     cmd_edit.add_argument("-n", "--now", action="store_true",
                           default=False, help="Set the file as current")
     cmd_edit.add_argument("-d", "--dir", action="store_true",
-                         default=False, help="As directory")
+                          default=False, help="As directory")
     cmd_edit.set_defaults(func=edit)
 
     cmd_clean = subpars.add_parser("clean", help="Clean temp files")
@@ -119,9 +119,9 @@ def getITParser()->ITParser:
 
     cmd_debug = subpars.add_parser("debug", help="Debug for developing")
     cmd_debug.add_argument("-c", "--config", action="store_true",
-                         default=False, help="Show config data")
+                           default=False, help="Show config data")
     cmd_debug.add_argument("-os", "--os", action="store_true",
-                         default=False, help="Show OS data")
+                           default=False, help="Show OS data")
     cmd_debug.set_defaults(func=debug)
 
     return parser
@@ -244,12 +244,11 @@ def main()->int:  # pragma: no cover
             break
         if executeCommand(oricmd) == ReturnCode.EXIT.value:
             break
-
     return 0
 
 
-def outmain()->NoReturn:  # pragma: no cover
-    exit(int(main()))
+def outmain() -> NoReturn:  # pragma: no cover
+    sys.exit(int(main()))
 
 
 if __name__ == "__main__":  # pragma: no cover
