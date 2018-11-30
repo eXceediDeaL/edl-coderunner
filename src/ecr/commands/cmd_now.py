@@ -1,10 +1,8 @@
 from typing import cast
-from ..ui import command, SwitchState
 from ..ui.command import ReturnCode, Command, Namespace
-from ..core import manager, WorkManager, WorkItem
-from ..helper import loadMan, printHead
-from .. import shared, ui
-from .helper import assertInited, printFileModify
+from ..core import WorkManager
+from .. import shared
+from .helper import assertInited
 
 
 class NowCommand(Command):
@@ -22,7 +20,7 @@ class NowCommand(Command):
     def createParser(self, parsers):
         cmd = super().createParser(parsers)
         cmd.add_argument("file", nargs="?", default=None, type=str,
-                             help="Set current file (clear for none)")
+                         help="Set current file (clear for none)")
         cmd.add_argument("-d", "--dir", action="store_true",
-                             default=False, help="As directory")
+                         default=False, help="As directory")
         return cmd

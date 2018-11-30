@@ -1,6 +1,5 @@
 from typing import List, Tuple, Optional, Callable
 from enum import Enum
-import difflib
 import sys
 import os
 

@@ -1,18 +1,17 @@
 from typing import cast
-from ..ui import command, SwitchState
 from ..ui.command import ReturnCode, Command, Namespace
-from ..core import manager, WorkManager, WorkItem
-from ..helper import loadMan, printHead
+from ..core import WorkManager, WorkItem
 from .. import shared, ui
 from .helper import assertInited, printFileCreate
 from . import cmd_edit
+
 
 class NewCommand(Command):
     @staticmethod
     def default(args: Namespace)->ReturnCode:  # pylint: disable=W0613
         if not assertInited():
             return ReturnCode.UNLOADED
-        tman: WorkManager = cast(WorkManager, shared.getManager)
+        tman: WorkManager = cast(WorkManager, shared.getManager())
         console = ui.getConsole()
         if not args.file and not tman.currentFile:
             console.write("Please set file first")

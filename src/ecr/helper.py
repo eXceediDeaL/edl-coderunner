@@ -1,7 +1,6 @@
 import re
 from typing import cast, Optional, Dict
 from .core import manager, WorkManager
-from .core.types import VariableMapping
 from .ui import color
 from . import shared, ui
 

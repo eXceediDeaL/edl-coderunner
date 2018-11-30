@@ -1,8 +1,6 @@
 from typing import cast
-from ..ui import command, SwitchState
 from ..ui.command import ReturnCode, Command, Namespace
-from ..core import manager, WorkManager, WorkItem
-from ..helper import loadMan, printHead
+from ..core import WorkManager, WorkItem
 from .. import shared, ui
 from .helper import assertInited, printFileModify
 from . import cmd_now
@@ -33,7 +31,6 @@ class EditCommand(Command):
         else:
             console.error(f"Editing file error {file}")
             return ReturnCode.ERROR
-        return ReturnCode.OK
 
     def __init__(self):
         super().__init__("edit", help="Edit code file", func=EditCommand.default)

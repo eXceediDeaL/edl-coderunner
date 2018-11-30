@@ -1,5 +1,4 @@
 from typing import cast
-from ..ui import command
 from ..ui.command import ReturnCode, Command, Namespace
 from ..core import manager
 from ..helper import loadMan, printHead

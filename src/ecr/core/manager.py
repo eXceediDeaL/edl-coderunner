@@ -194,7 +194,7 @@ class WorkManager:
                 self.workingDirectory, name, WorkItemType.File)
 
     def setCurrent(self, item: str, isdir: bool) -> bool:
-        if item == None:
+        if item is None:
             self.currentFile = None
         else:
             self.currentFile = self.getWorkItem(item, isdir)
@@ -252,7 +252,7 @@ class WorkManager:
         isSuccess = True
         sumStep = len(commands)
         cwd = wdir if wdir else self.workingDirectory
-
+        console = ui.getConsole()
         for ind, bcmd in enumerate(commands):
             if not isSuccess:
                 break
@@ -262,7 +262,7 @@ class WorkManager:
             else:
                 cmd, timelimit = bcmd, self.defaultTimeLimit
             _cmd = cmd.format(**variables)
-            ui.console.write(
+            console.write(
                 "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
             proc = None
             rresult, retcode = None, None
@@ -270,7 +270,7 @@ class WorkManager:
                 if ind == sumStep - 1:  # last command
                     if io[0] == "s":  # stdin
                         timelimit = None
-                    ui.console.write("-"*20)
+                    console.write("-"*20)
                     proc = subprocess.Popen(
                         getSystemCommand(_cmd, self),
                         cwd=cwd,
@@ -291,19 +291,19 @@ class WorkManager:
                 isSuccess = False
             finally:
                 if ind == sumStep - 1:  # last command
-                    ui.console.write("-"*20)
-                ui.console.write(
+                    console.write("-"*20)
+                console.write(
                     "   ->",
                     passf if retcode == 0 else errf,
                     f"{round(cast(Runner,self.runner).usedTime*1000)/1000}s")
                 if rresult != RunResult.Success:
-                    ui.console.write(
+                    console.write(
                         "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
                         _cmd, " -> ", color.useRed(str(retcode)), sep="", end=" ")
                     if rresult == RunResult.TimeOut:
-                        ui.console.write(color.useRed("Time out"))
+                        console.write(color.useRed("Time out"))
                     else:
-                        ui.console.write()
+                        console.write()
                     self.runner = None
                     isSuccess = False
         self.runner = None
@@ -316,6 +316,7 @@ class WorkManager:
             item = self.currentFile
         titem: WorkItem = cast(WorkItem, item)
         cmds: Optional[CommandList] = None
+        console = ui.getConsole()
         if titem.type == WorkItemType.File:
             file = titem.name
             fileNameWithoutExt, fileext = cast(
@@ -327,14 +328,14 @@ class WorkManager:
                 defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,
             }
 
-            ui.console.info(f"Running {file}")
+            console.info(f"Running {file}")
             return self.__runCommands(io, cmds, formats)
         else:  # directory
             cmds = titem.run
             formats = {
             }
 
-            ui.console.info(f"Running {titem.name}")
+            console.info(f"Running {titem.name}")
             if cmds:
                 return self.__runCommands(io, cmds, formats, wdir=titem.path)
             else:
@@ -351,6 +352,7 @@ class WorkManager:
             if not self.execute(defaultData.CIO_FIFO, item):
                 return False
 
+        console = ui.getConsole()
         titem: WorkItem = cast(WorkItem, item)
         cmds: Optional[CommandList] = None
         if titem.type == WorkItemType.File:
@@ -361,14 +363,14 @@ class WorkManager:
                 defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),
             }
 
-            ui.console.info(f"Judging {titem.name}")
+            console.info(f"Judging {titem.name}")
             return self.__runCommands(defaultData.CIO_SISO, cmds, formats)
         else:  # directory
             cmds = titem.judge
             formats = {
             }
 
-            ui.console.info(f"Judging {titem.name}")
+            console.info(f"Judging {titem.name}")
             if cmds:
                 return self.__runCommands(defaultData.CIO_SISO, cmds, formats, wdir=titem.path)
             else:
