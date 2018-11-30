@@ -28,27 +28,79 @@
 <span id="L18" class="lineno"><a class="lineno" href="#L18">18</a></span>
 <span id="L19" class="lineno"><a class="lineno" href="#L19">19</a></span>
 <span id="L20" class="lineno"><a class="lineno" href="#L20">20</a></span>
+<span id="L21" class="lineno"><a class="lineno" href="#L21">21</a></span>
+<span id="L22" class="lineno"><a class="lineno" href="#L22">22</a></span>
+<span id="L23" class="lineno"><a class="lineno" href="#L23">23</a></span>
+<span id="L24" class="lineno"><a class="lineno" href="#L24">24</a></span>
+<span id="L25" class="lineno"><a class="lineno" href="#L25">25</a></span>
+<span id="L26" class="lineno"><a class="lineno" href="#L26">26</a></span>
+<span id="L27" class="lineno"><a class="lineno" href="#L27">27</a></span>
+<span id="L28" class="lineno"><a class="lineno" href="#L28">28</a></span>
+<span id="L29" class="lineno"><a class="lineno" href="#L29">29</a></span>
+<span id="L30" class="lineno"><a class="lineno" href="#L30">30</a></span>
+<span id="L31" class="lineno"><a class="lineno" href="#L31">31</a></span>
+<span id="L32" class="lineno"><a class="lineno" href="#L32">32</a></span>
+<span id="L33" class="lineno"><a class="lineno" href="#L33">33</a></span>
+<span id="L34" class="lineno"><a class="lineno" href="#L34">34</a></span>
+<span id="L35" class="lineno"><a class="lineno" href="#L35">35</a></span>
+<span id="L36" class="lineno"><a class="lineno" href="#L36">36</a></span>
+<span id="L37" class="lineno"><a class="lineno" href="#L37">37</a></span>
+<span id="L38" class="lineno"><a class="lineno" href="#L38">38</a></span>
+<span id="L39" class="lineno"><a class="lineno" href="#L39">39</a></span>
+<span id="L40" class="lineno"><a class="lineno" href="#L40">40</a></span>
+<span id="L41" class="lineno"><a class="lineno" href="#L41">41</a></span>
+<span id="L42" class="lineno"><a class="lineno" href="#L42">42</a></span>
+<span id="L43" class="lineno"><a class="lineno" href="#L43">43</a></span>
+<span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
+<span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import Optional</span>
+<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import Optional, Dict, cast</span>
 <span class="line-empty" title="No Anys on this line!">from .core import WorkManager, path</span>
 <span class="line-empty" title="No Anys on this line!">from .core.types import VariableMapping</span>
+<span class="line-empty" title="No Anys on this line!">from . import core</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">version = "0.0.2.7"</span>
+<span class="line-precise" title="No Anys on this line!">_cwd: Optional[str] = None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">cwd: Optional[str] = None</span>
+<span class="line-precise" title="No Anys on this line!">_man: Optional[WorkManager] = None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">man: Optional[WorkManager] = None</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">variables: VariableMapping = {</span>
-<span class="line-precise" title="No Anys on this line!">    "current": lambda: man.currentFile.name if man and man.currentFile else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "wdir": lambda: man.workingDirectory if man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "edir": lambda: path.getMainPath(man.workingDirectory) if man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "jdir": lambda: path.getJudgerPath(man.workingDirectory) if man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "tdir": lambda: path.getTemplatePath(man.workingDirectory) if man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "config": lambda: path.getConfigPath(man.workingDirectory) if man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "input": lambda: path.getFileInputPath(man.workingDirectory) if man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "output": lambda: path.getFileOutputPath(man.workingDirectory) if man else None,</span>
+<span class="line-precise" title="No Anys on this line!">_variables: VariableMapping = {</span>
+<span class="line-precise" title="No Anys on this line!">    "current": lambda: _man.currentFile.name if _man and _man.currentFile else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "wdir": lambda: _man.workingDirectory if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "edir": lambda: path.getMainPath(_man.workingDirectory) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "jdir": lambda: path.getJudgerPath(_man.workingDirectory) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "tdir": lambda: path.getTemplatePath(_man.workingDirectory) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "config": lambda: path.getConfigPath(_man.workingDirectory) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "input": lambda: path.getFileInputPath(_man.workingDirectory) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "output": lambda: path.getFileOutputPath(_man.workingDirectory) if _man else None,</span>
 <span class="line-empty" title="No Anys on this line!">}</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def getManager()-&gt;Optional[WorkManager]:</span>
+<span class="line-precise" title="No Anys on this line!">    return _man</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def setManager(man: Optional[WorkManager]) -&gt; None:</span>
+<span class="line-empty" title="No Anys on this line!">    global _man</span>
+<span class="line-precise" title="No Anys on this line!">    _man = man</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def getCwd() -&gt; str:</span>
+<span class="line-precise" title="No Anys on this line!">    return cast(str, _cwd)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">def setCwd(cwd) -&gt; None:</span>
+<span class="line-empty" title="No Anys on this line!">    global _cwd</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">    _cwd = cwd</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def getVersion() -&gt; str:</span>
+<span class="line-precise" title="No Anys on this line!">    return core.__version__</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def getVariables() -&gt; Dict[str, Optional[str]]:</span>
+<span class="line-precise" title="No Anys on this line!">    return {k: v() for k, v in _variables.items()}</span>
 </pre></td>
 </tr></tbody>
 </table>

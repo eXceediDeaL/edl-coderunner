@@ -4,9 +4,9 @@
 <link rel="stylesheet" type="text/css" href="../../../../mypy-html.css">
 </head>
 <body>
-<h2>ecr.core.path</h2>
+<h2>ecr.lib.judger</h2>
 <table>
-<caption>src/ecr/core/path.py</caption>
+<caption>src/ecr/lib/judger.py</caption>
 <tbody><tr>
 <td class="table-lines"><pre><span id="L1" class="lineno"><a class="lineno" href="#L1">1</a></span>
 <span id="L2" class="lineno"><a class="lineno" href="#L2">2</a></span>
@@ -62,67 +62,71 @@
 <span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
 <span id="L53" class="lineno"><a class="lineno" href="#L53">53</a></span>
 <span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
-<span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
-<span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
-<span id="L57" class="lineno"><a class="lineno" href="#L57">57</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import os</span>
+<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import List, Tuple, Optional, Callable</span>
+<span class="line-empty" title="No Anys on this line!">from enum import Enum</span>
+<span class="line-empty" title="No Anys on this line!">import difflib</span>
+<span class="line-empty" title="No Anys on this line!">import sys</span>
+<span class="line-empty" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getMainPath(basepath: str)-&gt;str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(basepath, ".ecr")</span>
+<span class="line-empty" title="No Anys on this line!">class JudgeResult(Enum):</span>
+<span class="line-precise" title="No Anys on this line!">    Accept = 0</span>
+<span class="line-precise" title="No Anys on this line!">    Wrong = 1</span>
+<span class="line-precise" title="No Anys on this line!">    Error = -1</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getConfigPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(getMainPath(basepath), "config.yml")</span>
+<span class="line-empty" title="No Anys on this line!">class DataItem:</span>
+<span class="line-precise" title="No Anys on this line!">    def __init__(self, file: str, data: List[str]):</span>
+<span class="line-precise" title="No Anys on this line!">        self.file: str = file</span>
+<span class="line-precise" title="No Anys on this line!">        self.name = os.path.split(self.file)[-1]</span>
+<span class="line-precise" title="No Anys on this line!">        self.data: List[str] = data</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getExecutorPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(getMainPath(basepath), "executor.yml")</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">def judged(code: JudgeResult, message: Optional[str] = None):</span>
+<span class="line-precise" title="No Anys on this line!">    if message:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        print(message)</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)">    exit(code.value)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getJudgerConfigPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(getMainPath(basepath), "judger.yml")</span>
+<span class="line-precise" title="No Anys on this line!">def assertArgv()-&gt;None:</span>
+<span class="line-precise" title="No Anys on this line!">    if len(sys.argv) &lt; 3:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)
+Explicit (x1)">        judged(JudgeResult.Error, "Judger Error: Not enough args")</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getTemplatePath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(getMainPath(basepath), "templates")</span>
+<span class="line-precise" title="No Anys on this line!">def getFileNames()-&gt;Tuple[str, str]:</span>
+<span class="line-precise" title="No Anys on this line!">    return sys.argv[1], sys.argv[2]</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getJudgerPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(getMainPath(basepath), "judgers")</span>
+<span class="line-precise" title="No Anys on this line!">def getFileContents() -&gt; Tuple[List[str], List[str]]:</span>
+<span class="line-precise" title="No Anys on this line!">    expectedFile, realFile = getFileNames()</span>
+<span class="line-precise" title="No Anys on this line!">    expectedData: List[str] = []</span>
+<span class="line-precise" title="No Anys on this line!">    realData: List[str] = []</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)
+Explicit (x1)">    with open(expectedFile, "r", encoding='utf-8') as f:</span>
+<span class="line-precise" title="No Anys on this line!">        expectedData = f.readlines()</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)
+Explicit (x1)">    with open(realFile, "r", encoding='utf-8') as f:</span>
+<span class="line-precise" title="No Anys on this line!">        realData = f.readlines()</span>
+<span class="line-precise" title="No Anys on this line!">    return expectedData, realData</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getFileInputPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(getMainPath(basepath), "input.data")</span>
+<span class="line-precise" title="No Anys on this line!">def trimLineEnd(data: List[str]) -&gt; List[str]:</span>
+<span class="line-precise" title="No Anys on this line!">    return [x.rstrip() for x in data]</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getFileOutputPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(getMainPath(basepath), "output.data")</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getFileStdPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(getMainPath(basepath), "std.data")</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getCodeDirConfigPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(basepath, "config.yml")</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getCodeDirDataPath(basepath: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(basepath, "data")</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getFileExt(filename: str) -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.splitext(filename)[1][1:]</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getCoreJudgerPath() -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "judgers")</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getCoreTemplatePath() -&gt; str:</span>
-<span class="line-precise" title="No Anys on this line!">    return os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "templates")</span>
+<span class="line-precise" title="No Anys on this line!">def judging(func: Callable[[DataItem, DataItem], Tuple[JudgeResult, Optional[str]]], autoload: bool = True) -&gt; None:</span>
+<span class="line-precise" title="No Anys on this line!">    assertArgv()</span>
+<span class="line-precise" title="No Anys on this line!">    files, data = getFileNames(), getFileContents() if autoload else ([], [])</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)">    judged(*func(DataItem(files[0], data[0]), DataItem(files[1], data[1])))</span>
 </pre></td>
 </tr></tbody>
 </table>

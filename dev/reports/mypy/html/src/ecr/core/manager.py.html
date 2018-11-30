@@ -454,6 +454,16 @@
 <span id="L444" class="lineno"><a class="lineno" href="#L444">444</a></span>
 <span id="L445" class="lineno"><a class="lineno" href="#L445">445</a></span>
 <span id="L446" class="lineno"><a class="lineno" href="#L446">446</a></span>
+<span id="L447" class="lineno"><a class="lineno" href="#L447">447</a></span>
+<span id="L448" class="lineno"><a class="lineno" href="#L448">448</a></span>
+<span id="L449" class="lineno"><a class="lineno" href="#L449">449</a></span>
+<span id="L450" class="lineno"><a class="lineno" href="#L450">450</a></span>
+<span id="L451" class="lineno"><a class="lineno" href="#L451">451</a></span>
+<span id="L452" class="lineno"><a class="lineno" href="#L452">452</a></span>
+<span id="L453" class="lineno"><a class="lineno" href="#L453">453</a></span>
+<span id="L454" class="lineno"><a class="lineno" href="#L454">454</a></span>
+<span id="L455" class="lineno"><a class="lineno" href="#L455">455</a></span>
+<span id="L456" class="lineno"><a class="lineno" href="#L456">456</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import shutil</span>
@@ -478,6 +488,7 @@
 <span class="line-precise" title="No Anys on this line!">CONST_defaultTimeLimit: str = "defaultTimeLimit"</span>
 <span class="line-precise" title="No Anys on this line!">CONST_defaultEditor: str = "defaultEditor"</span>
 <span class="line-precise" title="No Anys on this line!">CONST_defaultJudger: str = "defaultJudger"</span>
+<span class="line-precise" title="No Anys on this line!">CONST_eVersion: str = "eVersion"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">fileextToLanguage: Dict[str, str] = {</span>
 <span class="line-empty" title="No Anys on this line!">    "c": "c",</span>
@@ -564,9 +575,11 @@ Explicit (x4)">        self.communicate = self.proc.communicate</span>
 <span class="line-precise" title="No Anys on this line!">        self.io: str = io</span>
 <span class="line-precise" title="No Anys on this line!">        self.canInput: bool = io[0] == "s"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">    def terminate(self)-&gt;None:</span>
-<span class="line-precise" title="No Anys on this line!">        os.kill(self.proc.pid, 9)</span>
+<span class="line-precise" title="No Anys on this line!">    def terminate(self) -&gt; None:</span>
+<span class="line-precise" title="No Anys on this line!">        self.proc.terminate()</span>
+<span class="line-empty" title="No Anys on this line!">        # os.kill(self.proc.pid, 9)</span>
 <span class="line-precise" title="No Anys on this line!">        self.isRunning = False</span>
+<span class="line-precise" title="No Anys on this line!">        self.proc.wait()</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    def input(self, data: str)-&gt;None:</span>
 <span class="line-imprecise" title="Any Types on this line: 
@@ -613,7 +626,9 @@ Explicit (x1)">            return (RunResult.Error, self.proc.returncode)</span>
 Explicit (x1)">        return (RunResult.Success, self.proc.returncode)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def initializeCodeDirectory(path: str)-&gt;None:</span>
+<span class="line-precise" title="No Anys on this line!">def initializeCodeDirectory(path: str) -&gt; None:</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)">    os.mkdir(ecrpath.getCodeDirDataPath(path))</span>
 <span class="line-imprecise" title="Any Types on this line: 
 Omitted Generics (x2)">    config: Dict[str, Optional[List]] = {</span>
 <span class="line-empty" title="No Anys on this line!">        "run": None,</span>
@@ -664,6 +679,8 @@ Explicit (x2)">            ret.run = config["run"]</span>
 Explicit (x1)">        self.state: WorkManagerState = WorkManagerState.Empty</span>
 <span class="line-precise" title="No Anys on this line!">        self.runner: Optional[Runner] = None</span>
 <span class="line-precise" title="No Anys on this line!">        self.defaultEditor: Optional[str] = None</span>
+<span class="line-empty" title="No Anys on this line!">        from . import __version__</span>
+<span class="line-precise" title="No Anys on this line!">        self.eVersion: str = __version__</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    def getWorkItem(self, name: str, isdir: bool) -&gt; Optional[WorkItem]:</span>
 <span class="line-precise" title="No Anys on this line!">        path = os.path.join(self.workingDirectory, name)</span>
@@ -760,8 +777,8 @@ Special Form (x1)">            if not isinstance(bcmd, str):</span>
 <span class="line-precise" title="No Anys on this line!">                cmd, timelimit = bcmd, self.defaultTimeLimit</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">            _cmd = cmd.format(**variables)</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">            ui.console.write(</span>
+<span class="line-any" title="Any Types on this line: 
+Error (x3)">            ui.console.write(</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)
 Explicit (x2)">                "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")</span>
@@ -771,8 +788,8 @@ Explicit (x2)">                "(", color.useYellow(str(ind+1)), f"/{sumStep}) "
 <span class="line-precise" title="No Anys on this line!">                if ind == sumStep - 1:  # last command</span>
 <span class="line-precise" title="No Anys on this line!">                    if io[0] == "s":  # stdin</span>
 <span class="line-precise" title="No Anys on this line!">                        timelimit = None</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                    ui.console.write("-"*20)</span>
+<span class="line-any" title="Any Types on this line: 
+Error (x3)">                    ui.console.write("-"*20)</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x3)
 Special Form (x3)
@@ -805,10 +822,10 @@ Unannotated (x1)">                        getSystemCommand(_cmd, self),</span>
 <span class="line-precise" title="No Anys on this line!">                isSuccess = False</span>
 <span class="line-empty" title="No Anys on this line!">            finally:</span>
 <span class="line-precise" title="No Anys on this line!">                if ind == sumStep - 1:  # last command</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                    ui.console.write("-"*20)</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                ui.console.write(</span>
+<span class="line-any" title="Any Types on this line: 
+Error (x3)">                    ui.console.write("-"*20)</span>
+<span class="line-any" title="Any Types on this line: 
+Error (x3)">                ui.console.write(</span>
 <span class="line-empty" title="No Anys on this line!">                    "   -&gt;",</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)">                    passf if retcode == 0 else errf,</span>
@@ -816,8 +833,8 @@ Unimported (x2)">                    passf if retcode == 0 else errf,</span>
 Explicit (x2)">                    f"{round(cast(Runner,self.runner).usedTime*1000)/1000}s")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">                if rresult != RunResult.Success:</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                    ui.console.write(</span>
+<span class="line-any" title="Any Types on this line: 
+Error (x3)">                    ui.console.write(</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)
 Explicit (x2)">                        "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",</span>
@@ -826,11 +843,11 @@ Unimported (x2)">                        _cmd, " -&gt; ", color.useRed(str(retco
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">                    if rresult == RunResult.TimeOut:</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x2)
+Error (x3)
 Unimported (x2)">                        ui.console.write(color.useRed("Time out"))</span>
 <span class="line-empty" title="No Anys on this line!">                    else:</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                        ui.console.write()</span>
+<span class="line-any" title="Any Types on this line: 
+Error (x3)">                        ui.console.write()</span>
 <span class="line-precise" title="No Anys on this line!">                    self.runner = None</span>
 <span class="line-precise" title="No Anys on this line!">                    isSuccess = False</span>
 <span class="line-precise" title="No Anys on this line!">        self.runner = None</span>
@@ -856,8 +873,8 @@ Special Form (x2)">                Tuple[str, str], os.path.splitext(file))</spa
 <span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)
+<span class="line-any" title="Any Types on this line: 
+Error (x3)
 Explicit (x2)">            ui.console.info(f"Running {file}")</span>
 <span class="line-precise" title="No Anys on this line!">            return self.__runCommands(io, cmds, formats)</span>
 <span class="line-empty" title="No Anys on this line!">        else:  # directory</span>
@@ -865,8 +882,8 @@ Explicit (x2)">            ui.console.info(f"Running {file}")</span>
 <span class="line-precise" title="No Anys on this line!">            formats = {</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)
+<span class="line-any" title="Any Types on this line: 
+Error (x3)
 Explicit (x2)">            ui.console.info(f"Running {titem.name}")</span>
 <span class="line-precise" title="No Anys on this line!">            if cmds:</span>
 <span class="line-precise" title="No Anys on this line!">                return self.__runCommands(io, cmds, formats, wdir=titem.path)</span>
@@ -895,8 +912,8 @@ Explicit (x1)">        if titem.type == WorkItemType.File:</span>
 <span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)
+<span class="line-any" title="Any Types on this line: 
+Error (x3)
 Explicit (x2)">            ui.console.info(f"Judging {titem.name}")</span>
 <span class="line-precise" title="No Anys on this line!">            return self.__runCommands(defaultData.CIO_SISO, cmds, formats)</span>
 <span class="line-empty" title="No Anys on this line!">        else:  # directory</span>
@@ -904,8 +921,8 @@ Explicit (x2)">            ui.console.info(f"Judging {titem.name}")</span>
 <span class="line-precise" title="No Anys on this line!">            formats = {</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)
+<span class="line-any" title="Any Types on this line: 
+Error (x3)
 Explicit (x2)">            ui.console.info(f"Judging {titem.name}")</span>
 <span class="line-precise" title="No Anys on this line!">            if cmds:</span>
 <span class="line-precise" title="No Anys on this line!">                return self.__runCommands(defaultData.CIO_SISO, cmds, formats, wdir=titem.path)</span>
@@ -950,6 +967,8 @@ Explicit (x2)">            ret.defaultIO = config[CONST_defaultIO]</span>
 Explicit (x2)">            ret.defaultEditor = config[CONST_defaultEditor]</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x2)">            ret.defaultJudger = config[CONST_defaultJudger]</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)">            ret.eVersion = config[CONST_eVersion]</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        ret.state = WorkManagerState.Loaded</span>
 <span class="line-empty" title="No Anys on this line!">    except:</span>
@@ -1015,13 +1034,16 @@ Explicit (x1)">    open(ecrpath.getFileOutputPath(basepath), "w").close()</span>
 Omitted Generics (x1)
 Explicit (x1)">    open(ecrpath.getFileStdPath(basepath), "w").close()</span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">    from . import __version__</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    config = {CONST_tempFileFilter: defaultData.tempFileFilter,</span>
 <span class="line-precise" title="No Anys on this line!">              CONST_importedCommand: defaultData.importedCommand,</span>
 <span class="line-precise" title="No Anys on this line!">              CONST_defaultShell: "powershell -c" if platform.system() == "Windows" else None,</span>
 <span class="line-precise" title="No Anys on this line!">              CONST_defaultIO: defaultData.io,</span>
 <span class="line-precise" title="No Anys on this line!">              CONST_defaultTimeLimit: defaultData.timeLimit,</span>
 <span class="line-precise" title="No Anys on this line!">              CONST_defaultEditor: defaultData.editor,</span>
-<span class="line-precise" title="No Anys on this line!">              CONST_defaultJudger: defaultData.judger}</span>
+<span class="line-precise" title="No Anys on this line!">              CONST_defaultJudger: defaultData.judger,</span>
+<span class="line-precise" title="No Anys on this line!">              CONST_eVersion: __version__}</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)

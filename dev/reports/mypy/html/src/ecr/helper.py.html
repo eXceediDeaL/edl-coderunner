@@ -50,27 +50,40 @@
 <span id="L40" class="lineno"><a class="lineno" href="#L40">40</a></span>
 <span id="L41" class="lineno"><a class="lineno" href="#L41">41</a></span>
 <span id="L42" class="lineno"><a class="lineno" href="#L42">42</a></span>
+<span id="L43" class="lineno"><a class="lineno" href="#L43">43</a></span>
+<span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
+<span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
+<span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
+<span id="L47" class="lineno"><a class="lineno" href="#L47">47</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import re</span>
-<span class="line-empty" title="No Anys on this line!">from typing import cast</span>
+<td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import re</span>
+<span class="line-empty" title="No Anys on this line!">from typing import cast, Optional, Dict</span>
 <span class="line-empty" title="No Anys on this line!">from .core import manager, WorkManager</span>
 <span class="line-empty" title="No Anys on this line!">from .core.types import VariableMapping</span>
-<span class="line-empty" title="No Anys on this line!">from .ui import color, console</span>
-<span class="line-empty" title="No Anys on this line!">from . import shared</span>
+<span class="line-empty" title="No Anys on this line!">from .ui import color</span>
+<span class="line-empty" title="No Anys on this line!">from . import shared, ui</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def loadMan()-&gt;None:</span>
 <span class="line-empty" title="No Anys on this line!">    try:</span>
-<span class="line-precise" title="No Anys on this line!">        shared.man = manager.load(cast(str, shared.cwd))</span>
-<span class="line-empty" title="No Anys on this line!">    except:</span>
-<span class="line-precise" title="No Anys on this line!">        shared.man = None</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def printHead()-&gt;None:</span>
+<span class="line-precise" title="No Anys on this line!">        shared.setManager(manager.load(cast(str, shared.getCwd())))</span>
+<span class="line-precise" title="No Anys on this line!">        man = shared.getManager()</span>
+<span class="line-precise" title="No Anys on this line!">        if man and man.eVersion != shared.getVersion():</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">    assert not shared.man or shared.man.state != manager.WorkManagerState.Empty</span>
-<span class="line-precise" title="No Anys on this line!">    tman: WorkManager = cast(WorkManager, shared.man)</span>
-<span class="line-precise" title="No Anys on this line!">    if not shared.man:</span>
+Unannotated (x1)">            ui.getConsole().warning(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">                f"The config's version ({man.eVersion}) is not for current ecr ({shared.getVersion()}).")</span>
+<span class="line-empty" title="No Anys on this line!">    except:</span>
+<span class="line-precise" title="No Anys on this line!">        shared.setManager(None)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def printHead() -&gt; None:</span>
+<span class="line-precise" title="No Anys on this line!">    man = shared.getManager()</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    assert not man or man.state != manager.WorkManagerState.Empty</span>
+<span class="line-precise" title="No Anys on this line!">    tman: WorkManager = cast(WorkManager, man)</span>
+<span class="line-precise" title="No Anys on this line!">    console = ui.getConsole()</span>
+<span class="line-precise" title="No Anys on this line!">    if not man:</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x2)">        console.write("ECR", end=" ")</span>
 <span class="line-precise" title="Any Types on this line: 
@@ -84,7 +97,7 @@ Explicit (x1)">    elif tman.state == manager.WorkManagerState.LoadFailed:</span
 Unannotated (x2)
 Unimported (x2)">        console.write(color.useRed("ECR"), end=" ")</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">    console.write(shared.cwd)</span>
+Unannotated (x2)">    console.write(shared.getCwd())</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">varFormatRE = re.compile(r'\$(?P&lt;name&gt;[a-zA-Z_]\w*)')</span>
@@ -98,13 +111,12 @@ Unannotated (x4)">    s = m.groupdict()</span>
 Unannotated (x4)">    return "'{" + s["name"] + "}'"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def formatWithVars(oristr: str, var: VariableMapping)-&gt;str:</span>
+<span class="line-precise" title="No Anys on this line!">def formatWithVars(oristr: str, var: Dict[str, Optional[str]])-&gt;str:</span>
 <span class="line-empty" title="No Anys on this line!">    try:</span>
-<span class="line-precise" title="No Anys on this line!">        tmp = {k: v() for k, v in var.items()}</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)">        oristr = varFormatRE.sub(bashVarToPythonVar, oristr)</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">        return oristr.format(**tmp)</span>
+Explicit (x2)">        return oristr.format(**var)</span>
 <span class="line-empty" title="No Anys on this line!">    except:</span>
 <span class="line-precise" title="No Anys on this line!">        return oristr</span>
 </pre></td>

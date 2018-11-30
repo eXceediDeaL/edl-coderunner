@@ -116,7 +116,7 @@
 <span class="line-precise" title="No Anys on this line!">io: str = CIO_SISO</span>
 <span class="line-precise" title="No Anys on this line!">timeLimit: int = 10</span>
 <span class="line-precise" title="No Anys on this line!">editor: str = "vim"</span>
-<span class="line-precise" title="No Anys on this line!">judger: str = "diff"</span>
+<span class="line-precise" title="No Anys on this line!">judger: str = "text"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">CMDVAR_FileName: str = "fileName"</span>
 <span class="line-precise" title="No Anys on this line!">CMDVAR_FileNameWithoutExt: str = "fileNameWithoutExt"</span>
@@ -173,9 +173,9 @@ Explicit (x2)">    "powershell": [f"powershell -ExecutionPolicy ByPass -File {{{
 <span class="line-empty" title="No Anys on this line!">}</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">judgers: JudgerMapping = {</span>
-<span class="line-empty" title="No Anys on this line!">    "diff": [</span>
+<span class="line-empty" title="No Anys on this line!">    "text": [</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x6)">        f"python -u {{{CMDVAR_JudgerDir}}}/diff.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"</span>
+Explicit (x6)">        f"python -u {{{CMDVAR_JudgerDir}}}/text.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"</span>
 <span class="line-empty" title="No Anys on this line!">    ],</span>
 <span class="line-empty" title="No Anys on this line!">}</span>
 <span class="line-empty" title="No Anys on this line!"></span>
