@@ -89,17 +89,17 @@ a.cpp> run -io fs
 a.cpp> run -w
 ```
 
-If you give `input.data` and `std.data` for input data and standard output data, use `judge` to run and judge output data.
+If you give `input.data` and `std.data` for input data and standard output data, use `test` to run and test output data.
 
 ```sh
 # run a.cpp's output
-a.cpp> judge
+a.cpp> test
 
-# run and judge b.cpp's output
-a.cpp> judge b.cpp -r
+# run and test b.cpp's output
+a.cpp> test b.cpp -r
 
-# watch the file a.cpp and run&judge auto
-a.cpp> judge -w -r
+# watch the file a.cpp and run&test auto
+a.cpp> test -w -r
 ```
 
 ### Use Directory
@@ -117,13 +117,13 @@ Not only use files, you can also use directories to create a unique environment 
 @project> run
 
 # Judge
-@project> judge
+@project> test
 ```
 
-For `run` and `judge` commands, it will use the command list in `config.yml` in the directory. You can write your own commands in it.
+For `run` and `test` commands, it will use the command list in `config.yml` in the directory. You can write your own commands in it.
 
 ```yaml
-judge: null
+test: null
 run: null
 ```
 
@@ -174,7 +174,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |`now [file] [-d --dir]`|Change current file|
 |`edit [file] [-n --now] [-d --dir]`|Edit code file|
 |`run [file] [-io --io] [-w] [-d --dir]`|Run code file|
-|`judge [file] [-r --re] [-w] [-j --judger] [-d --dir]`|Judge output data|
+|`test [file] [-r --re] [-w] [-j --judger] [-d --dir]`|Judge output data|
 |`clean`|Clean temp files|
 |`pwd`|Print working directory|
 |`cd`|Change working directory|
@@ -197,7 +197,7 @@ This file contains basic config.
 defaultEditor: vim
 
 # The default judger's name
-defaultJudger: diff
+defaultJudger: text
 
 # The default IO when run
 defaultIO: ss
@@ -244,7 +244,7 @@ cpp:
 
 ## judger.yml
 
-This file gives the way to judge.
+This file gives the way to test.
 
 You can use these varibles in command:
 

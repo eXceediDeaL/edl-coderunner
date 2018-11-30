@@ -50,8 +50,8 @@ executors: ExecutorMapping = {
 }
 
 judgers: JudgerMapping = {
-    "diff": [
-        f"python -u {{{CMDVAR_JudgerDir}}}/diff.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"
+    "text": [
+        f"python -u {{{CMDVAR_JudgerDir}}}/text.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"
     ],
 }
 

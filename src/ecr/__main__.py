@@ -5,10 +5,8 @@ import shlex
 from typing import List, NoReturn
 import prompt_toolkit
 from .core import manager, defaultData, getSystemCommand
-from .core.defaultData import CIO_Types
-from .command import new, now, shutdown, run, getVersion, \
-    init, pwd, cd, clear, clean, cls, edit, debug, judge
-from . import helper, shared, command, ReturnCode, ui
+from . import helper, shared, commands, ui
+
 
 itParser: ArgumentParser = ArgumentParser()
 
@@ -31,7 +29,7 @@ class ITParser(ArgumentParser):
             self._print_message(message, sys.stderr)
 
 
-builtinCmdLists: List[str] = list(command.cmds)
+builtinCmdLists: List[str] = list(commands.commandVerbs)
 
 
 def getITParser()->ITParser:
@@ -40,88 +38,11 @@ def getITParser()->ITParser:
 
     subpars = parser.add_subparsers()
 
-    cmd_init = subpars.add_parser("init", help="Initialize ECR data")
-    cmd_init.set_defaults(func=init)
-
-    cmd_clear = subpars.add_parser("clear", help="Clear ECR data")
-    cmd_clear.set_defaults(func=clear)
-
-    cmd_new = subpars.add_parser("new", help="Create new code file")
-    cmd_new.add_argument("file", nargs="?", default=None, type=str)
-    cmd_new.add_argument("-e", "--edit", action="store_true",
-                         default=False, help="Edit the file")
-    cmd_new.add_argument("-d", "--dir", action="store_true",
-                         default=False, help="As directory")
-    cmd_new.set_defaults(func=new)
-
-    cmd_now = subpars.add_parser("now", help="Change current file")
-    cmd_now.add_argument("file", nargs="?", default=None, type=str,
-                         help="Set current file (clear for none)")
-    cmd_now.add_argument("-d", "--dir", action="store_true",
-                         default=False, help="As directory")
-    cmd_now.set_defaults(func=now)
-
-    cmd_run = subpars.add_parser("run", help="Run code file")
-    cmd_run.add_argument("-io", "--io", choices=CIO_Types,
-                         default=None, help="Change input and output")
-    cmd_run.add_argument(
-        "file", nargs="?", default=None, help="File name (only for this command)")
-    cmd_run.add_argument("-w", "--watch", action="store_true",
-                         default=False, help="Watch the file and run auto till Ctrl-C")
-    cmd_run.add_argument("-d", "--dir", action="store_true",
-                         default=False, help="As directory")
-    cmd_run.set_defaults(func=run)
-
-    cmd_judge = subpars.add_parser("judge", help="Judge output data")
-    cmd_judge.add_argument(
-        "file", nargs="?", default=None, help="File name (only for this command)")
-    cmd_judge.add_argument("-j", "--judger",
-                           default=None, help="Judger")
-    cmd_judge.add_argument("-w", "--watch", action="store_true",
-                           default=False, help="Watch the file and judge auto till Ctrl-C")
-    cmd_judge.add_argument("-r", "--re", action="store_true",
-                           default=False, help="Re-execute before judge")
-    cmd_judge.add_argument("-d", "--dir", action="store_true",
-                           default=False, help="As directory")
-    cmd_judge.set_defaults(func=judge)
-
-    cmd_edit = subpars.add_parser("edit", help="Edit code file")
-    cmd_edit.add_argument(
-        "file", nargs="?", default=None, help="File name (only for this command)")
-    cmd_edit.add_argument("-n", "--now", action="store_true",
-                          default=False, help="Set the file as current")
-    cmd_edit.add_argument("-d", "--dir", action="store_true",
-                          default=False, help="As directory")
-    cmd_edit.set_defaults(func=edit)
-
-    cmd_clean = subpars.add_parser("clean", help="Clean temp files")
-    cmd_clean.set_defaults(func=clean)
-
-    cmd_pwd = subpars.add_parser("pwd", help="Print working directory")
-    cmd_pwd.set_defaults(func=pwd)
-
-    cmd_cd = subpars.add_parser("cd", help="Change working directory")
-    cmd_cd.add_argument("path")
-    cmd_cd.set_defaults(func=cd)
-
-    cmd_version = subpars.add_parser("version", help="Get version")
-    cmd_version.set_defaults(func=getVersion)
+    for cmd in commands.commands:
+        cmd.createParser(subpars)
 
     # cmd_help = subpars.add_parser("help", help="Help")
     # cmd_help.set_defaults(func=gethelp)
-
-    cmd_cls = subpars.add_parser("cls", help="Clear console")
-    cmd_cls.set_defaults(func=cls)
-
-    cmd_exit = subpars.add_parser("exit", help="Exit")
-    cmd_exit.set_defaults(func=shutdown)
-
-    cmd_debug = subpars.add_parser("debug", help="Debug for developing")
-    cmd_debug.add_argument("-c", "--config", action="store_true",
-                           default=False, help="Show config data")
-    cmd_debug.add_argument("-os", "--os", action="store_true",
-                           default=False, help="Show OS data")
-    cmd_debug.set_defaults(func=debug)
 
     return parser
 
@@ -219,7 +140,7 @@ def main()->int:  # pragma: no cover
         "-c", "--command", default=None, help="Execute command")
     baseCmd = baseParser.parse_args()
     if baseCmd.version:
-        return getVersion(Namespace()).value
+        return commands.VersionCommand.default(Namespace()).value
     if baseCmd.dir:
         os.chdir(baseCmd.dir)
 
@@ -247,7 +168,7 @@ def main()->int:  # pragma: no cover
             continue
         except EOFError:
             break
-        if executeCommand(oricmd) == ReturnCode.EXIT.value:
+        if executeCommand(oricmd) == ui.command.ReturnCode.EXIT.value:
             break
     return 0
 
