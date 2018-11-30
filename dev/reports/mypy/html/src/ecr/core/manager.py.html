@@ -464,6 +464,8 @@
 <span id="L454" class="lineno"><a class="lineno" href="#L454">454</a></span>
 <span id="L455" class="lineno"><a class="lineno" href="#L455">455</a></span>
 <span id="L456" class="lineno"><a class="lineno" href="#L456">456</a></span>
+<span id="L457" class="lineno"><a class="lineno" href="#L457">457</a></span>
+<span id="L458" class="lineno"><a class="lineno" href="#L458">458</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import shutil</span>
@@ -697,8 +699,8 @@ Explicit (x1)">                return WorkItem(path, name, WorkItemType.Director
 Explicit (x1)">                self.workingDirectory, name, WorkItemType.File)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    def setCurrent(self, item: str, isdir: bool) -&gt; bool:</span>
-<span class="line-precise" title="No Anys on this line!">        if item == None:</span>
-<span class="line-precise" title="No Anys on this line!">            self.currentFile = None</span>
+<span class="line-precise" title="No Anys on this line!">        if item is None:</span>
+<span class="line-unanalyzed" title="No Anys on this line!">            self.currentFile = None</span>
 <span class="line-empty" title="No Anys on this line!">        else:</span>
 <span class="line-precise" title="No Anys on this line!">            self.currentFile = self.getWorkItem(item, isdir)</span>
 <span class="line-empty" title="No Anys on this line!">        return True</span>
@@ -765,7 +767,7 @@ Unimported (x3)">        passf = color.useGreen("√")</span>
 <span class="line-precise" title="No Anys on this line!">        isSuccess = True</span>
 <span class="line-precise" title="No Anys on this line!">        sumStep = len(commands)</span>
 <span class="line-precise" title="No Anys on this line!">        cwd = wdir if wdir else self.workingDirectory</span>
-<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">        console = ui.getConsole()</span>
 <span class="line-precise" title="No Anys on this line!">        for ind, bcmd in enumerate(commands):</span>
 <span class="line-precise" title="No Anys on this line!">            if not isSuccess:</span>
 <span class="line-empty" title="No Anys on this line!">                break</span>
@@ -777,8 +779,8 @@ Special Form (x1)">            if not isinstance(bcmd, str):</span>
 <span class="line-precise" title="No Anys on this line!">                cmd, timelimit = bcmd, self.defaultTimeLimit</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">            _cmd = cmd.format(**variables)</span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)">            ui.console.write(</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">            console.write(</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)
 Explicit (x2)">                "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")</span>
@@ -788,8 +790,8 @@ Explicit (x2)">                "(", color.useYellow(str(ind+1)), f"/{sumStep}) "
 <span class="line-precise" title="No Anys on this line!">                if ind == sumStep - 1:  # last command</span>
 <span class="line-precise" title="No Anys on this line!">                    if io[0] == "s":  # stdin</span>
 <span class="line-precise" title="No Anys on this line!">                        timelimit = None</span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)">                    ui.console.write("-"*20)</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">                    console.write("-"*20)</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x3)
 Special Form (x3)
@@ -822,10 +824,10 @@ Unannotated (x1)">                        getSystemCommand(_cmd, self),</span>
 <span class="line-precise" title="No Anys on this line!">                isSuccess = False</span>
 <span class="line-empty" title="No Anys on this line!">            finally:</span>
 <span class="line-precise" title="No Anys on this line!">                if ind == sumStep - 1:  # last command</span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)">                    ui.console.write("-"*20)</span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)">                ui.console.write(</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">                    console.write("-"*20)</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">                console.write(</span>
 <span class="line-empty" title="No Anys on this line!">                    "   -&gt;",</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)">                    passf if retcode == 0 else errf,</span>
@@ -833,8 +835,8 @@ Unimported (x2)">                    passf if retcode == 0 else errf,</span>
 Explicit (x2)">                    f"{round(cast(Runner,self.runner).usedTime*1000)/1000}s")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">                if rresult != RunResult.Success:</span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)">                    ui.console.write(</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">                    console.write(</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)
 Explicit (x2)">                        "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",</span>
@@ -843,11 +845,11 @@ Unimported (x2)">                        _cmd, " -&gt; ", color.useRed(str(retco
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">                    if rresult == RunResult.TimeOut:</span>
 <span class="line-any" title="Any Types on this line: 
-Error (x3)
-Unimported (x2)">                        ui.console.write(color.useRed("Time out"))</span>
+Unannotated (x2)
+Unimported (x2)">                        console.write(color.useRed("Time out"))</span>
 <span class="line-empty" title="No Anys on this line!">                    else:</span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)">                        ui.console.write()</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">                        console.write()</span>
 <span class="line-precise" title="No Anys on this line!">                    self.runner = None</span>
 <span class="line-precise" title="No Anys on this line!">                    isSuccess = False</span>
 <span class="line-precise" title="No Anys on this line!">        self.runner = None</span>
@@ -860,6 +862,7 @@ Error (x3)">                        ui.console.write()</span>
 <span class="line-precise" title="No Anys on this line!">            item = self.currentFile</span>
 <span class="line-precise" title="No Anys on this line!">        titem: WorkItem = cast(WorkItem, item)</span>
 <span class="line-precise" title="No Anys on this line!">        cmds: Optional[CommandList] = None</span>
+<span class="line-precise" title="No Anys on this line!">        console = ui.getConsole()</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        if titem.type == WorkItemType.File:</span>
 <span class="line-precise" title="No Anys on this line!">            file = titem.name</span>
@@ -873,18 +876,18 @@ Special Form (x2)">                Tuple[str, str], os.path.splitext(file))</spa
 <span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)
-Explicit (x2)">            ui.console.info(f"Running {file}")</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)
+Explicit (x2)">            console.info(f"Running {file}")</span>
 <span class="line-precise" title="No Anys on this line!">            return self.__runCommands(io, cmds, formats)</span>
 <span class="line-empty" title="No Anys on this line!">        else:  # directory</span>
 <span class="line-precise" title="No Anys on this line!">            cmds = titem.run</span>
 <span class="line-precise" title="No Anys on this line!">            formats = {</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)
-Explicit (x2)">            ui.console.info(f"Running {titem.name}")</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)
+Explicit (x2)">            console.info(f"Running {titem.name}")</span>
 <span class="line-precise" title="No Anys on this line!">            if cmds:</span>
 <span class="line-precise" title="No Anys on this line!">                return self.__runCommands(io, cmds, formats, wdir=titem.path)</span>
 <span class="line-empty" title="No Anys on this line!">            else:</span>
@@ -901,6 +904,7 @@ Explicit (x2)">            ui.console.info(f"Running {titem.name}")</span>
 <span class="line-precise" title="No Anys on this line!">            if not self.execute(defaultData.CIO_FIFO, item):</span>
 <span class="line-empty" title="No Anys on this line!">                return False</span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">        console = ui.getConsole()</span>
 <span class="line-precise" title="No Anys on this line!">        titem: WorkItem = cast(WorkItem, item)</span>
 <span class="line-precise" title="No Anys on this line!">        cmds: Optional[CommandList] = None</span>
 <span class="line-precise" title="Any Types on this line: 
@@ -912,18 +916,18 @@ Explicit (x1)">        if titem.type == WorkItemType.File:</span>
 <span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)
-Explicit (x2)">            ui.console.info(f"Judging {titem.name}")</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)
+Explicit (x2)">            console.info(f"Judging {titem.name}")</span>
 <span class="line-precise" title="No Anys on this line!">            return self.__runCommands(defaultData.CIO_SISO, cmds, formats)</span>
 <span class="line-empty" title="No Anys on this line!">        else:  # directory</span>
 <span class="line-precise" title="No Anys on this line!">            cmds = titem.judge</span>
 <span class="line-precise" title="No Anys on this line!">            formats = {</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-any" title="Any Types on this line: 
-Error (x3)
-Explicit (x2)">            ui.console.info(f"Judging {titem.name}")</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)
+Explicit (x2)">            console.info(f"Judging {titem.name}")</span>
 <span class="line-precise" title="No Anys on this line!">            if cmds:</span>
 <span class="line-precise" title="No Anys on this line!">                return self.__runCommands(defaultData.CIO_SISO, cmds, formats, wdir=titem.path)</span>
 <span class="line-empty" title="No Anys on this line!">            else:</span>

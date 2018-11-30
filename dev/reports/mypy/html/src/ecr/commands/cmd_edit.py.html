@@ -54,15 +54,10 @@
 <span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
 <span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
 <span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
-<span id="L47" class="lineno"><a class="lineno" href="#L47">47</a></span>
-<span id="L48" class="lineno"><a class="lineno" href="#L48">48</a></span>
-<span id="L49" class="lineno"><a class="lineno" href="#L49">49</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import cast</span>
-<span class="line-empty" title="No Anys on this line!">from ..ui import command, SwitchState</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui.command import ReturnCode, Command, Namespace</span>
-<span class="line-empty" title="No Anys on this line!">from ..core import manager, WorkManager, WorkItem</span>
-<span class="line-empty" title="No Anys on this line!">from ..helper import loadMan, printHead</span>
+<span class="line-empty" title="No Anys on this line!">from ..core import WorkManager, WorkItem</span>
 <span class="line-empty" title="No Anys on this line!">from .. import shared, ui</span>
 <span class="line-empty" title="No Anys on this line!">from .helper import assertInited, printFileModify</span>
 <span class="line-empty" title="No Anys on this line!">from . import cmd_now</span>
@@ -109,7 +104,6 @@ Unannotated (x1)
 Explicit (x3)">            console.error(f"Editing file error {file}")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">            return ReturnCode.ERROR</span>
-<span class="line-unanalyzed" title="No Anys on this line!">        return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="No Anys on this line!">    def __init__(self):</span>
 <span class="line-any" title="Any Types on this line: 
