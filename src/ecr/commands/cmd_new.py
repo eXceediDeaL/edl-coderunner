@@ -1,9 +1,10 @@
 from typing import cast
-from ..ui.command import ReturnCode, Command, Namespace
-from ..core import WorkManager, WorkItem
-from .. import shared, ui
-from .helper import assertInited, printFileCreate
+
 from . import cmd_edit
+from .. import shared, ui
+from ..core import WorkItem, WorkManager
+from ..ui.command import Command, Namespace, ReturnCode
+from .helper import assertInited, printFileCreate
 
 
 class NewCommand(Command):

@@ -1,7 +1,7 @@
-from typing import List, Tuple, Optional, Callable
-from enum import Enum
-import sys
 import os
+import sys
+from enum import Enum
+from typing import Callable, List, Optional, Tuple
 
 
 class JudgeResult(Enum):

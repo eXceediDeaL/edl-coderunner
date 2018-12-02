@@ -1,6 +1,7 @@
-from typing import Optional, Tuple
-from ecr.lib.judger import JudgeResult, judging, trimLineEnd, DataItem
 import difflib
+from typing import Optional, Tuple
+
+from ecr.lib.judger import DataItem, JudgeResult, judging, trimLineEnd
 
 
 def judge(std: DataItem, out: DataItem) -> Tuple[JudgeResult, Optional[str]]:

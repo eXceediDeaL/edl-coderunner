@@ -1,9 +1,10 @@
 from typing import cast
-from ..ui.command import ReturnCode, Command, Namespace
-from ..core import WorkManager, WorkItem
-from .. import shared, ui
-from .helper import assertInited, printFileModify
+
 from . import cmd_now
+from .. import shared, ui
+from ..core import WorkItem, WorkManager
+from ..ui.command import Command, Namespace, ReturnCode
+from .helper import assertInited, printFileModify
 
 
 class EditCommand(Command):

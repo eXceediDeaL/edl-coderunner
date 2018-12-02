@@ -1,8 +1,9 @@
 from typing import cast
-from ..ui import SwitchState
-from ..ui.command import ReturnCode, Command, Namespace
-from ..core import manager, WorkManager
+
 from .. import shared, ui
+from ..core import WorkManager, manager
+from ..ui import SwitchState
+from ..ui.command import Command, Namespace, ReturnCode
 from .helper import assertInited
 
 

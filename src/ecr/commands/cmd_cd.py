@@ -1,7 +1,8 @@
 import os
-from ..ui.command import ReturnCode, Command, Namespace
-from ..helper import loadMan, printHead
+
 from .. import shared, ui
+from ..helper import loadMan, printHead
+from ..ui.command import Command, Namespace, ReturnCode
 
 
 class CdCommand(Command):

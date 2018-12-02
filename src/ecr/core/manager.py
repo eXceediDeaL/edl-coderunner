@@ -1,18 +1,20 @@
 import os
+import platform
 import shutil
 import subprocess
 import time
-import platform
-from typing import cast, Dict, List, Optional, Tuple, Callable
 from enum import Enum
-import yaml
+from typing import Callable, Dict, List, Optional, Tuple, cast
+
 import click
+import yaml
 from prompt_toolkit.application import run_in_terminal
-from .types import ExecutorMapping, CommandMapping, JudgerMapping, CommandList
-from ..ui import color
+
 from . import defaultData
 from . import path as ecrpath
 from .. import ui
+from ..ui import color
+from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping
 
 CONST_tempFileFilter: str = "tempFileFilter"
 CONST_importedCommand: str = "importedCommand"
@@ -377,10 +379,11 @@ class WorkManager:
                 return True
 
 
-def load(basepath: str) -> Optional[WorkManager]:
+def load(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
     if not hasInitialized(basepath):
         return None
     ret = WorkManager(basepath)
+    exp = None
     try:
         with open(ecrpath.getExecutorPath(basepath), "r", encoding='utf-8') as f:
             ret.executorMap = yaml.load(f.read())
@@ -398,9 +401,10 @@ def load(basepath: str) -> Optional[WorkManager]:
             ret.defaultJudger = config[CONST_defaultJudger]
             ret.eVersion = config[CONST_eVersion]
         ret.state = WorkManagerState.Loaded
-    except:
+    except Exception as e:
         ret.state = WorkManagerState.LoadFailed
-    return ret
+        exp = e
+    return ret, exp
 
 
 def clear(basepath: str)->None:

@@ -32,6 +32,8 @@ Use command `ecr` to run edl-cr.
 |-|-|
 |`-d --dir`|Set working directory|
 |`-c --command`|Execute command just like in interactive mode|
+|`-V --version`|Show ecr version|
+|`-v --verbose`|Enable `DEBUG` level for logging|
 
 ## Interactive Mode
 
@@ -141,6 +143,10 @@ Clean the compiling output and something else:
 > clean
 ```
 
+### Debug
+
+When you meet some errors, for example, ecr data loading failing, use `debug` command to get some information. This is also a useful tool when you create an issue.
+
 ### Variables
 
 You can use builtin variables just like in bash:
@@ -182,7 +188,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |`cls`|Clear console|
 |`exit`|Exit|
 |`-h --help`|Get help|
-|`debug [-os --os] [-c --config]`|Show debug data|
+|`debug [-os --os] [-c --config] [-l --log]`|Show debug data|
 
 # Config
 
@@ -207,6 +213,9 @@ defaultShell: powershell -c
 
 # The default time limit for every step when run
 defaultTimeLimit: 10
+
+# The ecr version for the config file
+eVersion: 0.0.2
 
 # Map name to system command
 importedCommand:

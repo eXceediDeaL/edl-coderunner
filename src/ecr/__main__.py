@@ -1,12 +1,13 @@
-from argparse import ArgumentParser, Namespace
-import sys
 import os
 import shlex
+import sys
+from argparse import ArgumentParser, Namespace
 from typing import List, NoReturn
-import prompt_toolkit
-from .core import manager, defaultData, getSystemCommand
-from . import helper, shared, commands, ui
 
+import prompt_toolkit
+
+from . import commands, helper, log, shared, ui
+from .core import defaultData, getSystemCommand, manager
 
 itParser: ArgumentParser = ArgumentParser()
 
@@ -48,6 +49,7 @@ def getITParser()->ITParser:
 
 
 def doSyscall(cmd, message) -> int:
+    log.debug(f"System call: {cmd}")
     console = ui.getConsole()
     console.info(message, end=" ")
     console.write(cmd)
@@ -83,6 +85,8 @@ def mainInit()->None:
 
     ui.setConsole(ui.CLI(inputCommandSession=cliInputSession))
 
+    log.debug("Main initializing finished.")
+
 
 def executeCommand(oricmd: str) -> int:
     console = ui.getConsole()
@@ -110,6 +114,8 @@ def executeCommand(oricmd: str) -> int:
                     return doSyscall(oricmd, "Call system command:")
         else:
             if hasattr(cmd, "func"):
+                log.debug(f"Builtin command: {oricmd}", extra={
+                    "namespace": cmd})
                 return cmd.func(cmd).value
     return 0
 
@@ -132,8 +138,10 @@ def main()->int:  # pragma: no cover
 
     baseParser = ArgumentParser(
         prog="ecr", description="Code Runner")
-    baseParser.add_argument("-v", "--version", default=False, action="store_true",
+    baseParser.add_argument("-V", "--version", default=False, action="store_true",
                             help="Get version")
+    baseParser.add_argument("-v", "--verbose", default=False, action="store_true",
+                            help="Log more information")
     baseParser.add_argument("-d", "--dir", default=None,
                             help="Set working directory")
     baseParser.add_argument(
@@ -143,7 +151,11 @@ def main()->int:  # pragma: no cover
         return commands.VersionCommand.default(Namespace()).value
     if baseCmd.dir:
         os.chdir(baseCmd.dir)
-
+    if baseCmd.verbose:
+        log.initializeLogger(level=log.logging.DEBUG, data=shared.getLogData())
+    else:
+        log.initializeLogger(level=log.logging.WARNING,
+                             data=shared.getLogData())
     mainInit()
 
     if baseCmd.command:

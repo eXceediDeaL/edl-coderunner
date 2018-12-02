@@ -1,5 +1,5 @@
 from .. import ui
-from ..ui.command import ReturnCode, Command, Namespace
+from ..ui.command import Command, Namespace, ReturnCode
 
 
 class ClsCommand(Command):

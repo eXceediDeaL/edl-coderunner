@@ -1,7 +1,8 @@
 from typing import cast
-from ..ui.command import ReturnCode, Command, Namespace
-from ..core import WorkManager
+
 from .. import shared
+from ..core import WorkManager
+from ..ui.command import Command, Namespace, ReturnCode
 from .helper import assertInited, printFileDelete
 
 

@@ -1,5 +1,5 @@
-from ..ui.command import ReturnCode, Command, Namespace
 from .. import shared, ui
+from ..ui.command import Command, Namespace, ReturnCode
 
 
 class PwdCommand(Command):

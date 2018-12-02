@@ -1,7 +1,8 @@
 from typing import cast
-from ..ui.command import ReturnCode, Command, Namespace
+
+from .. import log, shared, ui
 from ..core import WorkManager
-from .. import shared, ui
+from ..ui.command import Command, Namespace, ReturnCode
 from .helper import assertInited
 
 
@@ -25,6 +26,10 @@ class DebugCommand(Command):
                           platform.version(), *(platform.architecture()))
             console.write("Python:", platform.python_version(),
                           platform.python_implementation())
+        if args.log:
+            console.info("Log")
+            for msg in shared.getLogData():
+                console.write(log.colored(msg))
         return ReturnCode.OK
 
     def __init__(self):
@@ -36,4 +41,6 @@ class DebugCommand(Command):
                          default=False, help="Show config data")
         cmd.add_argument("-os", "--os", action="store_true",
                          default=False, help="Show OS data")
+        cmd.add_argument("-l", "--log", action="store_true",
+                         default=False, help="Show logs")
         return cmd

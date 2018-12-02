@@ -1,7 +1,8 @@
-from typing import Optional, Dict, cast
+from typing import Dict, List, Optional, cast
+
+from . import core
 from .core import WorkManager, path
 from .core.types import VariableMapping
-from . import core
 
 _cwd: Optional[str] = None
 
@@ -17,6 +18,12 @@ _variables: VariableMapping = {
     "input": lambda: path.getFileInputPath(_man.workingDirectory) if _man else None,
     "output": lambda: path.getFileOutputPath(_man.workingDirectory) if _man else None,
 }
+
+_logData: List[str] = []
+
+
+def getLogData() -> List[str]:
+    return _logData
 
 
 def getManager()->Optional[WorkManager]:

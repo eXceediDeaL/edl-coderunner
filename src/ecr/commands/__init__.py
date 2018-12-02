@@ -1,6 +1,6 @@
 from typing import List
-from ..ui.command import Command
 
+from ..ui.command import Command
 from .cmd_cd import CdCommand
 from .cmd_clean import CleanCommand
 from .cmd_clear import ClearCommand
@@ -12,6 +12,7 @@ from .cmd_init import InitCommand
 from .cmd_new import NewCommand
 from .cmd_now import NowCommand
 from .cmd_pwd import PwdCommand
+from .cmd_reload import ReloadCommand
 from .cmd_run import RunCommand
 from .cmd_test import TestCommand
 from .cmd_version import VersionCommand
@@ -23,7 +24,7 @@ commands: List[Command] = [
     InitCommand(),
     NewCommand(), NowCommand(),
     PwdCommand(),
-    RunCommand(),
+    ReloadCommand(), RunCommand(),
     TestCommand(),
     VersionCommand(),
 ]

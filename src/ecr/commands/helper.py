@@ -1,9 +1,9 @@
 from typing import Tuple, cast
-from ..core import WorkManager, WorkItem, WorkItemType
-from .. import ui
+
+from .. import shared, ui
+from ..core import WorkItem, WorkItemType, WorkManager
 from ..ui import color
 from ..ui.command import Namespace
-from .. import shared
 
 
 def printFileModify(file: str) -> None:

@@ -1,10 +1,11 @@
-from typing import cast
 import time
-from ..ui.command import ReturnCode, Command, Namespace
-from ..core import WorkManager, WorkItem, WorkItemType
+from typing import cast
+
 from .. import shared, ui
-from .helper import assertInited, printFileModify, getItem
+from ..core import WorkItem, WorkItemType, WorkManager
+from ..ui.command import Command, Namespace, ReturnCode
 from .cmd_run import RunWatchEventHandler
+from .helper import assertInited, getItem, printFileModify
 
 
 class TestCommand(Command):

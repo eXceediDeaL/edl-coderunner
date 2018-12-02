@@ -1,12 +1,14 @@
-from typing import cast
-import time
 import os
+import time
+from typing import cast
+
 from watchdog.events import FileSystemEventHandler
-from ..ui.command import ReturnCode, Command, Namespace
-from ..core import WorkManager, WorkItem, WorkItemType
-from ..core.defaultData import CIO_Types
+
 from .. import shared, ui
-from .helper import assertInited, printFileModify, getItem
+from ..core import WorkItem, WorkItemType, WorkManager
+from ..core.defaultData import CIO_Types
+from ..ui.command import Command, Namespace, ReturnCode
+from .helper import assertInited, getItem, printFileModify
 
 
 class RunWatchEventHandler(FileSystemEventHandler):

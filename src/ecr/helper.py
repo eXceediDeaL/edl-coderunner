@@ -1,18 +1,28 @@
 import re
-from typing import cast, Optional, Dict
-from .core import manager, WorkManager
+from typing import Dict, Optional, cast
+
+from . import log, shared, ui
+from .core import WorkManager, manager
 from .ui import color
-from . import shared, ui
 
 
 def loadMan()->None:
     try:
-        shared.setManager(manager.load(cast(str, shared.getCwd())))
-        man = shared.getManager()
-        if man and man.eVersion != shared.getVersion():
-            ui.getConsole().warning(
-                f"The config's version ({man.eVersion}) is not for current ecr ({shared.getVersion()}).")
-    except:
+        man, exp = manager.load(cast(str, shared.getCwd()))
+        if exp:
+            raise exp
+        else:
+            shared.setManager(man)
+            man = shared.getManager()
+            if man and man.eVersion != shared.getVersion():
+                msg = f"The config's version ({man.eVersion}) is not for current ecr ({shared.getVersion()})."
+                log.warning(msg)
+                ui.getConsole().warning(msg)
+            else:
+                log.debug("ECR data loaded.")
+    except Exception as e:
+        log.error("Loading failed", exc_info=True)
+        ui.getConsole().error(f"Loading failed: {e}")
         shared.setManager(None)
 
 
