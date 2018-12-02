@@ -54,24 +54,49 @@
 <span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
 <span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
 <span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
+<span id="L47" class="lineno"><a class="lineno" href="#L47">47</a></span>
+<span id="L48" class="lineno"><a class="lineno" href="#L48">48</a></span>
+<span id="L49" class="lineno"><a class="lineno" href="#L49">49</a></span>
+<span id="L50" class="lineno"><a class="lineno" href="#L50">50</a></span>
+<span id="L51" class="lineno"><a class="lineno" href="#L51">51</a></span>
+<span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
+<span id="L53" class="lineno"><a class="lineno" href="#L53">53</a></span>
+<span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
+<span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
+<span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import re</span>
-<span class="line-empty" title="No Anys on this line!">from typing import cast, Optional, Dict</span>
-<span class="line-empty" title="No Anys on this line!">from .core import manager, WorkManager</span>
+<span class="line-empty" title="No Anys on this line!">from typing import Dict, Optional, cast</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">from . import log, shared, ui</span>
+<span class="line-empty" title="No Anys on this line!">from .core import WorkManager, manager</span>
 <span class="line-empty" title="No Anys on this line!">from .ui import color</span>
-<span class="line-empty" title="No Anys on this line!">from . import shared, ui</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def loadMan()-&gt;None:</span>
 <span class="line-empty" title="No Anys on this line!">    try:</span>
-<span class="line-precise" title="No Anys on this line!">        shared.setManager(manager.load(cast(str, shared.getCwd())))</span>
-<span class="line-precise" title="No Anys on this line!">        man = shared.getManager()</span>
-<span class="line-precise" title="No Anys on this line!">        if man and man.eVersion != shared.getVersion():</span>
+<span class="line-precise" title="No Anys on this line!">        man, exp = manager.load(cast(str, shared.getCwd()))</span>
+<span class="line-precise" title="No Anys on this line!">        if exp:</span>
+<span class="line-precise" title="No Anys on this line!">            raise exp</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="No Anys on this line!">            shared.setManager(man)</span>
+<span class="line-precise" title="No Anys on this line!">            man = shared.getManager()</span>
+<span class="line-precise" title="No Anys on this line!">            if man and man.eVersion != shared.getVersion():</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">            ui.getConsole().warning(</span>
+Explicit (x4)">                msg = f"The config's version ({man.eVersion}) is not for current ecr ({shared.getVersion()})."</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">                f"The config's version ({man.eVersion}) is not for current ecr ({shared.getVersion()}).")</span>
-<span class="line-empty" title="No Anys on this line!">    except:</span>
+Explicit (x4)">                log.warning(msg)</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">                ui.getConsole().warning(msg)</span>
+<span class="line-empty" title="No Anys on this line!">            else:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">                log.debug("ECR data loaded.")</span>
+<span class="line-precise" title="No Anys on this line!">    except Exception as e:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">        log.error("Loading failed", exc_info=True)</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)
+Explicit (x2)">        ui.getConsole().error(f"Loading failed: {e}")</span>
 <span class="line-precise" title="No Anys on this line!">        shared.setManager(None)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>

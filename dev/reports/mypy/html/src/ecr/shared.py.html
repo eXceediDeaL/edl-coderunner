@@ -53,11 +53,19 @@
 <span id="L43" class="lineno"><a class="lineno" href="#L43">43</a></span>
 <span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
 <span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
+<span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
+<span id="L47" class="lineno"><a class="lineno" href="#L47">47</a></span>
+<span id="L48" class="lineno"><a class="lineno" href="#L48">48</a></span>
+<span id="L49" class="lineno"><a class="lineno" href="#L49">49</a></span>
+<span id="L50" class="lineno"><a class="lineno" href="#L50">50</a></span>
+<span id="L51" class="lineno"><a class="lineno" href="#L51">51</a></span>
+<span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import Optional, Dict, cast</span>
+<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import Dict, List, Optional, cast</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">from . import core</span>
 <span class="line-empty" title="No Anys on this line!">from .core import WorkManager, path</span>
 <span class="line-empty" title="No Anys on this line!">from .core.types import VariableMapping</span>
-<span class="line-empty" title="No Anys on this line!">from . import core</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">_cwd: Optional[str] = None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -73,6 +81,12 @@
 <span class="line-precise" title="No Anys on this line!">    "input": lambda: path.getFileInputPath(_man.workingDirectory) if _man else None,</span>
 <span class="line-precise" title="No Anys on this line!">    "output": lambda: path.getFileOutputPath(_man.workingDirectory) if _man else None,</span>
 <span class="line-empty" title="No Anys on this line!">}</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">_logData: List[str] = []</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def getLogData() -&gt; List[str]:</span>
+<span class="line-precise" title="No Anys on this line!">    return _logData</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def getManager()-&gt;Optional[WorkManager]:</span>

@@ -189,16 +189,29 @@
 <span id="L179" class="lineno"><a class="lineno" href="#L179">179</a></span>
 <span id="L180" class="lineno"><a class="lineno" href="#L180">180</a></span>
 <span id="L181" class="lineno"><a class="lineno" href="#L181">181</a></span>
+<span id="L182" class="lineno"><a class="lineno" href="#L182">182</a></span>
+<span id="L183" class="lineno"><a class="lineno" href="#L183">183</a></span>
+<span id="L184" class="lineno"><a class="lineno" href="#L184">184</a></span>
+<span id="L185" class="lineno"><a class="lineno" href="#L185">185</a></span>
+<span id="L186" class="lineno"><a class="lineno" href="#L186">186</a></span>
+<span id="L187" class="lineno"><a class="lineno" href="#L187">187</a></span>
+<span id="L188" class="lineno"><a class="lineno" href="#L188">188</a></span>
+<span id="L189" class="lineno"><a class="lineno" href="#L189">189</a></span>
+<span id="L190" class="lineno"><a class="lineno" href="#L190">190</a></span>
+<span id="L191" class="lineno"><a class="lineno" href="#L191">191</a></span>
+<span id="L192" class="lineno"><a class="lineno" href="#L192">192</a></span>
+<span id="L193" class="lineno"><a class="lineno" href="#L193">193</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">from argparse import ArgumentParser, Namespace</span>
-<span class="line-empty" title="No Anys on this line!">import sys</span>
-<span class="line-empty" title="No Anys on this line!">import os</span>
+<td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import shlex</span>
+<span class="line-empty" title="No Anys on this line!">import sys</span>
+<span class="line-empty" title="No Anys on this line!">from argparse import ArgumentParser, Namespace</span>
 <span class="line-empty" title="No Anys on this line!">from typing import List, NoReturn</span>
-<span class="line-empty" title="No Anys on this line!">import prompt_toolkit</span>
-<span class="line-empty" title="No Anys on this line!">from .core import manager, defaultData, getSystemCommand</span>
-<span class="line-empty" title="No Anys on this line!">from . import helper, shared, commands, ui</span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">import prompt_toolkit</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">from . import commands, helper, log, shared, ui</span>
+<span class="line-empty" title="No Anys on this line!">from .core import defaultData, getSystemCommand, manager</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">itParser: ArgumentParser = ArgumentParser()</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -248,6 +261,9 @@ Unannotated (x3)">        cmd.createParser(subpars)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">def doSyscall(cmd, message) -&gt; int:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x6)
+Unannotated (x1)">    log.debug(f"System call: {cmd}")</span>
 <span class="line-precise" title="No Anys on this line!">    console = ui.getConsole()</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">    console.info(message, end=" ")</span>
@@ -295,6 +311,9 @@ Unimported (x2)">        auto_suggest=AutoSuggestFromHistory())</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)">    ui.setConsole(ui.CLI(inputCommandSession=cliInputSession))</span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">    log.debug("Main initializing finished.")</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def executeCommand(oricmd: str) -&gt; int:</span>
 <span class="line-precise" title="No Anys on this line!">    console = ui.getConsole()</span>
@@ -333,6 +352,9 @@ Unannotated (x2)">                    return doSyscall(oricmd, "Call system comm
 <span class="line-empty" title="No Anys on this line!">        else:</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">            if hasattr(cmd, "func"):</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x6)">                log.debug(f"Builtin command: {oricmd}", extra={</span>
+<span class="line-precise" title="No Anys on this line!">                    "namespace": cmd})</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x3)">                return cmd.func(cmd).value</span>
 <span class="line-empty" title="No Anys on this line!">    return 0</span>
@@ -361,8 +383,11 @@ Unimported (x3)">    return merge_completers([wc, pc])</span>
 <span class="line-precise" title="No Anys on this line!">    baseParser = ArgumentParser(</span>
 <span class="line-empty" title="No Anys on this line!">        prog="ecr", description="Code Runner")</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x3)">    baseParser.add_argument("-v", "--version", default=False, action="store_true",</span>
+Explicit (x3)">    baseParser.add_argument("-V", "--version", default=False, action="store_true",</span>
 <span class="line-empty" title="No Anys on this line!">                            help="Get version")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">    baseParser.add_argument("-v", "--verbose", default=False, action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                            help="Log more information")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x3)">    baseParser.add_argument("-d", "--dir", default=None,</span>
 <span class="line-empty" title="No Anys on this line!">                            help="Set working directory")</span>
@@ -379,7 +404,14 @@ Explicit (x1)">    if baseCmd.dir:</span>
 <span class="line-any" title="Any Types on this line: 
 Omitted Generics (x1)
 Explicit (x1)">        os.chdir(baseCmd.dir)</span>
-<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">    if baseCmd.verbose:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">        log.initializeLogger(level=log.logging.DEBUG, data=shared.getLogData())</span>
+<span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">        log.initializeLogger(level=log.logging.WARNING,</span>
+<span class="line-precise" title="No Anys on this line!">                             data=shared.getLogData())</span>
 <span class="line-precise" title="No Anys on this line!">    mainInit()</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="Any Types on this line: 

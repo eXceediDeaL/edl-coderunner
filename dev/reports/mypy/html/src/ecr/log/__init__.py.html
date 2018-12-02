@@ -4,9 +4,9 @@
 <link rel="stylesheet" type="text/css" href="../../../../mypy-html.css">
 </head>
 <body>
-<h2>ecr.lib.judger</h2>
+<h2>ecr.log</h2>
 <table>
-<caption>src/ecr/lib/judger.py</caption>
+<caption>src/ecr/log/__init__.py</caption>
 <tbody><tr>
 <td class="table-lines"><pre><span id="L1" class="lineno"><a class="lineno" href="#L1">1</a></span>
 <span id="L2" class="lineno"><a class="lineno" href="#L2">2</a></span>
@@ -61,70 +61,86 @@
 <span id="L51" class="lineno"><a class="lineno" href="#L51">51</a></span>
 <span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
 <span id="L53" class="lineno"><a class="lineno" href="#L53">53</a></span>
+<span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
+<span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
+<span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
+<span id="L57" class="lineno"><a class="lineno" href="#L57">57</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import os</span>
-<span class="line-empty" title="No Anys on this line!">import sys</span>
-<span class="line-empty" title="No Anys on this line!">from enum import Enum</span>
-<span class="line-empty" title="No Anys on this line!">from typing import Callable, List, Optional, Tuple</span>
+<td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import logging</span>
+<span class="line-empty" title="No Anys on this line!">from typing import List, Dict</span>
+<span class="line-empty" title="No Anys on this line!">from prompt_toolkit import HTML</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">LOG_FORMAT = "#%(levelname)s|%(asctime)s|%(message)s"</span>
+<span class="line-precise" title="No Anys on this line!">DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">class JudgeResult(Enum):</span>
-<span class="line-precise" title="No Anys on this line!">    Accept = 0</span>
-<span class="line-precise" title="No Anys on this line!">    Wrong = 1</span>
-<span class="line-precise" title="No Anys on this line!">    Error = -1</span>
+<span class="line-empty" title="No Anys on this line!">class LogListHandler(logging.Handler):</span>
+<span class="line-precise" title="No Anys on this line!">    def __init__(self, data: List[str]):</span>
+<span class="line-precise" title="No Anys on this line!">        super().__init__()</span>
+<span class="line-precise" title="No Anys on this line!">        self.data = data</span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="No Anys on this line!">    def flush(self):</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        self.acquire()</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-empty" title="No Anys on this line!">            pass</span>
+<span class="line-empty" title="No Anys on this line!">        finally:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">            self.release()</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">class DataItem:</span>
-<span class="line-precise" title="No Anys on this line!">    def __init__(self, file: str, data: List[str]):</span>
-<span class="line-precise" title="No Anys on this line!">        self.file: str = file</span>
-<span class="line-precise" title="No Anys on this line!">        self.name = os.path.split(self.file)[-1]</span>
-<span class="line-precise" title="No Anys on this line!">        self.data: List[str] = data</span>
+<span class="line-any" title="No Anys on this line!">    def emit(self, record):</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x5)">            msg = self.format(record)</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x5)">            self.data.append(msg)</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">            self.flush()</span>
+<span class="line-precise" title="No Anys on this line!">        except Exception:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">            self.handleError(record)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">def judged(code: JudgeResult, message: Optional[str] = None):</span>
-<span class="line-precise" title="No Anys on this line!">    if message:</span>
+Unannotated (x1)">def initializeLogger(data: List[str], level=logging.WARNING)-&gt;None:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">    logging.basicConfig(level=level,</span>
+<span class="line-precise" title="No Anys on this line!">                        handlers=[LogListHandler(data)], format=LOG_FORMAT)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">levelToStyle: Dict[str, str] = {</span>
+<span class="line-empty" title="No Anys on this line!">    "DEBUG": 'fg="ansigreen"',</span>
+<span class="line-empty" title="No Anys on this line!">    "INFO": 'fg="ansicyan"',</span>
+<span class="line-empty" title="No Anys on this line!">    "WARNING": 'fg="ansiyellow"',</span>
+<span class="line-empty" title="No Anys on this line!">    "ERROR": 'fg="ansired"',</span>
+<span class="line-empty" title="No Anys on this line!">    "CRITICAL": 'fg="ansired"',</span>
+<span class="line-empty" title="No Anys on this line!">}</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x1)">def colored(msg: str) -&gt; HTML:</span>
+<span class="line-precise" title="No Anys on this line!">    if not msg.startswith("#"):</span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x4)
+Explicit (x2)">        return HTML(HTML(f'&lt;obj&gt;{msg}&lt;/obj&gt;'))</span>
+<span class="line-precise" title="No Anys on this line!">    spl = msg[1:].split('|')</span>
+<span class="line-precise" title="No Anys on this line!">    bg, tme, data = spl[0], spl[1], "|".join(spl[2:])</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">        print(message)</span>
+Explicit (x8)">    output = f'&lt;obj {levelToStyle[bg]}&gt;{bg}&lt;/obj&gt; &lt;obj fg="ansiblue"&gt;{tme}&lt;/obj&gt; &lt;obj&gt;{data}&lt;/obj&gt; '</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x2)">    exit(code.value)</span>
+Unimported (x2)">    return HTML(output)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def assertArgv()-&gt;None:</span>
-<span class="line-precise" title="No Anys on this line!">    if len(sys.argv) &lt; 3:</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x2)
-Explicit (x1)">        judged(JudgeResult.Error, "Judger Error: Not enough args")</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getFileNames()-&gt;Tuple[str, str]:</span>
-<span class="line-precise" title="No Anys on this line!">    return sys.argv[1], sys.argv[2]</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getFileContents() -&gt; Tuple[List[str], List[str]]:</span>
-<span class="line-precise" title="No Anys on this line!">    expectedFile, realFile = getFileNames()</span>
-<span class="line-precise" title="No Anys on this line!">    expectedData: List[str] = []</span>
-<span class="line-precise" title="No Anys on this line!">    realData: List[str] = []</span>
 <span class="line-precise" title="Any Types on this line: 
-Omitted Generics (x1)
-Explicit (x1)">    with open(expectedFile, "r", encoding='utf-8') as f:</span>
-<span class="line-precise" title="No Anys on this line!">        expectedData = f.readlines()</span>
+Explicit (x8)">info = logging.info</span>
 <span class="line-precise" title="Any Types on this line: 
-Omitted Generics (x1)
-Explicit (x1)">    with open(realFile, "r", encoding='utf-8') as f:</span>
-<span class="line-precise" title="No Anys on this line!">        realData = f.readlines()</span>
-<span class="line-precise" title="No Anys on this line!">    return expectedData, realData</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def trimLineEnd(data: List[str]) -&gt; List[str]:</span>
-<span class="line-precise" title="No Anys on this line!">    return [x.rstrip() for x in data]</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def judging(func: Callable[[DataItem, DataItem], Tuple[JudgeResult, Optional[str]]], autoload: bool = True) -&gt; None:</span>
-<span class="line-precise" title="No Anys on this line!">    assertArgv()</span>
-<span class="line-precise" title="No Anys on this line!">    files, data = getFileNames(), getFileContents() if autoload else ([], [])</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x2)">    judged(*func(DataItem(files[0], data[0]), DataItem(files[1], data[1])))</span>
+Explicit (x8)">debug = logging.debug</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x8)">warning = logging.warning</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x8)">error = logging.error</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x8)">critical = logging.critical</span>
 </pre></td>
 </tr></tbody>
 </table>

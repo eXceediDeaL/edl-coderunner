@@ -466,22 +466,28 @@
 <span id="L456" class="lineno"><a class="lineno" href="#L456">456</a></span>
 <span id="L457" class="lineno"><a class="lineno" href="#L457">457</a></span>
 <span id="L458" class="lineno"><a class="lineno" href="#L458">458</a></span>
+<span id="L459" class="lineno"><a class="lineno" href="#L459">459</a></span>
+<span id="L460" class="lineno"><a class="lineno" href="#L460">460</a></span>
+<span id="L461" class="lineno"><a class="lineno" href="#L461">461</a></span>
+<span id="L462" class="lineno"><a class="lineno" href="#L462">462</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
+<span class="line-empty" title="No Anys on this line!">import platform</span>
 <span class="line-empty" title="No Anys on this line!">import shutil</span>
 <span class="line-empty" title="No Anys on this line!">import subprocess</span>
 <span class="line-empty" title="No Anys on this line!">import time</span>
-<span class="line-empty" title="No Anys on this line!">import platform</span>
-<span class="line-empty" title="No Anys on this line!">from typing import cast, Dict, List, Optional, Tuple, Callable</span>
 <span class="line-empty" title="No Anys on this line!">from enum import Enum</span>
-<span class="line-empty" title="No Anys on this line!">import yaml</span>
+<span class="line-empty" title="No Anys on this line!">from typing import Callable, Dict, List, Optional, Tuple, cast</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">import click</span>
+<span class="line-empty" title="No Anys on this line!">import yaml</span>
 <span class="line-empty" title="No Anys on this line!">from prompt_toolkit.application import run_in_terminal</span>
-<span class="line-empty" title="No Anys on this line!">from .types import ExecutorMapping, CommandMapping, JudgerMapping, CommandList</span>
-<span class="line-empty" title="No Anys on this line!">from ..ui import color</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">from . import defaultData</span>
 <span class="line-empty" title="No Anys on this line!">from . import path as ecrpath</span>
 <span class="line-empty" title="No Anys on this line!">from .. import ui</span>
+<span class="line-empty" title="No Anys on this line!">from ..ui import color</span>
+<span class="line-empty" title="No Anys on this line!">from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">CONST_tempFileFilter: str = "tempFileFilter"</span>
 <span class="line-precise" title="No Anys on this line!">CONST_importedCommand: str = "importedCommand"</span>
@@ -934,10 +940,11 @@ Explicit (x2)">            console.info(f"Judging {titem.name}")</span>
 <span class="line-empty" title="No Anys on this line!">                return True</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def load(basepath: str) -&gt; Optional[WorkManager]:</span>
+<span class="line-precise" title="No Anys on this line!">def load(basepath: str) -&gt; Tuple[WorkManager, Optional[Exception]]:</span>
 <span class="line-precise" title="No Anys on this line!">    if not hasInitialized(basepath):</span>
 <span class="line-empty" title="No Anys on this line!">        return None</span>
 <span class="line-precise" title="No Anys on this line!">    ret = WorkManager(basepath)</span>
+<span class="line-precise" title="No Anys on this line!">    exp = None</span>
 <span class="line-empty" title="No Anys on this line!">    try:</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)
@@ -975,10 +982,11 @@ Explicit (x2)">            ret.defaultJudger = config[CONST_defaultJudger]</span
 Explicit (x2)">            ret.eVersion = config[CONST_eVersion]</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        ret.state = WorkManagerState.Loaded</span>
-<span class="line-empty" title="No Anys on this line!">    except:</span>
+<span class="line-precise" title="No Anys on this line!">    except Exception as e:</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        ret.state = WorkManagerState.LoadFailed</span>
-<span class="line-precise" title="No Anys on this line!">    return ret</span>
+<span class="line-precise" title="No Anys on this line!">        exp = e</span>
+<span class="line-precise" title="No Anys on this line!">    return ret, exp</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def clear(basepath: str)-&gt;None:</span>

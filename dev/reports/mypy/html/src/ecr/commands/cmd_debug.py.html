@@ -47,11 +47,19 @@
 <span id="L37" class="lineno"><a class="lineno" href="#L37">37</a></span>
 <span id="L38" class="lineno"><a class="lineno" href="#L38">38</a></span>
 <span id="L39" class="lineno"><a class="lineno" href="#L39">39</a></span>
+<span id="L40" class="lineno"><a class="lineno" href="#L40">40</a></span>
+<span id="L41" class="lineno"><a class="lineno" href="#L41">41</a></span>
+<span id="L42" class="lineno"><a class="lineno" href="#L42">42</a></span>
+<span id="L43" class="lineno"><a class="lineno" href="#L43">43</a></span>
+<span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
+<span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
+<span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import cast</span>
-<span class="line-empty" title="No Anys on this line!">from ..ui.command import ReturnCode, Command, Namespace</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">from .. import log, shared, ui</span>
 <span class="line-empty" title="No Anys on this line!">from ..core import WorkManager</span>
-<span class="line-empty" title="No Anys on this line!">from .. import shared, ui</span>
+<span class="line-empty" title="No Anys on this line!">from ..ui.command import Command, Namespace, ReturnCode</span>
 <span class="line-empty" title="No Anys on this line!">from .helper import assertInited</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -87,6 +95,14 @@ Unannotated (x2)">            console.write("OS:", platform.system(),</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x2)">            console.write("Python:", platform.python_version(),</span>
 <span class="line-precise" title="No Anys on this line!">                          platform.python_implementation())</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">        if args.log:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">            console.info("Log")</span>
+<span class="line-precise" title="No Anys on this line!">            for msg in shared.getLogData():</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)
+Unimported (x2)">                console.write(log.colored(msg))</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -103,6 +119,9 @@ Unannotated (x3)">        cmd.add_argument("-c", "--config", action="store_true"
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x3)">        cmd.add_argument("-os", "--os", action="store_true",</span>
 <span class="line-empty" title="No Anys on this line!">                         default=False, help="Show OS data")</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        cmd.add_argument("-l", "--log", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="Show logs")</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x1)">        return cmd</span>
 </pre></td>
