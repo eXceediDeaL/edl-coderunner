@@ -53,6 +53,8 @@
 <span id="L43" class="lineno"><a class="lineno" href="#L43">43</a></span>
 <span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
 <span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
+<span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
+<span id="L47" class="lineno"><a class="lineno" href="#L47">47</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import cast</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -82,7 +84,7 @@ Explicit (x3)">        file = args.file if args.file else cast(</span>
 <span class="line-precise" title="No Anys on this line!">            WorkItem, tman.currentFile).name</span>
 <span class="line-precise" title="No Anys on this line!">        result = tman.newCode(tman.getWorkItem(</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x3)">            args.file, args.dir) if args.file else None)</span>
+Explicit (x4)">            args.file, args.dir) if args.file else None, args.template)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">        if result:</span>
 <span class="line-precise" title="No Anys on this line!">            tman.currentFile = result</span>
@@ -116,6 +118,9 @@ Unannotated (x3)">        cmd.add_argument("-e", "--edit", action="store_true",<
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x3)">        cmd.add_argument("-d", "--dir", action="store_true",</span>
 <span class="line-empty" title="No Anys on this line!">                         default=False, help="As directory")</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        cmd.add_argument("-t", "--template", type=str,</span>
+<span class="line-empty" title="No Anys on this line!">                         default=None, help="Template name")</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x1)">        return cmd</span>
 </pre></td>

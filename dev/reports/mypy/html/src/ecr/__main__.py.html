@@ -209,6 +209,10 @@
 <span id="L199" class="lineno"><a class="lineno" href="#L199">199</a></span>
 <span id="L200" class="lineno"><a class="lineno" href="#L200">200</a></span>
 <span id="L201" class="lineno"><a class="lineno" href="#L201">201</a></span>
+<span id="L202" class="lineno"><a class="lineno" href="#L202">202</a></span>
+<span id="L203" class="lineno"><a class="lineno" href="#L203">203</a></span>
+<span id="L204" class="lineno"><a class="lineno" href="#L204">204</a></span>
+<span id="L205" class="lineno"><a class="lineno" href="#L205">205</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import shlex</span>
@@ -459,9 +463,14 @@ Unimported (x2)">                completer=getCommandCompleter(), complete_in_th
 <span class="line-precise" title="No Anys on this line!">        if helper.varFormatRE.fullmatch(_oricmd):</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x2)">            console.write(oricmd)</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="No Anys on this line!">            retcode = executeCommand(oricmd)</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x3)">        elif executeCommand(oricmd) == ui.command.ReturnCode.EXIT.value:</span>
-<span class="line-empty" title="No Anys on this line!">            break</span>
+Explicit (x3)">            if retcode == ui.command.ReturnCode.EXIT.value:</span>
+<span class="line-empty" title="No Anys on this line!">                break</span>
+<span class="line-precise" title="No Anys on this line!">            elif retcode != 0:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x8)">                log.warning(f"Command returned {retcode}: {oricmd}")</span>
 <span class="line-empty" title="No Anys on this line!">    return 0</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>

@@ -492,6 +492,29 @@
 <span id="L482" class="lineno"><a class="lineno" href="#L482">482</a></span>
 <span id="L483" class="lineno"><a class="lineno" href="#L483">483</a></span>
 <span id="L484" class="lineno"><a class="lineno" href="#L484">484</a></span>
+<span id="L485" class="lineno"><a class="lineno" href="#L485">485</a></span>
+<span id="L486" class="lineno"><a class="lineno" href="#L486">486</a></span>
+<span id="L487" class="lineno"><a class="lineno" href="#L487">487</a></span>
+<span id="L488" class="lineno"><a class="lineno" href="#L488">488</a></span>
+<span id="L489" class="lineno"><a class="lineno" href="#L489">489</a></span>
+<span id="L490" class="lineno"><a class="lineno" href="#L490">490</a></span>
+<span id="L491" class="lineno"><a class="lineno" href="#L491">491</a></span>
+<span id="L492" class="lineno"><a class="lineno" href="#L492">492</a></span>
+<span id="L493" class="lineno"><a class="lineno" href="#L493">493</a></span>
+<span id="L494" class="lineno"><a class="lineno" href="#L494">494</a></span>
+<span id="L495" class="lineno"><a class="lineno" href="#L495">495</a></span>
+<span id="L496" class="lineno"><a class="lineno" href="#L496">496</a></span>
+<span id="L497" class="lineno"><a class="lineno" href="#L497">497</a></span>
+<span id="L498" class="lineno"><a class="lineno" href="#L498">498</a></span>
+<span id="L499" class="lineno"><a class="lineno" href="#L499">499</a></span>
+<span id="L500" class="lineno"><a class="lineno" href="#L500">500</a></span>
+<span id="L501" class="lineno"><a class="lineno" href="#L501">501</a></span>
+<span id="L502" class="lineno"><a class="lineno" href="#L502">502</a></span>
+<span id="L503" class="lineno"><a class="lineno" href="#L503">503</a></span>
+<span id="L504" class="lineno"><a class="lineno" href="#L504">504</a></span>
+<span id="L505" class="lineno"><a class="lineno" href="#L505">505</a></span>
+<span id="L506" class="lineno"><a class="lineno" href="#L506">506</a></span>
+<span id="L507" class="lineno"><a class="lineno" href="#L507">507</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import platform</span>
@@ -509,7 +532,7 @@
 <span class="line-empty" title="No Anys on this line!">from . import path as ecrpath</span>
 <span class="line-empty" title="No Anys on this line!">from .. import log, ui</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui import color</span>
-<span class="line-empty" title="No Anys on this line!">from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping</span>
+<span class="line-empty" title="No Anys on this line!">from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">CONST_tempFileFilter: str = "tempFileFilter"</span>
 <span class="line-precise" title="No Anys on this line!">CONST_importedCommand: str = "importedCommand"</span>
@@ -539,8 +562,6 @@
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">languageToFileext: Dict[str, str] = {</span>
 <span class="line-precise" title="No Anys on this line!">    v: k for k, v in fileextToLanguage.items()}</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">TEMPLATE_NAME: str = "base"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def hasInitialized(basepath: str)-&gt;bool:</span>
@@ -691,6 +712,8 @@ Explicit (x2)">            ret.judge = config["judge"]</span>
 Explicit (x2)">            ret.run = config["run"]</span>
 <span class="line-precise" title="No Anys on this line!">        return ret</span>
 <span class="line-empty" title="No Anys on this line!">    except:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">        log.errorWithException("Load dir-workitem failed")</span>
 <span class="line-empty" title="No Anys on this line!">        return None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -706,6 +729,7 @@ Explicit (x2)">            ret.run = config["run"]</span>
 <span class="line-precise" title="No Anys on this line!">        self.defaultIO: str = defaultData.io</span>
 <span class="line-precise" title="No Anys on this line!">        self.defaultTimeLimit: int = defaultData.timeLimit</span>
 <span class="line-precise" title="No Anys on this line!">        self.defaultJudger: str = defaultData.judger</span>
+<span class="line-precise" title="No Anys on this line!">        self.defaultTemplate: CodeTemplateMapping = defaultData.templates</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        self.state: WorkManagerState = WorkManagerState.Empty</span>
 <span class="line-precise" title="No Anys on this line!">        self.runner: Optional[Runner] = None</span>
@@ -741,7 +765,7 @@ Explicit (x1)">                self.workingDirectory, name, WorkItemType.File)</
 <span class="line-precise" title="No Anys on this line!">            self.currentFile = self.getWorkItem(item, isdir)</span>
 <span class="line-empty" title="No Anys on this line!">        return True</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">    def newCode(self, item: Optional[WorkItem] = None)-&gt;Optional[WorkItem]:</span>
+<span class="line-precise" title="No Anys on this line!">    def newCode(self, item: Optional[WorkItem] = None, template: Optional[str] = None) -&gt; Optional[WorkItem]:</span>
 <span class="line-empty" title="No Anys on this line!">        try:</span>
 <span class="line-precise" title="No Anys on this line!">            if not item:</span>
 <span class="line-precise" title="No Anys on this line!">                item = self.currentFile</span>
@@ -755,19 +779,34 @@ Omitted Generics (x1)">                os.mkdir(dstPath)</span>
 <span class="line-empty" title="No Anys on this line!">            else:</span>
 <span class="line-precise" title="No Anys on this line!">                ext = ecrpath.getFileExt(item.name)</span>
 <span class="line-precise" title="No Anys on this line!">                lang = fileextToLanguage[ext] if ext in fileextToLanguage else None</span>
-<span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">                tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(</span>
+<span class="line-precise" title="No Anys on this line!">                tempPath = None</span>
+<span class="line-precise" title="No Anys on this line!">                if lang:</span>
+<span class="line-precise" title="No Anys on this line!">                    if not template:</span>
+<span class="line-precise" title="No Anys on this line!">                        template = self.defaultTemplate[lang] if lang in self.defaultTemplate else None</span>
+<span class="line-precise" title="No Anys on this line!">                    if template:</span>
+<span class="line-precise" title="No Anys on this line!">                        tempPath = os.path.join(ecrpath.getTemplatePath(</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">                    self.getConfigPath()), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")</span>
+Explicit (x4)">                            self.getConfigPath()), f"{template}.{languageToFileext[lang]}")</span>
+<span class="line-precise" title="No Anys on this line!">                if tempPath:</span>
 <span class="line-precise" title="Any Types on this line: 
-Omitted Generics (x1)">                if tempPath and os.path.exists(tempPath):</span>
-<span class="line-precise" title="No Anys on this line!">                    shutil.copyfile(tempPath, dstPath)</span>
+Omitted Generics (x1)">                    if os.path.exists(tempPath):</span>
+<span class="line-precise" title="No Anys on this line!">                        shutil.copyfile(tempPath, dstPath)</span>
+<span class="line-empty" title="No Anys on this line!">                    else:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x6)">                        log.warning(f"Template file not found: {tempPath}")</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)
+Explicit (x1)">                        open(dstPath, "w").close()</span>
 <span class="line-empty" title="No Anys on this line!">                else:</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)
 Explicit (x1)">                    open(dstPath, "w").close()</span>
 <span class="line-precise" title="No Anys on this line!">            return item</span>
 <span class="line-empty" title="No Anys on this line!">        except:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">            log.errorWithException(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">                f"Create workitem({item.type if item else None}) failed: {item.name if item else None}")</span>
 <span class="line-empty" title="No Anys on this line!">            return None</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    def edit(self, item: Optional[WorkItem] = None)-&gt;bool:</span>
@@ -780,6 +819,10 @@ Explicit (x1)">            if titem.type == WorkItemType.File:</span>
 <span class="line-precise" title="No Anys on this line!">                click.edit(filename=titem.name, editor=self.defaultEditor)</span>
 <span class="line-empty" title="No Anys on this line!">            return True</span>
 <span class="line-empty" title="No Anys on this line!">        except:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">            log.errorWithException(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">                f"Edit workitem({titem.type}) failed: {titem.name}")</span>
 <span class="line-empty" title="No Anys on this line!">            return False</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    def clean(self, rmHandler: Optional[Callable[[str], None]] = None)-&gt;None:</span>
@@ -793,7 +836,8 @@ Omitted Generics (x1)">                        os.remove(os.path.join(self.worki
 <span class="line-precise" title="No Anys on this line!">                            rmHandler(file)</span>
 <span class="line-empty" title="No Anys on this line!">                        break</span>
 <span class="line-empty" title="No Anys on this line!">                except:</span>
-<span class="line-empty" title="No Anys on this line!">                    pass</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x6)">                    log.warning(f"Clean failed: {pat}", exc_info=True)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    def __runCommands(self, io: str, commands: CommandList, variables: Dict[str, str], wdir: Optional[str] = None) -&gt; bool:</span>
 <span class="line-any" title="Any Types on this line: 
@@ -823,6 +867,8 @@ Explicit (x2)">                "(", color.useYellow(str(ind+1)), f"/{sumStep}) "
 <span class="line-precise" title="No Anys on this line!">            proc = None</span>
 <span class="line-precise" title="No Anys on this line!">            rresult, retcode = None, None</span>
 <span class="line-empty" title="No Anys on this line!">            try:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">                rcmd = getSystemCommand(_cmd, self)</span>
 <span class="line-precise" title="No Anys on this line!">                if ind == sumStep - 1:  # last command</span>
 <span class="line-precise" title="No Anys on this line!">                    if io[0] == "s":  # stdin</span>
 <span class="line-precise" title="No Anys on this line!">                        timelimit = None</span>
@@ -832,8 +878,7 @@ Unannotated (x2)">                    console.write("-"*20)</span>
 Omitted Generics (x3)
 Special Form (x3)
 Explicit (x3)">                    proc = subprocess.Popen(</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">                        getSystemCommand(_cmd, self),</span>
+<span class="line-precise" title="No Anys on this line!">                        rcmd,</span>
 <span class="line-precise" title="No Anys on this line!">                        cwd=cwd,</span>
 <span class="line-precise" title="No Anys on this line!">                        stdin=None if io[0] == "s"</span>
 <span class="line-precise" title="Any Types on this line: 
@@ -849,14 +894,16 @@ Explicit (x1)">                        else open(ecrpath.getFileOutputPath(self.
 Omitted Generics (x3)
 Special Form (x3)
 Explicit (x3)">                    proc = subprocess.Popen(</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">                        getSystemCommand(_cmd, self),</span>
+<span class="line-precise" title="No Anys on this line!">                        rcmd,</span>
 <span class="line-precise" title="No Anys on this line!">                        cwd=cwd,</span>
 <span class="line-empty" title="No Anys on this line!">                        stdin=None, stdout=None, stderr=None)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">                self.runner = Runner(proc=proc, io=io, timelimit=timelimit)</span>
 <span class="line-precise" title="No Anys on this line!">                rresult, retcode = self.runner.run()</span>
 <span class="line-precise" title="No Anys on this line!">            except BaseException:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)
+Explicit (x2)">                log.errorWithException(f"Run command failed: {rcmd}")</span>
 <span class="line-precise" title="No Anys on this line!">                isSuccess = False</span>
 <span class="line-empty" title="No Anys on this line!">            finally:</span>
 <span class="line-precise" title="No Anys on this line!">                if ind == sumStep - 1:  # last command</span>
@@ -992,6 +1039,13 @@ Unannotated (x1)">            ret.judgerMap = yaml.load(f.read())</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)
+Explicit (x1)">        with open(ecrpath.getTemplateConfigPath(basepath), "r", encoding='utf-8') as f:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x2)
+Unannotated (x1)">            ret.defaultTemplate = yaml.load(f.read())</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)
 Explicit (x1)">        with open(ecrpath.getConfigPath(basepath), "r", encoding='utf-8') as f:</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x3)
@@ -1028,7 +1082,9 @@ Explicit (x4)">        log.info("Load from global data.")</span>
 <span class="line-precise" title="No Anys on this line!">        ret, exp = loadFrom(ecrpath.getGlobalBasePath())</span>
 <span class="line-precise" title="No Anys on this line!">        if ret:</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">            ret.state = WorkManagerState.LoadedFromGlobal</span>
+Explicit (x1)">            if ret.state == WorkManagerState.Loaded:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                ret.state = WorkManagerState.LoadedFromGlobal</span>
 <span class="line-precise" title="No Anys on this line!">            ret.workingDirectory = basepath</span>
 <span class="line-precise" title="No Anys on this line!">    return ret, exp</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -1083,6 +1139,15 @@ Explicit (x1)">    with open(ecrpath.getJudgerConfigPath(basepath), "w", encodin
 <span class="line-any" title="Any Types on this line: 
 Explicit (x3)
 Unannotated (x2)">        f.write(yaml.dump(judgers, indent=4,</span>
+<span class="line-empty" title="No Anys on this line!">                          default_flow_style=False))</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    templates = defaultData.templates</span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)
+Explicit (x1)">    with open(ecrpath.getTemplateConfigPath(basepath), "w", encoding='utf-8') as f:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x3)
+Unannotated (x2)">        f.write(yaml.dump(templates, indent=4,</span>
 <span class="line-empty" title="No Anys on this line!">                          default_flow_style=False))</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 

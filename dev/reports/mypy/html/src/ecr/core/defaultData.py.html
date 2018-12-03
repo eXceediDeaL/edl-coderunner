@@ -104,10 +104,21 @@
 <span id="L94" class="lineno"><a class="lineno" href="#L94">94</a></span>
 <span id="L95" class="lineno"><a class="lineno" href="#L95">95</a></span>
 <span id="L96" class="lineno"><a class="lineno" href="#L96">96</a></span>
+<span id="L97" class="lineno"><a class="lineno" href="#L97">97</a></span>
+<span id="L98" class="lineno"><a class="lineno" href="#L98">98</a></span>
+<span id="L99" class="lineno"><a class="lineno" href="#L99">99</a></span>
+<span id="L100" class="lineno"><a class="lineno" href="#L100">100</a></span>
+<span id="L101" class="lineno"><a class="lineno" href="#L101">101</a></span>
+<span id="L102" class="lineno"><a class="lineno" href="#L102">102</a></span>
+<span id="L103" class="lineno"><a class="lineno" href="#L103">103</a></span>
+<span id="L104" class="lineno"><a class="lineno" href="#L104">104</a></span>
+<span id="L105" class="lineno"><a class="lineno" href="#L105">105</a></span>
+<span id="L106" class="lineno"><a class="lineno" href="#L106">106</a></span>
+<span id="L107" class="lineno"><a class="lineno" href="#L107">107</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import List</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">from .types import CommandMapping, ExecutorMapping, JudgerMapping</span>
+<span class="line-empty" title="No Anys on this line!">from .types import CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">CIO_SISO: str = "ss"</span>
 <span class="line-precise" title="No Anys on this line!">CIO_SIFO: str = "sf"</span>
@@ -179,6 +190,17 @@ Explicit (x2)">    "powershell": [f"powershell -ExecutionPolicy ByPass -File {{{
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x6)">        f"python -u {{{CMDVAR_JudgerDir}}}/text.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"</span>
 <span class="line-empty" title="No Anys on this line!">    ],</span>
+<span class="line-empty" title="No Anys on this line!">}</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">templates: CodeTemplateMapping = {</span>
+<span class="line-empty" title="No Anys on this line!">    "c": "base",</span>
+<span class="line-empty" title="No Anys on this line!">    "cpp": "base",</span>
+<span class="line-empty" title="No Anys on this line!">    "csharp": "base",</span>
+<span class="line-empty" title="No Anys on this line!">    "fsharp": "base",</span>
+<span class="line-empty" title="No Anys on this line!">    "go": "base",</span>
+<span class="line-empty" title="No Anys on this line!">    "java": "base",</span>
+<span class="line-empty" title="No Anys on this line!">    "pascal": "base",</span>
+<span class="line-empty" title="No Anys on this line!">    "python": "base",</span>
 <span class="line-empty" title="No Anys on this line!">}</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">tempFileFilter: List[str] = ["exe", "o", "class", "out"]</span>

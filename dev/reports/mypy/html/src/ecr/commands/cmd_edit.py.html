@@ -97,7 +97,7 @@ Explicit (x1)">            printFileModify(file)</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">            if args.now:</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x2)">                return cmd_now.NowCommand.default(Namespace(file=file))</span>
+Explicit (x3)">                return cmd_now.NowCommand.default(Namespace(file=file, dir=args.dir))</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">            return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!">        else:</span>

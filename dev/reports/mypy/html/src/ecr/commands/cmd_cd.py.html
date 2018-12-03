@@ -35,10 +35,11 @@
 <span id="L25" class="lineno"><a class="lineno" href="#L25">25</a></span>
 <span id="L26" class="lineno"><a class="lineno" href="#L26">26</a></span>
 <span id="L27" class="lineno"><a class="lineno" href="#L27">27</a></span>
+<span id="L28" class="lineno"><a class="lineno" href="#L28">28</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import os</span>
+<td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">from .. import shared, ui</span>
+<span class="line-empty" title="No Anys on this line!">from .. import log, shared, ui</span>
 <span class="line-empty" title="No Anys on this line!">from ..helper import loadMan, printHead</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui.command import Command, Namespace, ReturnCode</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -57,6 +58,8 @@ Explicit (x1)">            return ReturnCode.ERROR</span>
 <span class="line-any" title="Any Types on this line: 
 Omitted Generics (x1)
 Explicit (x1)">        os.chdir(args.path)</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x7)">        log.info(f"Changed directory: {args.path}")</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)">        shared.setCwd(os.getcwd())</span>
 <span class="line-precise" title="No Anys on this line!">        loadMan()</span>
