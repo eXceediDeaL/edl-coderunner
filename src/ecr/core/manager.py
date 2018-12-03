@@ -12,7 +12,7 @@ from prompt_toolkit.application import run_in_terminal
 
 from . import defaultData
 from . import path as ecrpath
-from .. import ui
+from .. import log, ui
 from ..ui import color
 from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping
 
@@ -62,7 +62,8 @@ def getSystemCommand(cmd: str, man=None) -> str:
 class WorkManagerState(Enum):
     Empty: int = 0
     Loaded: int = 1
-    LoadFailed: int = 2
+    LoadedFromGlobal: int = 2
+    LoadFailed: int = 3
 
 
 class RunResult(Enum):
@@ -184,6 +185,12 @@ class WorkManager:
         from . import __version__
         self.eVersion: str = __version__
 
+    def getConfigPath(self) -> str:
+        if self.state == WorkManagerState.LoadedFromGlobal:
+            return ecrpath.getGlobalBasePath()
+        else:
+            return self.workingDirectory
+
     def getWorkItem(self, name: str, isdir: bool) -> Optional[WorkItem]:
         path = os.path.join(self.workingDirectory, name)
         if isdir:
@@ -216,7 +223,7 @@ class WorkManager:
                 lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
 
                 tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(
-                    self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
+                    self.getConfigPath()), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
                 if tempPath and os.path.exists(tempPath):
                     shutil.copyfile(tempPath, dstPath)
                 else:
@@ -277,9 +284,9 @@ class WorkManager:
                         getSystemCommand(_cmd, self),
                         cwd=cwd,
                         stdin=None if io[0] == "s"
-                        else open(ecrpath.getFileInputPath(self.workingDirectory), "r"),
+                        else open(ecrpath.getFileInputPath(self.getConfigPath()), "r"),
                         stdout=None if io[1] == "s"
-                        else open(ecrpath.getFileOutputPath(self.workingDirectory), "w"),
+                        else open(ecrpath.getFileOutputPath(self.getConfigPath()), "w"),
                         stderr=None)
                 else:
                     proc = subprocess.Popen(
@@ -360,9 +367,9 @@ class WorkManager:
         if titem.type == WorkItemType.File:
             cmds = self.judgerMap[judger]
             formats = {
-                defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.workingDirectory),
-                defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.workingDirectory),
-                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),
+                defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.getConfigPath()),
+                defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.getConfigPath()),
+                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.getConfigPath()),
             }
 
             console.info(f"Judging {titem.name}")
@@ -379,9 +386,9 @@ class WorkManager:
                 return True
 
 
-def load(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
+def loadFrom(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
     if not hasInitialized(basepath):
-        return None
+        return None, None
     ret = WorkManager(basepath)
     exp = None
     try:
@@ -407,14 +414,29 @@ def load(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
     return ret, exp
 
 
+def load(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
+    if hasInitialized(basepath):
+        ret, exp = loadFrom(basepath)
+    else:
+        log.info("Load from global data.")
+        ret, exp = loadFrom(ecrpath.getGlobalBasePath())
+        if ret:
+            ret.state = WorkManagerState.LoadedFromGlobal
+            ret.workingDirectory = basepath
+    return ret, exp
+
+
 def clear(basepath: str)->None:
     oipath = ecrpath.getMainPath(basepath)
     if hasInitialized(basepath):
+        log.debug(f"Clear ecr data at {basepath}")
         shutil.rmtree(oipath)
 
 
 def initialize(basepath: str)->None:
     clear(basepath)
+
+    log.debug(f"Initialize ecr data at {basepath}")
 
     oipath = ecrpath.getMainPath(basepath)
     os.mkdir(oipath)

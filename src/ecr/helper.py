@@ -8,7 +8,8 @@ from .ui import color
 
 def loadMan()->None:
     try:
-        man, exp = manager.load(cast(str, shared.getCwd()))
+        wd = shared.getCwd()
+        man, exp = manager.load(wd)
         if exp:
             raise exp
         else:
@@ -21,7 +22,7 @@ def loadMan()->None:
             else:
                 log.debug("ECR data loaded.")
     except Exception as e:
-        log.error("Loading failed", exc_info=True)
+        log.errorWithException("Loading failed")
         ui.getConsole().error(f"Loading failed: {e}")
         shared.setManager(None)
 
@@ -35,6 +36,8 @@ def printHead() -> None:
         console.write("ECR", end=" ")
     elif tman.state == manager.WorkManagerState.Loaded:
         console.write(color.useGreen("ECR"), end=" ")
+    elif tman.state == manager.WorkManagerState.LoadedFromGlobal:
+        console.write(color.useYellow("ECR"), end=" ")
     elif tman.state == manager.WorkManagerState.LoadFailed:
         console.write(color.useRed("ECR"), end=" ")
     console.write(shared.getCwd())
@@ -45,7 +48,7 @@ varFormatRE = re.compile(r'\$(?P<name>[a-zA-Z_]\w*)')
 
 def bashVarToPythonVar(m)->str:
     s = m.groupdict()
-    return "'{" + s["name"] + "}'"
+    return "'{" + s["name"].lower() + "}'"
 
 
 def formatWithVars(oristr: str, var: Dict[str, Optional[str]])->str:

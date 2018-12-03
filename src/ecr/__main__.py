@@ -6,7 +6,7 @@ from typing import List, NoReturn
 
 import prompt_toolkit
 
-from . import commands, helper, log, shared, ui
+from . import commands, core, helper, log, shared, ui
 from .core import defaultData, getSystemCommand, manager
 
 itParser: ArgumentParser = ArgumentParser()
@@ -75,8 +75,7 @@ def mainInit()->None:
     itParser = getITParser()
     shared.setCwd(os.getcwd())
 
-    if manager.hasInitialized(shared.getCwd()):
-        helper.loadMan()
+    helper.loadMan()
 
     cliInputSession = PromptSession(
         message=defaultPrompt,
@@ -154,8 +153,15 @@ def main()->int:  # pragma: no cover
     if baseCmd.verbose:
         log.initializeLogger(level=log.logging.DEBUG, data=shared.getLogData())
     else:
-        log.initializeLogger(level=log.logging.WARNING,
+        log.initializeLogger(level=log.logging.INFO,
                              data=shared.getLogData())
+
+    if not core.globalData.exists():
+        try:
+            core.globalData.initialize()
+        except:
+            log.errorWithException("Loading global failed.")
+
     mainInit()
 
     if baseCmd.command:
@@ -172,15 +178,17 @@ def main()->int:  # pragma: no cover
                     curfile = man.currentFile.name
                 else:
                     curfile = "@" + man.currentFile.name
-            oricmd = str(console.inputCommand(
+            _oricmd = str(console.inputCommand(
                 curfile + defaultPrompt,
-                completer=getCommandCompleter(), complete_in_thread=False))
-            oricmd = helper.formatWithVars(oricmd, shared.getVariables())
+                completer=getCommandCompleter(), complete_in_thread=False)).strip()
+            oricmd = helper.formatWithVars(_oricmd, shared.getVariables())
         except KeyboardInterrupt:
             continue
         except EOFError:
             break
-        if executeCommand(oricmd) == ui.command.ReturnCode.EXIT.value:
+        if helper.varFormatRE.fullmatch(_oricmd):
+            console.write(oricmd)
+        elif executeCommand(oricmd) == ui.command.ReturnCode.EXIT.value:
             break
     return 0
 

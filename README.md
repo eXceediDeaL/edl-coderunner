@@ -39,6 +39,13 @@ Use command `ecr` to run edl-cr.
 
 If you don't use `--command` options, edl-cr will run in interactive mode.
 
+|ECR Color|Description|
+|-|-|
+|Empty|No ecr data at current and global|
+|Yellow|Load from global ecr data|
+|Green|Load from current ecr data|
+|Red|Load failed|
+
 ### Initialize
 
 ```sh
@@ -165,6 +172,11 @@ You can use builtin variables just like in bash:
 |`input`|Input file|
 |`output`|Output file|
 |`config`|Config file|
+|`globaldir`|Get global ecr directory|
+
+### Global
+
+When ecr starts, it will initialize global data and config at `~` (if it doesn't exist), and you can use `init -g` , `clear -g` to re-initialize and clear that.
 
 ### Commands
 
@@ -174,13 +186,13 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 
 |Command|Description|
 |-|-|
-|`init`|Initialize ECR data|
-|`clear`|Clear ECR data|
+|`init [-g --globals]`|Initialize ECR data|
+|`clear [-g --globals]`|Clear ECR data|
 |`new [file] [-e --edit] [-d --dir]`|Create new code file|
 |`now [file] [-d --dir]`|Change current file|
 |`edit [file] [-n --now] [-d --dir]`|Edit code file|
 |`run [file] [-io --io] [-w] [-d --dir]`|Run code file|
-|`test [file] [-r --re] [-w] [-j --judger] [-d --dir]`|Judge output data|
+|`test [file] [-r --re] [-w] [-j --judger name] [-d --dir]`|Judge output data|
 |`clean`|Clean temp files|
 |`pwd`|Print working directory|
 |`cd`|Change working directory|
@@ -188,7 +200,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |`cls`|Clear console|
 |`exit`|Exit|
 |`-h --help`|Get help|
-|`debug [-os --os] [-c --config] [-l --log]`|Show debug data|
+|`debug [-os --os] [-c --config] [-l --log] [-o file]`|Show debug data|
 
 # Config
 

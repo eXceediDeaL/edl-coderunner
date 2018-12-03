@@ -11,12 +11,13 @@ _man: Optional[WorkManager] = None
 _variables: VariableMapping = {
     "current": lambda: _man.currentFile.name if _man and _man.currentFile else None,
     "wdir": lambda: _man.workingDirectory if _man else None,
-    "edir": lambda: path.getMainPath(_man.workingDirectory) if _man else None,
-    "jdir": lambda: path.getJudgerPath(_man.workingDirectory) if _man else None,
-    "tdir": lambda: path.getTemplatePath(_man.workingDirectory) if _man else None,
-    "config": lambda: path.getConfigPath(_man.workingDirectory) if _man else None,
-    "input": lambda: path.getFileInputPath(_man.workingDirectory) if _man else None,
-    "output": lambda: path.getFileOutputPath(_man.workingDirectory) if _man else None,
+    "edir": lambda: path.getMainPath(_man.getConfigPath()) if _man else None,
+    "jdir": lambda: path.getJudgerPath(_man.getConfigPath()) if _man else None,
+    "tdir": lambda: path.getTemplatePath(_man.getConfigPath()) if _man else None,
+    "config": lambda: path.getConfigPath(_man.getConfigPath()) if _man else None,
+    "input": lambda: path.getFileInputPath(_man.getConfigPath()) if _man else None,
+    "output": lambda: path.getFileOutputPath(_man.getConfigPath()) if _man else None,
+    "globaldir": lambda: path.getMainPath(path.getGlobalBasePath()),
 }
 
 _logData: List[str] = []

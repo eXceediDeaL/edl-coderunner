@@ -1,6 +1,10 @@
 import os
 
 
+def getGlobalBasePath() -> str:
+    return os.path.expanduser("~")
+
+
 def getMainPath(basepath: str)->str:
     return os.path.join(basepath, ".ecr")
 

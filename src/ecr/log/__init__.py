@@ -27,7 +27,7 @@ class LogListHandler(logging.Handler):
             self.handleError(record)
 
 
-def initializeLogger(data: List[str], level=logging.WARNING)->None:
+def initializeLogger(data: List[str], level=logging.INFO)->None:
     logging.basicConfig(level=level,
                         handlers=[LogListHandler(data)], format=LOG_FORMAT)
 
@@ -55,3 +55,7 @@ debug = logging.debug
 warning = logging.warning
 error = logging.error
 critical = logging.critical
+
+
+def errorWithException(msg, *args):
+    error(msg, *args, exc_info=True)
