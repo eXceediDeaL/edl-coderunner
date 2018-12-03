@@ -68,7 +68,8 @@ defaultPrompt = "> "
 def mainInit()->None:
     global itParser
     from prompt_toolkit import PromptSession
-    from pygments.lexers.shell import BashLexer
+    # from pygments.lexers.shell import BashLexer
+    from .ui.helper.BashLexer import BashLexer
     from prompt_toolkit.lexers import PygmentsLexer
     from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
@@ -187,7 +188,7 @@ def main()->int:  # pragma: no cover
         except EOFError:
             break
         if helper.varFormatRE.fullmatch(_oricmd):
-            console.write(oricmd)
+            console.write(oricmd.strip("'"))
         else:
             retcode = executeCommand(oricmd)
             if retcode == ui.command.ReturnCode.EXIT.value:

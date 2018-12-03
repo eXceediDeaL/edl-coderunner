@@ -400,7 +400,7 @@ class WorkManager:
                 return True
 
 
-def loadFrom(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
+def loadFrom(basepath: str) -> Tuple[Optional[WorkManager], Optional[Exception]]:
     if not hasInitialized(basepath):
         return None, None
     ret = WorkManager(basepath)
@@ -431,7 +431,7 @@ def loadFrom(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
     return ret, exp
 
 
-def load(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
+def load(basepath: str) -> Tuple[Optional[WorkManager], Optional[Exception]]:
     if hasInitialized(basepath):
         ret, exp = loadFrom(basepath)
     else:

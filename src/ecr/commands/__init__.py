@@ -14,6 +14,7 @@ from .cmd_now import NowCommand
 from .cmd_pwd import PwdCommand
 from .cmd_reload import ReloadCommand
 from .cmd_run import RunCommand
+from .cmd_status import StatusCommand
 from .cmd_test import TestCommand
 from .cmd_version import VersionCommand
 
@@ -25,6 +26,7 @@ commands: List[Command] = [
     NewCommand(), NowCommand(),
     PwdCommand(),
     ReloadCommand(), RunCommand(),
+    StatusCommand(),
     TestCommand(),
     VersionCommand(),
 ]

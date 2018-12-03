@@ -203,6 +203,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |`cls`|Clear console|
 |`exit`|Exit|
 |`-h --help`|Get help|
+|`status [-v --var]`|Get status|
 |`debug [-os --os] [-c --config] [-l --log] [-o file]`|Show debug data|
 
 # Config
