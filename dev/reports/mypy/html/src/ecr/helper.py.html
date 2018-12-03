@@ -64,6 +64,9 @@
 <span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
 <span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
 <span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
+<span id="L57" class="lineno"><a class="lineno" href="#L57">57</a></span>
+<span id="L58" class="lineno"><a class="lineno" href="#L58">58</a></span>
+<span id="L59" class="lineno"><a class="lineno" href="#L59">59</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import re</span>
 <span class="line-empty" title="No Anys on this line!">from typing import Dict, Optional, cast</span>
@@ -75,7 +78,8 @@
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def loadMan()-&gt;None:</span>
 <span class="line-empty" title="No Anys on this line!">    try:</span>
-<span class="line-precise" title="No Anys on this line!">        man, exp = manager.load(cast(str, shared.getCwd()))</span>
+<span class="line-precise" title="No Anys on this line!">        wd = shared.getCwd()</span>
+<span class="line-precise" title="No Anys on this line!">        man, exp = manager.load(wd)</span>
 <span class="line-precise" title="No Anys on this line!">        if exp:</span>
 <span class="line-precise" title="No Anys on this line!">            raise exp</span>
 <span class="line-empty" title="No Anys on this line!">        else:</span>
@@ -92,8 +96,8 @@ Unannotated (x1)">                ui.getConsole().warning(msg)</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x4)">                log.debug("ECR data loaded.")</span>
 <span class="line-precise" title="No Anys on this line!">    except Exception as e:</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">        log.error("Loading failed", exc_info=True)</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">        log.errorWithException("Loading failed")</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)
 Explicit (x2)">        ui.getConsole().error(f"Loading failed: {e}")</span>
@@ -115,6 +119,11 @@ Explicit (x1)">    elif tman.state == manager.WorkManagerState.Loaded:</span>
 Unannotated (x2)
 Unimported (x2)">        console.write(color.useGreen("ECR"), end=" ")</span>
 <span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">    elif tman.state == manager.WorkManagerState.LoadedFromGlobal:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)
+Unimported (x2)">        console.write(color.useYellow("ECR"), end=" ")</span>
+<span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">    elif tman.state == manager.WorkManagerState.LoadFailed:</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)
@@ -131,7 +140,7 @@ Unannotated (x1)">def bashVarToPythonVar(m)-&gt;str:</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x4)">    s = m.groupdict()</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x4)">    return "'{" + s["name"] + "}'"</span>
+Unannotated (x6)">    return "'{" + s["name"].lower() + "}'"</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def formatWithVars(oristr: str, var: Dict[str, Optional[str]])-&gt;str:</span>

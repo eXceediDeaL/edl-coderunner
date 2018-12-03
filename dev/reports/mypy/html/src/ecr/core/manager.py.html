@@ -470,6 +470,28 @@
 <span id="L460" class="lineno"><a class="lineno" href="#L460">460</a></span>
 <span id="L461" class="lineno"><a class="lineno" href="#L461">461</a></span>
 <span id="L462" class="lineno"><a class="lineno" href="#L462">462</a></span>
+<span id="L463" class="lineno"><a class="lineno" href="#L463">463</a></span>
+<span id="L464" class="lineno"><a class="lineno" href="#L464">464</a></span>
+<span id="L465" class="lineno"><a class="lineno" href="#L465">465</a></span>
+<span id="L466" class="lineno"><a class="lineno" href="#L466">466</a></span>
+<span id="L467" class="lineno"><a class="lineno" href="#L467">467</a></span>
+<span id="L468" class="lineno"><a class="lineno" href="#L468">468</a></span>
+<span id="L469" class="lineno"><a class="lineno" href="#L469">469</a></span>
+<span id="L470" class="lineno"><a class="lineno" href="#L470">470</a></span>
+<span id="L471" class="lineno"><a class="lineno" href="#L471">471</a></span>
+<span id="L472" class="lineno"><a class="lineno" href="#L472">472</a></span>
+<span id="L473" class="lineno"><a class="lineno" href="#L473">473</a></span>
+<span id="L474" class="lineno"><a class="lineno" href="#L474">474</a></span>
+<span id="L475" class="lineno"><a class="lineno" href="#L475">475</a></span>
+<span id="L476" class="lineno"><a class="lineno" href="#L476">476</a></span>
+<span id="L477" class="lineno"><a class="lineno" href="#L477">477</a></span>
+<span id="L478" class="lineno"><a class="lineno" href="#L478">478</a></span>
+<span id="L479" class="lineno"><a class="lineno" href="#L479">479</a></span>
+<span id="L480" class="lineno"><a class="lineno" href="#L480">480</a></span>
+<span id="L481" class="lineno"><a class="lineno" href="#L481">481</a></span>
+<span id="L482" class="lineno"><a class="lineno" href="#L482">482</a></span>
+<span id="L483" class="lineno"><a class="lineno" href="#L483">483</a></span>
+<span id="L484" class="lineno"><a class="lineno" href="#L484">484</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import platform</span>
@@ -485,7 +507,7 @@
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">from . import defaultData</span>
 <span class="line-empty" title="No Anys on this line!">from . import path as ecrpath</span>
-<span class="line-empty" title="No Anys on this line!">from .. import ui</span>
+<span class="line-empty" title="No Anys on this line!">from .. import log, ui</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui import color</span>
 <span class="line-empty" title="No Anys on this line!">from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -540,7 +562,8 @@ Explicit (x2)">        return " ".join([man.defaultShell, f'"{cmd}"'])</span>
 <span class="line-empty" title="No Anys on this line!">class WorkManagerState(Enum):</span>
 <span class="line-precise" title="No Anys on this line!">    Empty: int = 0</span>
 <span class="line-precise" title="No Anys on this line!">    Loaded: int = 1</span>
-<span class="line-precise" title="No Anys on this line!">    LoadFailed: int = 2</span>
+<span class="line-precise" title="No Anys on this line!">    LoadedFromGlobal: int = 2</span>
+<span class="line-precise" title="No Anys on this line!">    LoadFailed: int = 3</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">class RunResult(Enum):</span>
@@ -690,6 +713,13 @@ Explicit (x1)">        self.state: WorkManagerState = WorkManagerState.Empty</sp
 <span class="line-empty" title="No Anys on this line!">        from . import __version__</span>
 <span class="line-precise" title="No Anys on this line!">        self.eVersion: str = __version__</span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    def getConfigPath(self) -&gt; str:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        if self.state == WorkManagerState.LoadedFromGlobal:</span>
+<span class="line-precise" title="No Anys on this line!">            return ecrpath.getGlobalBasePath()</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="No Anys on this line!">            return self.workingDirectory</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    def getWorkItem(self, name: str, isdir: bool) -&gt; Optional[WorkItem]:</span>
 <span class="line-precise" title="No Anys on this line!">        path = os.path.join(self.workingDirectory, name)</span>
 <span class="line-precise" title="No Anys on this line!">        if isdir:</span>
@@ -728,7 +758,7 @@ Omitted Generics (x1)">                os.mkdir(dstPath)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">                tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">                    self.workingDirectory), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")</span>
+Explicit (x4)">                    self.getConfigPath()), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)">                if tempPath and os.path.exists(tempPath):</span>
 <span class="line-precise" title="No Anys on this line!">                    shutil.copyfile(tempPath, dstPath)</span>
@@ -808,11 +838,11 @@ Unannotated (x1)">                        getSystemCommand(_cmd, self),</span>
 <span class="line-precise" title="No Anys on this line!">                        stdin=None if io[0] == "s"</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)
-Explicit (x1)">                        else open(ecrpath.getFileInputPath(self.workingDirectory), "r"),</span>
+Explicit (x1)">                        else open(ecrpath.getFileInputPath(self.getConfigPath()), "r"),</span>
 <span class="line-precise" title="No Anys on this line!">                        stdout=None if io[1] == "s"</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)
-Explicit (x1)">                        else open(ecrpath.getFileOutputPath(self.workingDirectory), "w"),</span>
+Explicit (x1)">                        else open(ecrpath.getFileOutputPath(self.getConfigPath()), "w"),</span>
 <span class="line-empty" title="No Anys on this line!">                        stderr=None)</span>
 <span class="line-empty" title="No Anys on this line!">                else:</span>
 <span class="line-precise" title="Any Types on this line: 
@@ -917,9 +947,9 @@ Explicit (x2)">            console.info(f"Running {titem.name}")</span>
 Explicit (x1)">        if titem.type == WorkItemType.File:</span>
 <span class="line-precise" title="No Anys on this line!">            cmds = self.judgerMap[judger]</span>
 <span class="line-precise" title="No Anys on this line!">            formats = {</span>
-<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.workingDirectory),</span>
-<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.workingDirectory),</span>
-<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.workingDirectory),</span>
+<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.getConfigPath()),</span>
+<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.getConfigPath()),</span>
+<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.getConfigPath()),</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
@@ -940,9 +970,9 @@ Explicit (x2)">            console.info(f"Judging {titem.name}")</span>
 <span class="line-empty" title="No Anys on this line!">                return True</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def load(basepath: str) -&gt; Tuple[WorkManager, Optional[Exception]]:</span>
+<span class="line-precise" title="No Anys on this line!">def loadFrom(basepath: str) -&gt; Tuple[WorkManager, Optional[Exception]]:</span>
 <span class="line-precise" title="No Anys on this line!">    if not hasInitialized(basepath):</span>
-<span class="line-empty" title="No Anys on this line!">        return None</span>
+<span class="line-empty" title="No Anys on this line!">        return None, None</span>
 <span class="line-precise" title="No Anys on this line!">    ret = WorkManager(basepath)</span>
 <span class="line-precise" title="No Anys on this line!">    exp = None</span>
 <span class="line-empty" title="No Anys on this line!">    try:</span>
@@ -989,15 +1019,34 @@ Explicit (x1)">        ret.state = WorkManagerState.LoadFailed</span>
 <span class="line-precise" title="No Anys on this line!">    return ret, exp</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def load(basepath: str) -&gt; Tuple[WorkManager, Optional[Exception]]:</span>
+<span class="line-precise" title="No Anys on this line!">    if hasInitialized(basepath):</span>
+<span class="line-precise" title="No Anys on this line!">        ret, exp = loadFrom(basepath)</span>
+<span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x4)">        log.info("Load from global data.")</span>
+<span class="line-precise" title="No Anys on this line!">        ret, exp = loadFrom(ecrpath.getGlobalBasePath())</span>
+<span class="line-precise" title="No Anys on this line!">        if ret:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            ret.state = WorkManagerState.LoadedFromGlobal</span>
+<span class="line-precise" title="No Anys on this line!">            ret.workingDirectory = basepath</span>
+<span class="line-precise" title="No Anys on this line!">    return ret, exp</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def clear(basepath: str)-&gt;None:</span>
 <span class="line-precise" title="No Anys on this line!">    oipath = ecrpath.getMainPath(basepath)</span>
 <span class="line-precise" title="No Anys on this line!">    if hasInitialized(basepath):</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x6)">        log.debug(f"Clear ecr data at {basepath}")</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x6)">        shutil.rmtree(oipath)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def initialize(basepath: str)-&gt;None:</span>
 <span class="line-precise" title="No Anys on this line!">    clear(basepath)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x6)">    log.debug(f"Initialize ecr data at {basepath}")</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    oipath = ecrpath.getMainPath(basepath)</span>
 <span class="line-precise" title="Any Types on this line: 

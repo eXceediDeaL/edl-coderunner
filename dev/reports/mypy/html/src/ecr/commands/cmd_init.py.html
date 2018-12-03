@@ -26,27 +26,67 @@
 <span id="L16" class="lineno"><a class="lineno" href="#L16">16</a></span>
 <span id="L17" class="lineno"><a class="lineno" href="#L17">17</a></span>
 <span id="L18" class="lineno"><a class="lineno" href="#L18">18</a></span>
+<span id="L19" class="lineno"><a class="lineno" href="#L19">19</a></span>
+<span id="L20" class="lineno"><a class="lineno" href="#L20">20</a></span>
+<span id="L21" class="lineno"><a class="lineno" href="#L21">21</a></span>
+<span id="L22" class="lineno"><a class="lineno" href="#L22">22</a></span>
+<span id="L23" class="lineno"><a class="lineno" href="#L23">23</a></span>
+<span id="L24" class="lineno"><a class="lineno" href="#L24">24</a></span>
+<span id="L25" class="lineno"><a class="lineno" href="#L25">25</a></span>
+<span id="L26" class="lineno"><a class="lineno" href="#L26">26</a></span>
+<span id="L27" class="lineno"><a class="lineno" href="#L27">27</a></span>
+<span id="L28" class="lineno"><a class="lineno" href="#L28">28</a></span>
+<span id="L29" class="lineno"><a class="lineno" href="#L29">29</a></span>
+<span id="L30" class="lineno"><a class="lineno" href="#L30">30</a></span>
+<span id="L31" class="lineno"><a class="lineno" href="#L31">31</a></span>
+<span id="L32" class="lineno"><a class="lineno" href="#L32">32</a></span>
+<span id="L33" class="lineno"><a class="lineno" href="#L33">33</a></span>
+<span id="L34" class="lineno"><a class="lineno" href="#L34">34</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import cast</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">from .. import shared</span>
-<span class="line-empty" title="No Anys on this line!">from ..core import manager</span>
+<span class="line-empty" title="No Anys on this line!">from .. import log, shared, ui</span>
+<span class="line-empty" title="No Anys on this line!">from ..core import manager, globalData</span>
 <span class="line-empty" title="No Anys on this line!">from ..helper import loadMan, printHead</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui.command import Command, Namespace, ReturnCode</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">class InitCommand(Command):</span>
 <span class="line-empty" title="No Anys on this line!">    @staticmethod</span>
-<span class="line-precise" title="No Anys on this line!">    def default(args: Namespace)-&gt;ReturnCode:  # pylint: disable=W0613</span>
-<span class="line-precise" title="No Anys on this line!">        manager.initialize(cast(str, shared.getCwd()))</span>
-<span class="line-precise" title="No Anys on this line!">        loadMan()</span>
-<span class="line-precise" title="No Anys on this line!">        printHead()</span>
+<span class="line-precise" title="No Anys on this line!">    def default(args: Namespace) -&gt; ReturnCode:  # pylint: disable=W0613</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">        if args.globals:</span>
+<span class="line-empty" title="No Anys on this line!">            try:</span>
+<span class="line-precise" title="No Anys on this line!">                globalData.initialize()</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">        return ReturnCode.OK if shared.getManager() else ReturnCode.UNLOADED</span>
+Explicit (x1)">                return ReturnCode.OK</span>
+<span class="line-empty" title="No Anys on this line!">            except:</span>
+<span class="line-precise" title="No Anys on this line!">                msg = "Initializing global failed."</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">                log.errorWithException(msg)</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">                ui.getConsole().error(msg)</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                return ReturnCode.ERROR</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="No Anys on this line!">            manager.initialize(cast(str, shared.getCwd()))</span>
+<span class="line-precise" title="No Anys on this line!">            loadMan()</span>
+<span class="line-precise" title="No Anys on this line!">            printHead()</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x2)">            return ReturnCode.OK if shared.getManager() else ReturnCode.UNLOADED</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="No Anys on this line!">    def __init__(self):</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">        super().__init__("init", help="Initialize ECR data", func=InitCommand.default)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="No Anys on this line!">    def createParser(self, parsers):</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        cmd = super().createParser(parsers)</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        cmd.add_argument("-g", "--globals", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="Initialize global data")</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">        return cmd</span>
 </pre></td>
 </tr></tbody>
 </table>

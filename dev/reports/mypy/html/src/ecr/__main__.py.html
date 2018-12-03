@@ -201,6 +201,14 @@
 <span id="L191" class="lineno"><a class="lineno" href="#L191">191</a></span>
 <span id="L192" class="lineno"><a class="lineno" href="#L192">192</a></span>
 <span id="L193" class="lineno"><a class="lineno" href="#L193">193</a></span>
+<span id="L194" class="lineno"><a class="lineno" href="#L194">194</a></span>
+<span id="L195" class="lineno"><a class="lineno" href="#L195">195</a></span>
+<span id="L196" class="lineno"><a class="lineno" href="#L196">196</a></span>
+<span id="L197" class="lineno"><a class="lineno" href="#L197">197</a></span>
+<span id="L198" class="lineno"><a class="lineno" href="#L198">198</a></span>
+<span id="L199" class="lineno"><a class="lineno" href="#L199">199</a></span>
+<span id="L200" class="lineno"><a class="lineno" href="#L200">200</a></span>
+<span id="L201" class="lineno"><a class="lineno" href="#L201">201</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import shlex</span>
@@ -210,7 +218,7 @@
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">import prompt_toolkit</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">from . import commands, helper, log, shared, ui</span>
+<span class="line-empty" title="No Anys on this line!">from . import commands, core, helper, log, shared, ui</span>
 <span class="line-empty" title="No Anys on this line!">from .core import defaultData, getSystemCommand, manager</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">itParser: ArgumentParser = ArgumentParser()</span>
@@ -297,8 +305,7 @@ Unannotated (x1)">        console.error(retCode)</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x1)">    shared.setCwd(os.getcwd())</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">    if manager.hasInitialized(shared.getCwd()):</span>
-<span class="line-precise" title="No Anys on this line!">        helper.loadMan()</span>
+<span class="line-precise" title="No Anys on this line!">    helper.loadMan()</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x3)">    cliInputSession = PromptSession(</span>
@@ -410,8 +417,16 @@ Explicit (x1)">    if baseCmd.verbose:</span>
 Unannotated (x1)">        log.initializeLogger(level=log.logging.DEBUG, data=shared.getLogData())</span>
 <span class="line-empty" title="No Anys on this line!">    else:</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">        log.initializeLogger(level=log.logging.WARNING,</span>
+Unannotated (x1)">        log.initializeLogger(level=log.logging.INFO,</span>
 <span class="line-precise" title="No Anys on this line!">                             data=shared.getLogData())</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    if not core.globalData.exists():</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-precise" title="No Anys on this line!">            core.globalData.initialize()</span>
+<span class="line-empty" title="No Anys on this line!">        except:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">            log.errorWithException("Loading global failed.")</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    mainInit()</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="Any Types on this line: 
@@ -432,17 +447,20 @@ Explicit (x1)">                if man.currentFile.type == manager.WorkItemType.F
 <span class="line-empty" title="No Anys on this line!">                else:</span>
 <span class="line-precise" title="No Anys on this line!">                    curfile = "@" + man.currentFile.name</span>
 <span class="line-any" title="Any Types on this line: 
-Unimported (x2)">            oricmd = str(console.inputCommand(</span>
+Unimported (x2)">            _oricmd = str(console.inputCommand(</span>
 <span class="line-precise" title="No Anys on this line!">                curfile + defaultPrompt,</span>
 <span class="line-any" title="Any Types on this line: 
-Unimported (x2)">                completer=getCommandCompleter(), complete_in_thread=False))</span>
-<span class="line-precise" title="No Anys on this line!">            oricmd = helper.formatWithVars(oricmd, shared.getVariables())</span>
+Unimported (x2)">                completer=getCommandCompleter(), complete_in_thread=False)).strip()</span>
+<span class="line-precise" title="No Anys on this line!">            oricmd = helper.formatWithVars(_oricmd, shared.getVariables())</span>
 <span class="line-precise" title="No Anys on this line!">        except KeyboardInterrupt:</span>
 <span class="line-empty" title="No Anys on this line!">            continue</span>
 <span class="line-precise" title="No Anys on this line!">        except EOFError:</span>
 <span class="line-empty" title="No Anys on this line!">            break</span>
+<span class="line-precise" title="No Anys on this line!">        if helper.varFormatRE.fullmatch(_oricmd):</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">            console.write(oricmd)</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x3)">        if executeCommand(oricmd) == ui.command.ReturnCode.EXIT.value:</span>
+Explicit (x3)">        elif executeCommand(oricmd) == ui.command.ReturnCode.EXIT.value:</span>
 <span class="line-empty" title="No Anys on this line!">            break</span>
 <span class="line-empty" title="No Anys on this line!">    return 0</span>
 <span class="line-empty" title="No Anys on this line!"></span>

@@ -32,35 +32,77 @@
 <span id="L22" class="lineno"><a class="lineno" href="#L22">22</a></span>
 <span id="L23" class="lineno"><a class="lineno" href="#L23">23</a></span>
 <span id="L24" class="lineno"><a class="lineno" href="#L24">24</a></span>
+<span id="L25" class="lineno"><a class="lineno" href="#L25">25</a></span>
+<span id="L26" class="lineno"><a class="lineno" href="#L26">26</a></span>
+<span id="L27" class="lineno"><a class="lineno" href="#L27">27</a></span>
+<span id="L28" class="lineno"><a class="lineno" href="#L28">28</a></span>
+<span id="L29" class="lineno"><a class="lineno" href="#L29">29</a></span>
+<span id="L30" class="lineno"><a class="lineno" href="#L30">30</a></span>
+<span id="L31" class="lineno"><a class="lineno" href="#L31">31</a></span>
+<span id="L32" class="lineno"><a class="lineno" href="#L32">32</a></span>
+<span id="L33" class="lineno"><a class="lineno" href="#L33">33</a></span>
+<span id="L34" class="lineno"><a class="lineno" href="#L34">34</a></span>
+<span id="L35" class="lineno"><a class="lineno" href="#L35">35</a></span>
+<span id="L36" class="lineno"><a class="lineno" href="#L36">36</a></span>
+<span id="L37" class="lineno"><a class="lineno" href="#L37">37</a></span>
+<span id="L38" class="lineno"><a class="lineno" href="#L38">38</a></span>
+<span id="L39" class="lineno"><a class="lineno" href="#L39">39</a></span>
+<span id="L40" class="lineno"><a class="lineno" href="#L40">40</a></span>
+<span id="L41" class="lineno"><a class="lineno" href="#L41">41</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import cast</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">from .. import shared, ui</span>
-<span class="line-empty" title="No Anys on this line!">from ..core import WorkManager, manager</span>
+<span class="line-empty" title="No Anys on this line!">from .. import core, shared, ui</span>
+<span class="line-empty" title="No Anys on this line!">from ..core import WorkManager, WorkManagerState, manager</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui import SwitchState</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui.command import Command, Namespace, ReturnCode</span>
 <span class="line-empty" title="No Anys on this line!">from .helper import assertInited</span>
+<span class="line-empty" title="No Anys on this line!">from . import cmd_reload</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">class ClearCommand(Command):</span>
 <span class="line-empty" title="No Anys on this line!">    @staticmethod</span>
-<span class="line-precise" title="No Anys on this line!">    def default(args: Namespace)-&gt;ReturnCode:  # pylint: disable=W0613</span>
-<span class="line-precise" title="No Anys on this line!">        if not assertInited():</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">            return ReturnCode.UNLOADED</span>
-<span class="line-precise" title="No Anys on this line!">        tman: WorkManager = cast(WorkManager, shared.getManager())</span>
+<span class="line-precise" title="No Anys on this line!">    def default(args: Namespace) -&gt; ReturnCode:  # pylint: disable=W0613</span>
 <span class="line-precise" title="No Anys on this line!">        console = ui.getConsole()</span>
-<span class="line-precise" title="No Anys on this line!">        if console.confirm("Do you want to clear ALL?",</span>
+<span class="line-precise" title="No Anys on this line!">        tman: WorkManager = cast(WorkManager, shared.getManager())</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">        if args.globals:</span>
+<span class="line-precise" title="No Anys on this line!">            if console.confirm("Do you want to clear ALL for global?",</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x3)">                           [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:</span>
-<span class="line-precise" title="No Anys on this line!">            manager.clear(tman.workingDirectory)</span>
-<span class="line-precise" title="No Anys on this line!">            shared.setManager(None)</span>
+Explicit (x3)">                               [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:</span>
+<span class="line-precise" title="No Anys on this line!">                manager.clear(core.path.getGlobalBasePath())</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                if tman and tman.state == WorkManagerState.LoadedFromGlobal:</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                    cmd_reload.ReloadCommand.default(Namespace())</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="No Anys on this line!">            if not assertInited():</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                return ReturnCode.UNLOADED</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">            if console.confirm("Do you want to clear ALL?",</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x3)">                               [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:</span>
+<span class="line-precise" title="No Anys on this line!">                manager.clear(tman.workingDirectory)</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                cmd_reload.ReloadCommand.default(Namespace())</span>
+<span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="No Anys on this line!">    def __init__(self):</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">        super().__init__("clear", help="Clear ECR data", func=ClearCommand.default)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="No Anys on this line!">    def createParser(self, parsers):</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        cmd = super().createParser(parsers)</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        cmd.add_argument("-g", "--globals", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="Clear global data")</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">        return cmd</span>
 </pre></td>
 </tr></tbody>
 </table>

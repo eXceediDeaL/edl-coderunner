@@ -54,6 +54,32 @@
 <span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
 <span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
 <span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
+<span id="L47" class="lineno"><a class="lineno" href="#L47">47</a></span>
+<span id="L48" class="lineno"><a class="lineno" href="#L48">48</a></span>
+<span id="L49" class="lineno"><a class="lineno" href="#L49">49</a></span>
+<span id="L50" class="lineno"><a class="lineno" href="#L50">50</a></span>
+<span id="L51" class="lineno"><a class="lineno" href="#L51">51</a></span>
+<span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
+<span id="L53" class="lineno"><a class="lineno" href="#L53">53</a></span>
+<span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
+<span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
+<span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
+<span id="L57" class="lineno"><a class="lineno" href="#L57">57</a></span>
+<span id="L58" class="lineno"><a class="lineno" href="#L58">58</a></span>
+<span id="L59" class="lineno"><a class="lineno" href="#L59">59</a></span>
+<span id="L60" class="lineno"><a class="lineno" href="#L60">60</a></span>
+<span id="L61" class="lineno"><a class="lineno" href="#L61">61</a></span>
+<span id="L62" class="lineno"><a class="lineno" href="#L62">62</a></span>
+<span id="L63" class="lineno"><a class="lineno" href="#L63">63</a></span>
+<span id="L64" class="lineno"><a class="lineno" href="#L64">64</a></span>
+<span id="L65" class="lineno"><a class="lineno" href="#L65">65</a></span>
+<span id="L66" class="lineno"><a class="lineno" href="#L66">66</a></span>
+<span id="L67" class="lineno"><a class="lineno" href="#L67">67</a></span>
+<span id="L68" class="lineno"><a class="lineno" href="#L68">68</a></span>
+<span id="L69" class="lineno"><a class="lineno" href="#L69">69</a></span>
+<span id="L70" class="lineno"><a class="lineno" href="#L70">70</a></span>
+<span id="L71" class="lineno"><a class="lineno" href="#L71">71</a></span>
+<span id="L72" class="lineno"><a class="lineno" href="#L72">72</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import cast</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -68,41 +94,65 @@
 <span class="line-precise" title="No Anys on this line!">    def default(args: Namespace)-&gt;ReturnCode:  # pylint: disable=W0613</span>
 <span class="line-precise" title="No Anys on this line!">        console = ui.getConsole()</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">        if args.config:</span>
-<span class="line-precise" title="No Anys on this line!">            if not assertInited():</span>
+Explicit (x1)">        if args.out:</span>
+<span class="line-any" title="Any Types on this line: 
+Omitted Generics (x1)
+Explicit (x2)">            out = open(args.out, "w")</span>
+<span class="line-empty" title="No Anys on this line!">        else:</span>
+<span class="line-precise" title="No Anys on this line!">            out = console</span>
+<span class="line-empty" title="No Anys on this line!">        try:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">            if args.config:</span>
+<span class="line-precise" title="No Anys on this line!">                if not assertInited():</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">                return ReturnCode.UNLOADED</span>
+Explicit (x1)">                    return ReturnCode.UNLOADED</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">            console.info("Config loaded for current directory")</span>
-<span class="line-empty" title="No Anys on this line!">            import json</span>
+Unannotated (x1)">                console.info("Config loaded for current directory")</span>
+<span class="line-empty" title="No Anys on this line!">                import json</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)
-Explicit (x5)">            console.write(json.dumps(</span>
+Explicit (x5)">                out.write(json.dumps(</span>
 <span class="line-imprecise" title="Any Types on this line: 
-Explicit (x1)">                cast(WorkManager, shared.getManager()).__dict__, default=str, indent=4))</span>
+Explicit (x1)">                    cast(WorkManager, shared.getManager()).__dict__, default=str, indent=4))</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">        if args.os:</span>
+Explicit (x1)">            if args.os:</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">            console.info("Platform information")</span>
-<span class="line-empty" title="No Anys on this line!">            import platform</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">            console.write("Machine:", platform.machine(), platform.processor())</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">            console.write("Platform:", platform.platform())</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">            console.write("OS:", platform.system(),</span>
-<span class="line-precise" title="No Anys on this line!">                          platform.version(), *(platform.architecture()))</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">            console.write("Python:", platform.python_version(),</span>
-<span class="line-precise" title="No Anys on this line!">                          platform.python_implementation())</span>
+Unannotated (x1)">                console.info("Platform information")</span>
+<span class="line-empty" title="No Anys on this line!">                import platform</span>
+<span class="line-precise" title="No Anys on this line!">                lst = []</span>
+<span class="line-precise" title="No Anys on this line!">                lst.append(</span>
+<span class="line-precise" title="No Anys on this line!">                    " ".join(["Machine:", platform.machine(), platform.processor()]))</span>
+<span class="line-precise" title="No Anys on this line!">                lst.append(</span>
+<span class="line-precise" title="No Anys on this line!">                    " ".join(["Platform:", platform.platform()]))</span>
+<span class="line-precise" title="No Anys on this line!">                lst.append(</span>
+<span class="line-precise" title="No Anys on this line!">                    " ".join(["OS:", platform.system(),</span>
+<span class="line-precise" title="No Anys on this line!">                              platform.version()] + list(platform.architecture())))</span>
+<span class="line-precise" title="No Anys on this line!">                lst.append(</span>
+<span class="line-precise" title="No Anys on this line!">                    " ".join(["Python:", platform.python_version(),</span>
+<span class="line-precise" title="No Anys on this line!">                              platform.python_implementation()]))</span>
+<span class="line-precise" title="No Anys on this line!">                if out == console:</span>
+<span class="line-precise" title="No Anys on this line!">                    for msg in lst:</span>
+<span class="line-precise" title="No Anys on this line!">                        out.write(msg)</span>
+<span class="line-empty" title="No Anys on this line!">                else:</span>
+<span class="line-precise" title="No Anys on this line!">                    out.writelines([x+"\n" for x in lst])</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">        if args.log:</span>
+Explicit (x1)">            if args.log:</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">            console.info("Log")</span>
-<span class="line-precise" title="No Anys on this line!">            for msg in shared.getLogData():</span>
+Unannotated (x1)">                console.info("Log")</span>
+<span class="line-precise" title="No Anys on this line!">                if out == console:</span>
+<span class="line-precise" title="No Anys on this line!">                    for msg in shared.getLogData():</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x2)
-Unimported (x2)">                console.write(log.colored(msg))</span>
+Unimported (x2)">                        out.write(log.colored(msg))</span>
+<span class="line-empty" title="No Anys on this line!">                else:</span>
+<span class="line-precise" title="No Anys on this line!">                    out.writelines([x+"\n" for x in shared.getLogData()])</span>
+<span class="line-empty" title="No Anys on this line!">        except:</span>
+<span class="line-precise" title="No Anys on this line!">            msg = "Debug log output failed"</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">            console.error(msg)</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">            log.errorWithException(msg)</span>
+<span class="line-empty" title="No Anys on this line!">        finally:</span>
+<span class="line-precise" title="No Anys on this line!">            if out != console:</span>
+<span class="line-precise" title="No Anys on this line!">                out.close()</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">        return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -122,6 +172,8 @@ Unannotated (x3)">        cmd.add_argument("-os", "--os", action="store_true",</
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x3)">        cmd.add_argument("-l", "--log", action="store_true",</span>
 <span class="line-empty" title="No Anys on this line!">                         default=False, help="Show logs")</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">        cmd.add_argument("-o", "--out", type=str, help="Output to file")</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x1)">        return cmd</span>
 </pre></td>

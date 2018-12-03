@@ -60,6 +60,7 @@
 <span id="L50" class="lineno"><a class="lineno" href="#L50">50</a></span>
 <span id="L51" class="lineno"><a class="lineno" href="#L51">51</a></span>
 <span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
+<span id="L53" class="lineno"><a class="lineno" href="#L53">53</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import Dict, List, Optional, cast</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -74,12 +75,13 @@
 <span class="line-precise" title="No Anys on this line!">_variables: VariableMapping = {</span>
 <span class="line-precise" title="No Anys on this line!">    "current": lambda: _man.currentFile.name if _man and _man.currentFile else None,</span>
 <span class="line-precise" title="No Anys on this line!">    "wdir": lambda: _man.workingDirectory if _man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "edir": lambda: path.getMainPath(_man.workingDirectory) if _man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "jdir": lambda: path.getJudgerPath(_man.workingDirectory) if _man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "tdir": lambda: path.getTemplatePath(_man.workingDirectory) if _man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "config": lambda: path.getConfigPath(_man.workingDirectory) if _man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "input": lambda: path.getFileInputPath(_man.workingDirectory) if _man else None,</span>
-<span class="line-precise" title="No Anys on this line!">    "output": lambda: path.getFileOutputPath(_man.workingDirectory) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "edir": lambda: path.getMainPath(_man.getConfigPath()) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "jdir": lambda: path.getJudgerPath(_man.getConfigPath()) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "tdir": lambda: path.getTemplatePath(_man.getConfigPath()) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "config": lambda: path.getConfigPath(_man.getConfigPath()) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "input": lambda: path.getFileInputPath(_man.getConfigPath()) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "output": lambda: path.getFileOutputPath(_man.getConfigPath()) if _man else None,</span>
+<span class="line-precise" title="No Anys on this line!">    "globaldir": lambda: path.getMainPath(path.getGlobalBasePath()),</span>
 <span class="line-empty" title="No Anys on this line!">}</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">_logData: List[str] = []</span>
