@@ -1,6 +1,6 @@
 import os
 
-from .. import shared, ui
+from .. import log, shared, ui
 from ..helper import loadMan, printHead
 from ..ui.command import Command, Namespace, ReturnCode
 
@@ -13,6 +13,7 @@ class CdCommand(Command):
             console.error("No this directory")
             return ReturnCode.ERROR
         os.chdir(args.path)
+        log.info(f"Changed directory: {args.path}")
         shared.setCwd(os.getcwd())
         loadMan()
         printHead()

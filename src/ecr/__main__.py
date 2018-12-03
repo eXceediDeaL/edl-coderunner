@@ -188,8 +188,12 @@ def main()->int:  # pragma: no cover
             break
         if helper.varFormatRE.fullmatch(_oricmd):
             console.write(oricmd)
-        elif executeCommand(oricmd) == ui.command.ReturnCode.EXIT.value:
-            break
+        else:
+            retcode = executeCommand(oricmd)
+            if retcode == ui.command.ReturnCode.EXIT.value:
+                break
+            elif retcode != 0:
+                log.warning(f"Command returned {retcode}: {oricmd}")
     return 0
 
 

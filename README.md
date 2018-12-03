@@ -66,6 +66,9 @@ Create a new code file:
 
 ```sh
 > new a.cpp
+
+# Create code file with template
+> new a.cpp -t base
 ```
 
 It will use code template in `.ecr/templates/` to create file and set current file with the new file.
@@ -188,7 +191,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |-|-|
 |`init [-g --globals]`|Initialize ECR data|
 |`clear [-g --globals]`|Clear ECR data|
-|`new [file] [-e --edit] [-d --dir]`|Create new code file|
+|`new [file] [-e --edit] [-d --dir] [-t --template name]`|Create new code file|
 |`now [file] [-d --dir]`|Change current file|
 |`edit [file] [-n --now] [-d --dir]`|Edit code file|
 |`run [file] [-io --io] [-w] [-d --dir]`|Run code file|
@@ -275,12 +278,22 @@ You can use these varibles in command:
 
 ```yaml
 diff: # Judger name
-- python -u {judgerDir}/diff.py {expectFile} {realFile}
+- python -u {judgerDir}/text.py {expectFile} {realFile}
 ```
 
 ## judgers/
 
-This directory contains some judgers, you can 
+This directory contains some judgers, you can write your judgers and use them.
+
+## template.yml
+
+This file defines the default code template for different language.
+
+It only contains the template file name (without extension name), and it will find the file in `templates/`
+
+## templates/
+
+This directory contains code templates.
 
 # Developing
 

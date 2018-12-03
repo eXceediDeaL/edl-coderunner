@@ -14,7 +14,7 @@ from . import defaultData
 from . import path as ecrpath
 from .. import log, ui
 from ..ui import color
-from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping
+from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping
 
 CONST_tempFileFilter: str = "tempFileFilter"
 CONST_importedCommand: str = "importedCommand"
@@ -44,8 +44,6 @@ fileextToLanguage: Dict[str, str] = {
 
 languageToFileext: Dict[str, str] = {
     v: k for k, v in fileextToLanguage.items()}
-
-TEMPLATE_NAME: str = "base"
 
 
 def hasInitialized(basepath: str)->bool:
@@ -164,6 +162,7 @@ def loadCodeDirectory(path: str, name: str)->Optional[WorkItem]:
             ret.run = config["run"]
         return ret
     except:
+        log.errorWithException("Load dir-workitem failed")
         return None
 
 
@@ -179,6 +178,7 @@ class WorkManager:
         self.defaultIO: str = defaultData.io
         self.defaultTimeLimit: int = defaultData.timeLimit
         self.defaultJudger: str = defaultData.judger
+        self.defaultTemplate: CodeTemplateMapping = defaultData.templates
         self.state: WorkManagerState = WorkManagerState.Empty
         self.runner: Optional[Runner] = None
         self.defaultEditor: Optional[str] = None
@@ -209,7 +209,7 @@ class WorkManager:
             self.currentFile = self.getWorkItem(item, isdir)
         return True
 
-    def newCode(self, item: Optional[WorkItem] = None)->Optional[WorkItem]:
+    def newCode(self, item: Optional[WorkItem] = None, template: Optional[str] = None) -> Optional[WorkItem]:
         try:
             if not item:
                 item = self.currentFile
@@ -221,15 +221,25 @@ class WorkManager:
             else:
                 ext = ecrpath.getFileExt(item.name)
                 lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
-
-                tempPath = None if not lang else os.path.join(ecrpath.getTemplatePath(
-                    self.getConfigPath()), f"{TEMPLATE_NAME}.{languageToFileext[lang]}")
-                if tempPath and os.path.exists(tempPath):
-                    shutil.copyfile(tempPath, dstPath)
+                tempPath = None
+                if lang:
+                    if not template:
+                        template = self.defaultTemplate[lang] if lang in self.defaultTemplate else None
+                    if template:
+                        tempPath = os.path.join(ecrpath.getTemplatePath(
+                            self.getConfigPath()), f"{template}.{languageToFileext[lang]}")
+                if tempPath:
+                    if os.path.exists(tempPath):
+                        shutil.copyfile(tempPath, dstPath)
+                    else:
+                        log.warning(f"Template file not found: {tempPath}")
+                        open(dstPath, "w").close()
                 else:
                     open(dstPath, "w").close()
             return item
         except:
+            log.errorWithException(
+                f"Create workitem({item.type if item else None}) failed: {item.name if item else None}")
             return None
 
     def edit(self, item: Optional[WorkItem] = None)->bool:
@@ -241,6 +251,8 @@ class WorkManager:
                 click.edit(filename=titem.name, editor=self.defaultEditor)
             return True
         except:
+            log.errorWithException(
+                f"Edit workitem({titem.type}) failed: {titem.name}")
             return False
 
     def clean(self, rmHandler: Optional[Callable[[str], None]] = None)->None:
@@ -253,7 +265,7 @@ class WorkManager:
                             rmHandler(file)
                         break
                 except:
-                    pass
+                    log.warning(f"Clean failed: {pat}", exc_info=True)
 
     def __runCommands(self, io: str, commands: CommandList, variables: Dict[str, str], wdir: Optional[str] = None) -> bool:
         errf = color.useRed("×")
@@ -276,12 +288,13 @@ class WorkManager:
             proc = None
             rresult, retcode = None, None
             try:
+                rcmd = getSystemCommand(_cmd, self)
                 if ind == sumStep - 1:  # last command
                     if io[0] == "s":  # stdin
                         timelimit = None
                     console.write("-"*20)
                     proc = subprocess.Popen(
-                        getSystemCommand(_cmd, self),
+                        rcmd,
                         cwd=cwd,
                         stdin=None if io[0] == "s"
                         else open(ecrpath.getFileInputPath(self.getConfigPath()), "r"),
@@ -290,13 +303,14 @@ class WorkManager:
                         stderr=None)
                 else:
                     proc = subprocess.Popen(
-                        getSystemCommand(_cmd, self),
+                        rcmd,
                         cwd=cwd,
                         stdin=None, stdout=None, stderr=None)
 
                 self.runner = Runner(proc=proc, io=io, timelimit=timelimit)
                 rresult, retcode = self.runner.run()
             except BaseException:
+                log.errorWithException(f"Run command failed: {rcmd}")
                 isSuccess = False
             finally:
                 if ind == sumStep - 1:  # last command
@@ -398,6 +412,9 @@ def loadFrom(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
         with open(ecrpath.getJudgerConfigPath(basepath), "r", encoding='utf-8') as f:
             ret.judgerMap = yaml.load(f.read())
 
+        with open(ecrpath.getTemplateConfigPath(basepath), "r", encoding='utf-8') as f:
+            ret.defaultTemplate = yaml.load(f.read())
+
         with open(ecrpath.getConfigPath(basepath), "r", encoding='utf-8') as f:
             config = yaml.load(f.read())
             ret.tempFileFilter = config[CONST_tempFileFilter]
@@ -421,7 +438,8 @@ def load(basepath: str) -> Tuple[WorkManager, Optional[Exception]]:
         log.info("Load from global data.")
         ret, exp = loadFrom(ecrpath.getGlobalBasePath())
         if ret:
-            ret.state = WorkManagerState.LoadedFromGlobal
+            if ret.state == WorkManagerState.Loaded:
+                ret.state = WorkManagerState.LoadedFromGlobal
             ret.workingDirectory = basepath
     return ret, exp
 
@@ -462,6 +480,11 @@ def initialize(basepath: str)->None:
     judgers = defaultData.judgers
     with open(ecrpath.getJudgerConfigPath(basepath), "w", encoding='utf-8') as f:
         f.write(yaml.dump(judgers, indent=4,
+                          default_flow_style=False))
+
+    templates = defaultData.templates
+    with open(ecrpath.getTemplateConfigPath(basepath), "w", encoding='utf-8') as f:
+        f.write(yaml.dump(templates, indent=4,
                           default_flow_style=False))
 
     open(ecrpath.getFileInputPath(basepath), "w").close()

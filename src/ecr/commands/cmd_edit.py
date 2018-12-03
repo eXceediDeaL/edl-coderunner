@@ -27,7 +27,7 @@ class EditCommand(Command):
         if result:
             printFileModify(file)
             if args.now:
-                return cmd_now.NowCommand.default(Namespace(file=file))
+                return cmd_now.NowCommand.default(Namespace(file=file, dir=args.dir))
             return ReturnCode.OK
         else:
             console.error(f"Editing file error {file}")

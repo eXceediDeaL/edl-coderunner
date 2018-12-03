@@ -21,6 +21,10 @@ def getJudgerConfigPath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "judger.yml")
 
 
+def getTemplateConfigPath(basepath: str) -> str:
+    return os.path.join(getMainPath(basepath), "template.yml")
+
+
 def getTemplatePath(basepath: str) -> str:
     return os.path.join(getMainPath(basepath), "templates")
 

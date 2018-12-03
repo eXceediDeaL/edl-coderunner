@@ -20,7 +20,7 @@ class NewCommand(Command):
         file = args.file if args.file else cast(
             WorkItem, tman.currentFile).name
         result = tman.newCode(tman.getWorkItem(
-            args.file, args.dir) if args.file else None)
+            args.file, args.dir) if args.file else None, args.template)
 
         if result:
             tman.currentFile = result
@@ -42,4 +42,6 @@ class NewCommand(Command):
                          default=False, help="Edit the file")
         cmd.add_argument("-d", "--dir", action="store_true",
                          default=False, help="As directory")
+        cmd.add_argument("-t", "--template", type=str,
+                         default=None, help="Template name")
         return cmd

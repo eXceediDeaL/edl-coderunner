@@ -1,6 +1,6 @@
 from typing import List
 
-from .types import CommandMapping, ExecutorMapping, JudgerMapping
+from .types import CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping
 
 CIO_SISO: str = "ss"
 CIO_SIFO: str = "sf"
@@ -54,6 +54,17 @@ judgers: JudgerMapping = {
     "text": [
         f"python -u {{{CMDVAR_JudgerDir}}}/text.py {{{CMDVAR_ExpectFile}}} {{{CMDVAR_RealFile}}}"
     ],
+}
+
+templates: CodeTemplateMapping = {
+    "c": "base",
+    "cpp": "base",
+    "csharp": "base",
+    "fsharp": "base",
+    "go": "base",
+    "java": "base",
+    "pascal": "base",
+    "python": "base",
 }
 
 tempFileFilter: List[str] = ["exe", "o", "class", "out"]
