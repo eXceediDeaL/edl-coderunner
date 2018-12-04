@@ -1,7 +1,7 @@
 from typing import Tuple, cast
 
 from .. import shared, ui
-from ..core import WorkItem, WorkItemType, WorkManager
+from ..core import WorkItem, WorkManager
 from ..ui import color
 from ..ui.command import Namespace
 
@@ -34,9 +34,7 @@ def getItem(tman: WorkManager, args: Namespace)->Tuple[WorkItem, str]:
         item = tman.getWorkItem(
             args.file, args.dir)
     else:
-        item = tman.getWorkItem(
-            cast(WorkItem, tman.currentFile).name,
-            cast(WorkItem, tman.currentFile).type == WorkItemType.Directory)
-        tman.currentFile = item
-    file = cast(WorkItem, item).name
-    return cast(WorkItem, item), file
+        item = cast(WorkItem, tman.currentFile)
+    assert item
+    file = item.name
+    return item, file

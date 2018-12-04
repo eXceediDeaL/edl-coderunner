@@ -139,6 +139,8 @@ test: null
 run: null
 ```
 
+For commands in `test` and `run`, you can use variables as same as in `executor.yml` and `judger.yml` below.
+
 ### Input and Output
 
 The file input is at `.ecr/input.data`, and the file output is at `.ecr/output.data`.
@@ -191,6 +193,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |-|-|
 |`init [-g --globals]`|Initialize ECR data|
 |`clear [-g --globals]`|Clear ECR data|
+|`reload [-c --current]`|Reload ECR data or current work-item data|
 |`new [file] [-e --edit] [-d --dir] [-t --template name]`|Create new code file|
 |`now [file] [-d --dir]`|Change current file|
 |`edit [file] [-n --now] [-d --dir]`|Edit code file|
@@ -204,7 +207,7 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |`exit`|Exit|
 |`-h --help`|Get help|
 |`status [-v --var]`|Get status|
-|`debug [-os --os] [-c --config] [-l --log] [-o file]`|Show debug data|
+|`debug [-os --os] [-c --current] [-e --ecr] [-l --log] [-o file]`|Show debug data|
 
 # Config
 
@@ -278,7 +281,7 @@ You can use these varibles in command:
 - `realFile` The real output file
 
 ```yaml
-diff: # Judger name
+text: # Judger name
 - python -u {judgerDir}/text.py {expectFile} {realFile}
 ```
 
@@ -291,6 +294,8 @@ This directory contains some judgers, you can write your judgers and use them.
 This file defines the default code template for different language.
 
 It only contains the template file name (without extension name), and it will find the file in `templates/`
+
+The key-value pair `dir` gives the default template name for directory work-item.
 
 ## templates/
 

@@ -65,6 +65,7 @@ templates: CodeTemplateMapping = {
     "java": "base",
     "pascal": "base",
     "python": "base",
+    "dir": "base",
 }
 
 tempFileFilter: List[str] = ["exe", "o", "class", "out"]

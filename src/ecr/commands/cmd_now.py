@@ -1,6 +1,6 @@
 from typing import cast
 
-from .. import shared
+from .. import log, shared, ui
 from ..core import WorkManager
 from ..ui.command import Command, Namespace, ReturnCode
 from .helper import assertInited
@@ -12,8 +12,13 @@ class NowCommand(Command):
         if not assertInited():
             return ReturnCode.UNLOADED
         tman: WorkManager = cast(WorkManager, shared.getManager())
-        tman.setCurrent(args.file, args.dir)
-        return ReturnCode.OK
+        if tman.setCurrent(args.file, args.dir):
+            return ReturnCode.OK
+        else:
+            msg = "Load work-item failed"
+            log.error(msg)
+            ui.getConsole().error(msg)
+            return ReturnCode.ERROR
 
     def __init__(self):
         super().__init__("now", help="Change current file", func=NowCommand.default)

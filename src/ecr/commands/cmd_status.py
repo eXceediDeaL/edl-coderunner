@@ -1,9 +1,5 @@
-from typing import cast
-
-from .. import log, shared, ui
-from ..core import WorkManager
+from .. import shared, ui
 from ..ui.command import Command, Namespace, ReturnCode
-from .helper import assertInited
 
 
 class StatusCommand(Command):

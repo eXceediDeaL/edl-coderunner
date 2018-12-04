@@ -15,13 +15,24 @@ class DebugCommand(Command):
         else:
             out = console
         try:
-            if args.config:
+            if args.ecr:
                 if not assertInited():
                     return ReturnCode.UNLOADED
                 console.info("Config loaded for current directory")
                 import json
                 out.write(json.dumps(
                     cast(WorkManager, shared.getManager()).__dict__, default=str, indent=4))
+            if args.current:
+                if not assertInited():
+                    return ReturnCode.UNLOADED
+                console.info("Current work-item")
+                import json
+                witem = cast(WorkManager, shared.getManager()).currentFile
+                if witem:
+                    out.write(json.dumps(
+                        witem.__dict__, default=str, indent=4))
+                else:
+                    out.write("None")
             if args.os:
                 console.info("Platform information")
                 import platform
@@ -62,8 +73,10 @@ class DebugCommand(Command):
 
     def createParser(self, parsers):
         cmd = super().createParser(parsers)
-        cmd.add_argument("-c", "--config", action="store_true",
-                         default=False, help="Show config data")
+        cmd.add_argument("-e", "--ecr", action="store_true",
+                         default=False, help="Show ECR data")
+        cmd.add_argument("-c", "--current", action="store_true",
+                         default=False, help="Show current work-item")
         cmd.add_argument("-os", "--os", action="store_true",
                          default=False, help="Show OS data")
         cmd.add_argument("-l", "--log", action="store_true",
