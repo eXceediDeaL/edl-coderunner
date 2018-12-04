@@ -91,14 +91,19 @@
 <span id="L81" class="lineno"><a class="lineno" href="#L81">81</a></span>
 <span id="L82" class="lineno"><a class="lineno" href="#L82">82</a></span>
 <span id="L83" class="lineno"><a class="lineno" href="#L83">83</a></span>
+<span id="L84" class="lineno"><a class="lineno" href="#L84">84</a></span>
+<span id="L85" class="lineno"><a class="lineno" href="#L85">85</a></span>
+<span id="L86" class="lineno"><a class="lineno" href="#L86">86</a></span>
+<span id="L87" class="lineno"><a class="lineno" href="#L87">87</a></span>
+<span id="L88" class="lineno"><a class="lineno" href="#L88">88</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import time</span>
 <span class="line-empty" title="No Anys on this line!">from typing import cast</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">from .. import shared, ui</span>
-<span class="line-empty" title="No Anys on this line!">from ..core import WorkItem, WorkItemType, WorkManager</span>
+<span class="line-empty" title="No Anys on this line!">from ..core import WorkItem, WorkItemType, WorkManager, defaultData</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui.command import Command, Namespace, ReturnCode</span>
-<span class="line-empty" title="No Anys on this line!">from .cmd_run import RunWatchEventHandler</span>
+<span class="line-empty" title="No Anys on this line!">from .cmd_run import RunWatchEventHandler, RunCommand</span>
 <span class="line-empty" title="No Anys on this line!">from .helper import assertInited, getItem, printFileModify</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -121,9 +126,16 @@ Explicit (x1)">            return ReturnCode.ERROR</span>
 Explicit (x1)">        if not args.watch:</span>
 <span class="line-precise" title="No Anys on this line!">            item, file = getItem(tman, args)</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">            result = tman.judge(reexecute=args.re,</span>
+Explicit (x1)">            if args.re:</span>
+<span class="line-precise" title="No Anys on this line!">                runResult = RunCommand.default(</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">                                item=item, judger=args.judger)</span>
+Explicit (x3)">                    Namespace(io=defaultData.CIO_FIFO, file=args.file, dir=args.dir, watch=False))</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">                if runResult != ReturnCode.OK:</span>
+<span class="line-precise" title="No Anys on this line!">                    return runResult</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">            result = tman.judge(item=item, judger=args.judger)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">            if not result:</span>
 <span class="line-precise" title="Any Types on this line: 

@@ -141,6 +141,11 @@
 <span id="L131" class="lineno"><a class="lineno" href="#L131">131</a></span>
 <span id="L132" class="lineno"><a class="lineno" href="#L132">132</a></span>
 <span id="L133" class="lineno"><a class="lineno" href="#L133">133</a></span>
+<span id="L134" class="lineno"><a class="lineno" href="#L134">134</a></span>
+<span id="L135" class="lineno"><a class="lineno" href="#L135">135</a></span>
+<span id="L136" class="lineno"><a class="lineno" href="#L136">136</a></span>
+<span id="L137" class="lineno"><a class="lineno" href="#L137">137</a></span>
+<span id="L138" class="lineno"><a class="lineno" href="#L138">138</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-imprecise" title="Any Types on this line: 
 Error (x2)">import subprocess</span>
@@ -221,7 +226,7 @@ Explicit (x1)">            return (RunResult.Error, self.proc.returncode)</span>
 Explicit (x1)">        return (RunResult.Success, self.proc.returncode)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def runCommands(io: str, commands: CommandList, variables: Dict[str, str], wdir: str, getSystemCommand: Callable[[str], str], inputFile: str, outputFile: str, defaultTimeLimit: Optional[int] = None) -&gt; bool:</span>
+<span class="line-precise" title="No Anys on this line!">def runCommands(io: str, commands: CommandList, variables: Dict[str, str], wdir: str, getSystemCommand: Callable[[str], str], inputFile: str, outputFile: str, defaultTimeLimit: Optional[int] = None, showLog: bool = True) -&gt; bool:</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x3)">    errf = color.useRed("×")</span>
 <span class="line-any" title="Any Types on this line: 
@@ -241,11 +246,12 @@ Special Form (x1)">        if not isinstance(bcmd, str):</span>
 <span class="line-precise" title="No Anys on this line!">            cmd, timelimit = bcmd, defaultTimeLimit</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x2)">        _cmd = cmd.format(**variables)</span>
+<span class="line-precise" title="No Anys on this line!">        if showLog:</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">        console.write(</span>
+Unannotated (x2)">            console.write(</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)
-Explicit (x2)">            "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")</span>
+Explicit (x2)">                "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")</span>
 <span class="line-precise" title="No Anys on this line!">        proc = None</span>
 <span class="line-precise" title="No Anys on this line!">        rresult, retcode = None, None</span>
 <span class="line-precise" title="No Anys on this line!">        runner = None</span>
@@ -254,8 +260,9 @@ Explicit (x2)">            "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _c
 <span class="line-precise" title="No Anys on this line!">            if ind == sumStep - 1:  # last command</span>
 <span class="line-precise" title="No Anys on this line!">                if io[0] == "s":  # stdin</span>
 <span class="line-precise" title="No Anys on this line!">                    timelimit = None</span>
+<span class="line-precise" title="No Anys on this line!">                if showLog:</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                console.write("-"*20)</span>
+Unannotated (x2)">                    console.write("-"*20)</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x3)
 Special Form (x3)
@@ -289,32 +296,35 @@ Explicit (x2)">            log.errorWithException(f"Run command failed: {rcmd}")
 <span class="line-precise" title="No Anys on this line!">            isSuccess = False</span>
 <span class="line-empty" title="No Anys on this line!">        finally:</span>
 <span class="line-precise" title="No Anys on this line!">            if ind == sumStep - 1:  # last command</span>
+<span class="line-precise" title="No Anys on this line!">                if showLog:</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                console.write("-"*20)</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">            console.write(</span>
-<span class="line-empty" title="No Anys on this line!">                "   -&gt;",</span>
-<span class="line-any" title="Any Types on this line: 
-Unimported (x2)">                passf if retcode == 0 else errf,</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">                f"{round(runner.usedTime*1000)/1000}s")</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">            if rresult != RunResult.Success:</span>
+Unannotated (x2)">                    console.write("-"*20)</span>
+<span class="line-precise" title="No Anys on this line!">            if showLog:</span>
 <span class="line-precise" title="Any Types on this line: 
 Unannotated (x2)">                console.write(</span>
+<span class="line-empty" title="No Anys on this line!">                    "   -&gt;",</span>
+<span class="line-any" title="Any Types on this line: 
+Unimported (x2)">                    passf if retcode == 0 else errf,</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x2)">                    f"{round(runner.usedTime*1000)/1000}s")</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            if rresult != RunResult.Success:</span>
+<span class="line-precise" title="No Anys on this line!">                if showLog:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">                    console.write(</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)
-Explicit (x2)">                    "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",</span>
+Explicit (x2)">                        "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",</span>
 <span class="line-any" title="Any Types on this line: 
-Unimported (x2)">                    _cmd, " -&gt; ", color.useRed(str(retcode)), sep="", end=" ")</span>
+Unimported (x2)">                        _cmd, " -&gt; ", color.useRed(str(retcode)), sep="", end=" ")</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">                if rresult == RunResult.TimeOut:</span>
+Explicit (x1)">                    if rresult == RunResult.TimeOut:</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)
-Unimported (x2)">                    console.write(color.useRed("Time out"))</span>
-<span class="line-empty" title="No Anys on this line!">                else:</span>
+Unimported (x2)">                        console.write(color.useRed("Time out"))</span>
+<span class="line-empty" title="No Anys on this line!">                    else:</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">                    console.write()</span>
+Unannotated (x2)">                        console.write()</span>
 <span class="line-precise" title="No Anys on this line!">                isSuccess = False</span>
 <span class="line-precise" title="No Anys on this line!">    return isSuccess</span>
 </pre></td>

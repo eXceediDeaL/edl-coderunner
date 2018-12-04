@@ -139,6 +139,10 @@
 <span id="L129" class="lineno"><a class="lineno" href="#L129">129</a></span>
 <span id="L130" class="lineno"><a class="lineno" href="#L130">130</a></span>
 <span id="L131" class="lineno"><a class="lineno" href="#L131">131</a></span>
+<span id="L132" class="lineno"><a class="lineno" href="#L132">132</a></span>
+<span id="L133" class="lineno"><a class="lineno" href="#L133">133</a></span>
+<span id="L134" class="lineno"><a class="lineno" href="#L134">134</a></span>
+<span id="L135" class="lineno"><a class="lineno" href="#L135">135</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import time</span>
@@ -148,7 +152,7 @@
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">from .. import shared, ui</span>
 <span class="line-empty" title="No Anys on this line!">from ..core import WorkItem, WorkItemType, WorkManager</span>
-<span class="line-empty" title="No Anys on this line!">from ..core.defaultData import CIO_Types</span>
+<span class="line-empty" title="No Anys on this line!">from ..core.defaultData import CIO_Types, CIO_SISO</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui.command import Command, Namespace, ReturnCode</span>
 <span class="line-empty" title="No Anys on this line!">from .helper import assertInited, getItem, printFileModify</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -236,6 +240,10 @@ Explicit (x1)">            return ReturnCode.ERROR</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">        if not args.watch:</span>
 <span class="line-precise" title="No Anys on this line!">            item, file = getItem(tman, args)</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            if item.type == WorkItemType.Directory:</span>
+<span class="line-any" title="Any Types on this line: 
+Explicit (x1)">                args.io = CIO_SISO</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x1)">            result = tman.execute(io=args.io, item=item)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -254,6 +262,11 @@ Explicit (x2)">            file = args.file if args.file else cast(</span>
 <span class="line-any" title="No Anys on this line!">            def func():</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x3)">                item, file = getItem(tman, args)</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)
+Explicit (x1)">                if item.type == WorkItemType.Directory:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">                    args.io = CIO_SISO</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">                console.clear()</span>
 <span class="line-any" title="Any Types on this line: 

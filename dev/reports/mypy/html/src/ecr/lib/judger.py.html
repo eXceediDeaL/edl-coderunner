@@ -61,6 +61,9 @@
 <span id="L51" class="lineno"><a class="lineno" href="#L51">51</a></span>
 <span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
 <span id="L53" class="lineno"><a class="lineno" href="#L53">53</a></span>
+<span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
+<span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
+<span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import sys</span>
@@ -101,17 +104,27 @@ Explicit (x1)">        judged(JudgeResult.Error, "Judger Error: Not enough args"
 <span class="line-precise" title="No Anys on this line!">    return sys.argv[1], sys.argv[2]</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-precise" title="No Anys on this line!">def getFileContents() -&gt; Tuple[List[str], List[str]]:</span>
-<span class="line-precise" title="No Anys on this line!">    expectedFile, realFile = getFileNames()</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)">def getFileContents(expectedFile=None, realFile=None) -&gt; Tuple[List[str], List[str]]:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">    if not expectedFile:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">        expectedFile = getFileNames()[0]</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">    if not realFile:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">        expectedFile = getFileNames()[1]</span>
 <span class="line-precise" title="No Anys on this line!">    expectedData: List[str] = []</span>
 <span class="line-precise" title="No Anys on this line!">    realData: List[str] = []</span>
-<span class="line-precise" title="Any Types on this line: 
+<span class="line-any" title="Any Types on this line: 
 Omitted Generics (x1)
-Explicit (x1)">    with open(expectedFile, "r", encoding='utf-8') as f:</span>
+Explicit (x1)
+Unannotated (x1)">    with open(expectedFile, "r", encoding='utf-8') as f:</span>
 <span class="line-precise" title="No Anys on this line!">        expectedData = f.readlines()</span>
-<span class="line-precise" title="Any Types on this line: 
+<span class="line-any" title="Any Types on this line: 
 Omitted Generics (x1)
-Explicit (x1)">    with open(realFile, "r", encoding='utf-8') as f:</span>
+Explicit (x1)
+Unannotated (x1)">    with open(realFile, "r", encoding='utf-8') as f:</span>
 <span class="line-precise" title="No Anys on this line!">        realData = f.readlines()</span>
 <span class="line-precise" title="No Anys on this line!">    return expectedData, realData</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -122,7 +135,8 @@ Explicit (x1)">    with open(realFile, "r", encoding='utf-8') as f:</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def judging(func: Callable[[DataItem, DataItem], Tuple[JudgeResult, Optional[str]]], autoload: bool = True) -&gt; None:</span>
 <span class="line-precise" title="No Anys on this line!">    assertArgv()</span>
-<span class="line-precise" title="No Anys on this line!">    files, data = getFileNames(), getFileContents() if autoload else ([], [])</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x2)">    files, data = getFileNames(), getFileContents() if autoload else ([], [])</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x2)">    judged(*func(DataItem(files[0], data[0]), DataItem(files[1], data[1])))</span>
 </pre></td>

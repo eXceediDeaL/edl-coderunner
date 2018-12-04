@@ -70,6 +70,10 @@
 <span id="L60" class="lineno"><a class="lineno" href="#L60">60</a></span>
 <span id="L61" class="lineno"><a class="lineno" href="#L61">61</a></span>
 <span id="L62" class="lineno"><a class="lineno" href="#L62">62</a></span>
+<span id="L63" class="lineno"><a class="lineno" href="#L63">63</a></span>
+<span id="L64" class="lineno"><a class="lineno" href="#L64">64</a></span>
+<span id="L65" class="lineno"><a class="lineno" href="#L65">65</a></span>
+<span id="L66" class="lineno"><a class="lineno" href="#L66">66</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import shutil</span>
@@ -138,6 +142,10 @@ Explicit (x6)">    log.debug(f"Initialize template data at {basepath}")</span>
 Omitted Generics (x1)">    if not os.path.isdir(basepath):</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)">        os.mkdir(basepath)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!">    from ..core.manager import initializeCodeDirectory</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    initializeCodeDirectory(basepath)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    oipath = getConfigPath(basepath)</span>
 <span class="line-precise" title="Any Types on this line: 

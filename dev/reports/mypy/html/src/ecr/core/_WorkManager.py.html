@@ -381,12 +381,6 @@
 <span id="L371" class="lineno"><a class="lineno" href="#L371">371</a></span>
 <span id="L372" class="lineno"><a class="lineno" href="#L372">372</a></span>
 <span id="L373" class="lineno"><a class="lineno" href="#L373">373</a></span>
-<span id="L374" class="lineno"><a class="lineno" href="#L374">374</a></span>
-<span id="L375" class="lineno"><a class="lineno" href="#L375">375</a></span>
-<span id="L376" class="lineno"><a class="lineno" href="#L376">376</a></span>
-<span id="L377" class="lineno"><a class="lineno" href="#L377">377</a></span>
-<span id="L378" class="lineno"><a class="lineno" href="#L378">378</a></span>
-<span id="L379" class="lineno"><a class="lineno" href="#L379">379</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import platform</span>
@@ -609,8 +603,9 @@ Explicit (x1)">        if titem.type == WorkItemType.File:</span>
 <span class="line-precise" title="No Anys on this line!">            fileNameWithoutExt, fileext = cast(</span>
 <span class="line-imprecise" title="Any Types on this line: 
 Special Form (x2)">                Tuple[str, str], os.path.splitext(file))</span>
-<span class="line-precise" title="No Anys on this line!">            lang = fileextToLanguage[fileext[1:]]</span>
-<span class="line-precise" title="No Anys on this line!">            cmds = self.executorMap[lang]</span>
+<span class="line-precise" title="No Anys on this line!">            ext = fileext[1:]</span>
+<span class="line-precise" title="No Anys on this line!">            lang = fileextToLanguage[ext] if ext in fileextToLanguage else None</span>
+<span class="line-precise" title="No Anys on this line!">            cmds = self.executorMap[lang] if lang else []</span>
 <span class="line-precise" title="No Anys on this line!">            formats = {</span>
 <span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_FileName: file,</span>
 <span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,</span>
@@ -631,8 +626,6 @@ Unannotated (x1)">                               getSystemCommand=lambda p: getS
 <span class="line-empty" title="No Anys on this line!">        else:  # directory</span>
 <span class="line-precise" title="No Anys on this line!">            cmds = titem.run</span>
 <span class="line-precise" title="No Anys on this line!">            formats = {</span>
-<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_FileName: file,</span>
-<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
@@ -653,14 +646,11 @@ Unannotated (x1)">                                   getSystemCommand=lambda p: 
 <span class="line-empty" title="No Anys on this line!">        return False</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">    def judge(self, item: Optional[WorkItem] = None,</span>
-<span class="line-empty" title="No Anys on this line!">              reexecute: bool = False, judger: Optional[str] = None) -&gt; bool:</span>
+<span class="line-empty" title="No Anys on this line!">              judger: Optional[str] = None) -&gt; bool:</span>
 <span class="line-precise" title="No Anys on this line!">        if not item:</span>
 <span class="line-precise" title="No Anys on this line!">            item = self.currentFile</span>
 <span class="line-precise" title="No Anys on this line!">        if not judger:</span>
 <span class="line-precise" title="No Anys on this line!">            judger = self.defaultJudger</span>
-<span class="line-precise" title="No Anys on this line!">        if reexecute:</span>
-<span class="line-precise" title="No Anys on this line!">            if not self.execute(defaultData.CIO_FIFO, item):</span>
-<span class="line-empty" title="No Anys on this line!">                return False</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">        console = ui.getConsole()</span>
 <span class="line-precise" title="No Anys on this line!">        titem: WorkItem = cast(WorkItem, item)</span>
@@ -690,8 +680,6 @@ Unannotated (x1)">                               getSystemCommand=lambda p: getS
 <span class="line-precise" title="No Anys on this line!">            cmds = titem.test</span>
 <span class="line-precise" title="No Anys on this line!">            formats = {</span>
 <span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.getConfigPath()),</span>
-<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.getConfigPath()),</span>
-<span class="line-precise" title="No Anys on this line!">                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.getConfigPath()),</span>
 <span class="line-empty" title="No Anys on this line!">            }</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="Any Types on this line: 
