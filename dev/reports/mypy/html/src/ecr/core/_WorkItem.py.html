@@ -54,16 +54,62 @@
 <span id="L44" class="lineno"><a class="lineno" href="#L44">44</a></span>
 <span id="L45" class="lineno"><a class="lineno" href="#L45">45</a></span>
 <span id="L46" class="lineno"><a class="lineno" href="#L46">46</a></span>
+<span id="L47" class="lineno"><a class="lineno" href="#L47">47</a></span>
+<span id="L48" class="lineno"><a class="lineno" href="#L48">48</a></span>
+<span id="L49" class="lineno"><a class="lineno" href="#L49">49</a></span>
+<span id="L50" class="lineno"><a class="lineno" href="#L50">50</a></span>
+<span id="L51" class="lineno"><a class="lineno" href="#L51">51</a></span>
+<span id="L52" class="lineno"><a class="lineno" href="#L52">52</a></span>
+<span id="L53" class="lineno"><a class="lineno" href="#L53">53</a></span>
+<span id="L54" class="lineno"><a class="lineno" href="#L54">54</a></span>
+<span id="L55" class="lineno"><a class="lineno" href="#L55">55</a></span>
+<span id="L56" class="lineno"><a class="lineno" href="#L56">56</a></span>
+<span id="L57" class="lineno"><a class="lineno" href="#L57">57</a></span>
+<span id="L58" class="lineno"><a class="lineno" href="#L58">58</a></span>
+<span id="L59" class="lineno"><a class="lineno" href="#L59">59</a></span>
+<span id="L60" class="lineno"><a class="lineno" href="#L60">60</a></span>
+<span id="L61" class="lineno"><a class="lineno" href="#L61">61</a></span>
+<span id="L62" class="lineno"><a class="lineno" href="#L62">62</a></span>
+<span id="L63" class="lineno"><a class="lineno" href="#L63">63</a></span>
+<span id="L64" class="lineno"><a class="lineno" href="#L64">64</a></span>
+<span id="L65" class="lineno"><a class="lineno" href="#L65">65</a></span>
+<span id="L66" class="lineno"><a class="lineno" href="#L66">66</a></span>
+<span id="L67" class="lineno"><a class="lineno" href="#L67">67</a></span>
+<span id="L68" class="lineno"><a class="lineno" href="#L68">68</a></span>
+<span id="L69" class="lineno"><a class="lineno" href="#L69">69</a></span>
+<span id="L70" class="lineno"><a class="lineno" href="#L70">70</a></span>
+<span id="L71" class="lineno"><a class="lineno" href="#L71">71</a></span>
+<span id="L72" class="lineno"><a class="lineno" href="#L72">72</a></span>
+<span id="L73" class="lineno"><a class="lineno" href="#L73">73</a></span>
+<span id="L74" class="lineno"><a class="lineno" href="#L74">74</a></span>
+<span id="L75" class="lineno"><a class="lineno" href="#L75">75</a></span>
+<span id="L76" class="lineno"><a class="lineno" href="#L76">76</a></span>
+<span id="L77" class="lineno"><a class="lineno" href="#L77">77</a></span>
+<span id="L78" class="lineno"><a class="lineno" href="#L78">78</a></span>
+<span id="L79" class="lineno"><a class="lineno" href="#L79">79</a></span>
+<span id="L80" class="lineno"><a class="lineno" href="#L80">80</a></span>
+<span id="L81" class="lineno"><a class="lineno" href="#L81">81</a></span>
+<span id="L82" class="lineno"><a class="lineno" href="#L82">82</a></span>
+<span id="L83" class="lineno"><a class="lineno" href="#L83">83</a></span>
+<span id="L84" class="lineno"><a class="lineno" href="#L84">84</a></span>
+<span id="L85" class="lineno"><a class="lineno" href="#L85">85</a></span>
+<span id="L86" class="lineno"><a class="lineno" href="#L86">86</a></span>
+<span id="L87" class="lineno"><a class="lineno" href="#L87">87</a></span>
+<span id="L88" class="lineno"><a class="lineno" href="#L88">88</a></span>
+<span id="L89" class="lineno"><a class="lineno" href="#L89">89</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">import os</span>
-<span class="line-empty" title="No Anys on this line!">from enum import Enum</span>
-<span class="line-empty" title="No Anys on this line!">from typing import Dict, List, Optional</span>
-<span class="line-empty" title="No Anys on this line!"></span>
+<td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">from enum import Enum</span>
+<span class="line-empty" title="No Anys on this line!">from typing import Dict, List, Optional, Callable</span>
+<span class="line-empty" title="No Anys on this line!">import os</span>
+<span class="line-empty" title="No Anys on this line!">import shutil</span>
 <span class="line-empty" title="No Anys on this line!">import yaml</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">from . import path as ecrpath</span>
-<span class="line-empty" title="No Anys on this line!">from .. import log</span>
-<span class="line-empty" title="No Anys on this line!">from .types import CommandList</span>
+<span class="line-empty" title="No Anys on this line!">from . import defaultData</span>
+<span class="line-empty" title="No Anys on this line!">from .. import log, ui</span>
+<span class="line-empty" title="No Anys on this line!">from ..types import CommandList</span>
+<span class="line-empty" title="No Anys on this line!">from ..template import Template, default_ignore</span>
+<span class="line-empty" title="No Anys on this line!">from ._Runner import runCommands</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">class WorkItemType(Enum):</span>
@@ -77,15 +123,15 @@ Explicit (x1)">    def __init__(self, path: str, name: str, types: WorkItemType 
 <span class="line-precise" title="No Anys on this line!">        self.path: str = path</span>
 <span class="line-precise" title="No Anys on this line!">        self.name: str = name</span>
 <span class="line-precise" title="No Anys on this line!">        self.type: WorkItemType = types</span>
-<span class="line-precise" title="No Anys on this line!">        self.run: Optional[CommandList] = None</span>
-<span class="line-precise" title="No Anys on this line!">        self.test: Optional[CommandList] = None</span>
+<span class="line-precise" title="No Anys on this line!">        self.run: CommandList = []</span>
+<span class="line-precise" title="No Anys on this line!">        self.test: CommandList = []</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">def initializeCodeDirectory(path: str) -&gt; None:</span>
 <span class="line-imprecise" title="Any Types on this line: 
 Omitted Generics (x2)">    config: Dict[str, Optional[List]] = {</span>
-<span class="line-empty" title="No Anys on this line!">        "run": None,</span>
-<span class="line-empty" title="No Anys on this line!">        "test": None,</span>
+<span class="line-empty" title="No Anys on this line!">        "run": [],</span>
+<span class="line-empty" title="No Anys on this line!">        "test": [],</span>
 <span class="line-empty" title="No Anys on this line!">    }</span>
 <span class="line-precise" title="Any Types on this line: 
 Omitted Generics (x1)
@@ -116,6 +162,59 @@ Explicit (x2)">            ret.run = config["run"]</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x4)">        log.errorWithException("Load dir-workitem failed")</span>
 <span class="line-empty" title="No Anys on this line!">        return None</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">def _runcommands(commands: CommandList, variables: Dict[str, str], wdir: str, getSystemCommand: Callable[[str], str], defaultTimeLimit: Optional[int] = None) -&gt; bool:</span>
+<span class="line-precise" title="No Anys on this line!">    return runCommands(io=defaultData.CIO_SISO, commands=commands, variables=variables, wdir=wdir,</span>
+<span class="line-precise" title="No Anys on this line!">                       getSystemCommand=getSystemCommand,</span>
+<span class="line-empty" title="No Anys on this line!">                       inputFile=None,</span>
+<span class="line-empty" title="No Anys on this line!">                       outputFile=None,</span>
+<span class="line-precise" title="No Anys on this line!">                       defaultTimeLimit=defaultTimeLimit)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x1)">def initializeCodeDirectoryWithTemplate(man, templ: Template, basepath: str, dstpath: str) -&gt; None:</span>
+<span class="line-precise" title="No Anys on this line!">    console = ui.getConsole()</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    formats = {</span>
+<span class="line-empty" title="No Anys on this line!">    }</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)
+Explicit (x4)">    console.info(f"Initialize {dstpath} by {templ.subject}")</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Omitted Generics (x1)">    if os.path.isdir(dstpath):</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x6)">        shutil.rmtree(dstpath)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    flag = True</span>
+<span class="line-empty" title="No Anys on this line!">    from ._manager import getSystemCommand</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">    console.info(f"Copying files")</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    if os.path.normpath(templ.rootPath) == os.path.normpath(basepath):</span>
+<span class="line-precise" title="Any Types on this line: 
+Special Form (x1)">        shutil.copytree(</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">            templ.rootPath, dstpath, ignore=default_ignore)</span>
+<span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-precise" title="Any Types on this line: 
+Special Form (x1)">        shutil.copytree(templ.rootPath, dstpath)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    if templ.after:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">        console.info(f"After creating")</span>
+<span class="line-imprecise" title="Any Types on this line: 
+Unannotated (x2)">        flag = flag and _runcommands(commands=templ.after, variables=formats, wdir=dstpath,</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x4)">                                     getSystemCommand=lambda p: getSystemCommand(p, man), defaultTimeLimit=man.defaultTimeLimit)</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">    if not flag:</span>
+<span class="line-precise" title="Any Types on this line: 
+Unannotated (x1)">        console.error("Initializing failed.")</span>
+<span class="line-empty" title="No Anys on this line!">        return</span>
 </pre></td>
 </tr></tbody>
 </table>

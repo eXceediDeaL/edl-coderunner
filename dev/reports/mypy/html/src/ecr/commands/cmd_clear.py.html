@@ -70,7 +70,7 @@
 Explicit (x1)">        if args.globals:</span>
 <span class="line-precise" title="No Anys on this line!">            if console.confirm("Do you want to clear ALL for global?",</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x3)">                               [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:</span>
+Explicit (x3)">                               [SwitchState.Yes, SwitchState.No]) == SwitchState.Yes:</span>
 <span class="line-precise" title="No Anys on this line!">                manager.clear(core.path.getGlobalBasePath())</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">                if tman and tman.state == WorkManagerState.LoadedFromGlobal:</span>
@@ -83,7 +83,7 @@ Explicit (x1)">                return ReturnCode.UNLOADED</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-precise" title="No Anys on this line!">            if console.confirm("Do you want to clear ALL?",</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x3)">                               [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:</span>
+Explicit (x3)">                               [SwitchState.Yes, SwitchState.No]) == SwitchState.Yes:</span>
 <span class="line-precise" title="No Anys on this line!">                manager.clear(tman.workingDirectory)</span>
 <span class="line-precise" title="Any Types on this line: 
 Explicit (x1)">                cmd_reload.ReloadCommand.default(Namespace())</span>
