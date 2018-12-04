@@ -16,7 +16,7 @@ class ClearCommand(Command):
 
         if args.globals:
             if console.confirm("Do you want to clear ALL for global?",
-                               [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
+                               [SwitchState.Yes, SwitchState.No]) == SwitchState.Yes:
                 manager.clear(core.path.getGlobalBasePath())
                 if tman and tman.state == WorkManagerState.LoadedFromGlobal:
                     cmd_reload.ReloadCommand.default(Namespace())
@@ -25,7 +25,7 @@ class ClearCommand(Command):
                 return ReturnCode.UNLOADED
 
             if console.confirm("Do you want to clear ALL?",
-                               [SwitchState.OK, SwitchState.Cancel]) == SwitchState.OK:
+                               [SwitchState.Yes, SwitchState.No]) == SwitchState.Yes:
                 manager.clear(tman.workingDirectory)
                 cmd_reload.ReloadCommand.default(Namespace())
 

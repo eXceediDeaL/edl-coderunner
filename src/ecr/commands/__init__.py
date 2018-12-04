@@ -15,6 +15,7 @@ from .cmd_pwd import PwdCommand
 from .cmd_reload import ReloadCommand
 from .cmd_run import RunCommand
 from .cmd_status import StatusCommand
+from .cmd_template import TemplateCommand
 from .cmd_test import TestCommand
 from .cmd_version import VersionCommand
 
@@ -27,7 +28,7 @@ commands: List[Command] = [
     PwdCommand(),
     ReloadCommand(), RunCommand(),
     StatusCommand(),
-    TestCommand(),
+    TemplateCommand(), TestCommand(),
     VersionCommand(),
 ]
 

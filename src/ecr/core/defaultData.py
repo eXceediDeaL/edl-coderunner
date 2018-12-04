@@ -1,6 +1,6 @@
 from typing import List
 
-from .types import CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping
+from ..types import CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping
 
 CIO_SISO: str = "ss"
 CIO_SIFO: str = "sf"

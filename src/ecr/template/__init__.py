@@ -1,0 +1,1 @@
+from ._Template import Template, load, initialize, clear

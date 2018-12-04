@@ -43,7 +43,7 @@ class BashLexer(RegexLexer):
             #  r'select|continue|until|esac|elif)(\s*)\b',
             #  bygroups(Keyword, Text)),
             (r'\b(init|clear|new|now|edit|run|test|clean|pwd|cd|'
-             r'version|cls|exit|debug|status)', # (?=[\s)`])
+             r'version|cls|exit|debug|status|template|reload|show)', # (?=[\s)`])
              Name.Builtin),
             (r'\A#!.+\n', Comment.Hashbang),
             (r'#.*\n', Comment.Single),

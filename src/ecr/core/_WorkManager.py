@@ -15,7 +15,7 @@ from . import defaultData
 from . import path as ecrpath
 from .. import log, ui
 from ..ui import color
-from .types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping
+from ..types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping
 
 CONST_tempFileFilter: str = "tempFileFilter"
 CONST_importedCommand: str = "importedCommand"
@@ -328,6 +328,7 @@ def loadFrom(basepath: str) -> Tuple[Optional[WorkManager], Optional[Exception]]
             ret.eVersion = config[CONST_eVersion]
         ret.state = WorkManagerState.Loaded
     except Exception as e:
+        log.errorWithException(f"Loading ecr data failed from {basepath}")
         ret.state = WorkManagerState.LoadFailed
         exp = e
     return ret, exp
@@ -337,7 +338,7 @@ def load(basepath: str) -> Tuple[Optional[WorkManager], Optional[Exception]]:
     if hasInitialized(basepath):
         ret, exp = loadFrom(basepath)
     else:
-        log.info("Load from global data.")
+        log.info("Load from global data")
         ret, exp = loadFrom(ecrpath.getGlobalBasePath())
         if ret:
             if ret.state == WorkManagerState.Loaded:

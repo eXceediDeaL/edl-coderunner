@@ -1,4 +1,3 @@
-import os
 from enum import Enum
 from typing import Dict, List, Optional
 
@@ -6,7 +5,7 @@ import yaml
 
 from . import path as ecrpath
 from .. import log
-from .types import CommandList
+from ..types import CommandList
 
 
 class WorkItemType(Enum):
@@ -19,14 +18,14 @@ class WorkItem:
         self.path: str = path
         self.name: str = name
         self.type: WorkItemType = types
-        self.run: Optional[CommandList] = None
-        self.test: Optional[CommandList] = None
+        self.run: CommandList = []
+        self.test: CommandList = []
 
 
 def initializeCodeDirectory(path: str) -> None:
     config: Dict[str, Optional[List]] = {
-        "run": None,
-        "test": None,
+        "run": [],
+        "test": [],
     }
     with open(ecrpath.getCodeDirConfigPath(path), "w", encoding='utf-8') as f:
         f.write(yaml.dump(config, indent=4,

@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, cast
 
 from . import core
 from .core import WorkManager, path
-from .core.types import VariableMapping
+from .types import VariableMapping
 
 _cwd: Optional[str] = None
 

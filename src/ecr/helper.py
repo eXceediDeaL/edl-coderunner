@@ -22,7 +22,6 @@ def loadMan()->None:
             else:
                 log.debug("ECR data loaded.")
     except Exception as e:
-        log.errorWithException("Loading failed")
         ui.getConsole().error(f"Loading failed: {e}")
         shared.setManager(None)
 
