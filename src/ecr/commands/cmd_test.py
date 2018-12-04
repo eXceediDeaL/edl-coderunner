@@ -2,9 +2,9 @@ import time
 from typing import cast
 
 from .. import shared, ui
-from ..core import WorkItem, WorkItemType, WorkManager
+from ..core import WorkItem, WorkItemType, WorkManager, defaultData
 from ..ui.command import Command, Namespace, ReturnCode
-from .cmd_run import RunWatchEventHandler
+from .cmd_run import RunWatchEventHandler, RunCommand
 from .helper import assertInited, getItem, printFileModify
 
 
@@ -21,8 +21,13 @@ class TestCommand(Command):
 
         if not args.watch:
             item, file = getItem(tman, args)
-            result = tman.judge(reexecute=args.re,
-                                item=item, judger=args.judger)
+            if args.re:
+                runResult = RunCommand.default(
+                    Namespace(io=defaultData.CIO_FIFO, file=args.file, dir=args.dir, watch=False))
+                if runResult != ReturnCode.OK:
+                    return runResult
+
+            result = tman.judge(item=item, judger=args.judger)
 
             if not result:
                 console.error("Judging failed")

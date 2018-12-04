@@ -50,6 +50,10 @@ def initialize(basepath: str)->None:
     if not os.path.isdir(basepath):
         os.mkdir(basepath)
 
+    from ..core.manager import initializeCodeDirectory
+
+    initializeCodeDirectory(basepath)
+
     oipath = getConfigPath(basepath)
     os.mkdir(oipath)
 

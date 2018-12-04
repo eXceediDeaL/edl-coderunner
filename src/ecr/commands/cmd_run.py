@@ -6,7 +6,7 @@ from watchdog.events import FileSystemEventHandler
 
 from .. import shared, ui
 from ..core import WorkItem, WorkItemType, WorkManager
-from ..core.defaultData import CIO_Types
+from ..core.defaultData import CIO_Types, CIO_SISO
 from ..ui.command import Command, Namespace, ReturnCode
 from .helper import assertInited, getItem, printFileModify
 
@@ -78,6 +78,8 @@ class RunCommand(Command):
 
         if not args.watch:
             item, file = getItem(tman, args)
+            if item.type == WorkItemType.Directory:
+                args.io = CIO_SISO
             result = tman.execute(io=args.io, item=item)
 
             if not result:
@@ -90,6 +92,8 @@ class RunCommand(Command):
 
             def func():
                 item, file = getItem(tman, args)
+                if item.type == WorkItemType.Directory:
+                    args.io = CIO_SISO
                 console.clear()
                 console.info(f"Watching", end=" ")
                 printFileModify(file)

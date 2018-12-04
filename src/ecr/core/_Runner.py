@@ -68,7 +68,7 @@ class Runner:
         return (RunResult.Success, self.proc.returncode)
 
 
-def runCommands(io: str, commands: CommandList, variables: Dict[str, str], wdir: str, getSystemCommand: Callable[[str], str], inputFile: str, outputFile: str, defaultTimeLimit: Optional[int] = None) -> bool:
+def runCommands(io: str, commands: CommandList, variables: Dict[str, str], wdir: str, getSystemCommand: Callable[[str], str], inputFile: str, outputFile: str, defaultTimeLimit: Optional[int] = None, showLog: bool = True) -> bool:
     errf = color.useRed("×")
     passf = color.useGreen("√")
     isSuccess = True
@@ -84,8 +84,9 @@ def runCommands(io: str, commands: CommandList, variables: Dict[str, str], wdir:
         else:
             cmd, timelimit = bcmd, defaultTimeLimit
         _cmd = cmd.format(**variables)
-        console.write(
-            "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
+        if showLog:
+            console.write(
+                "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
         proc = None
         rresult, retcode = None, None
         runner = None
@@ -94,7 +95,8 @@ def runCommands(io: str, commands: CommandList, variables: Dict[str, str], wdir:
             if ind == sumStep - 1:  # last command
                 if io[0] == "s":  # stdin
                     timelimit = None
-                console.write("-"*20)
+                if showLog:
+                    console.write("-"*20)
                 proc = subprocess.Popen(
                     rcmd,
                     cwd=cwd,
@@ -116,18 +118,21 @@ def runCommands(io: str, commands: CommandList, variables: Dict[str, str], wdir:
             isSuccess = False
         finally:
             if ind == sumStep - 1:  # last command
-                console.write("-"*20)
-            console.write(
-                "   ->",
-                passf if retcode == 0 else errf,
-                f"{round(runner.usedTime*1000)/1000}s")
-            if rresult != RunResult.Success:
+                if showLog:
+                    console.write("-"*20)
+            if showLog:
                 console.write(
-                    "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
-                    _cmd, " -> ", color.useRed(str(retcode)), sep="", end=" ")
-                if rresult == RunResult.TimeOut:
-                    console.write(color.useRed("Time out"))
-                else:
-                    console.write()
+                    "   ->",
+                    passf if retcode == 0 else errf,
+                    f"{round(runner.usedTime*1000)/1000}s")
+            if rresult != RunResult.Success:
+                if showLog:
+                    console.write(
+                        "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
+                        _cmd, " -> ", color.useRed(str(retcode)), sep="", end=" ")
+                    if rresult == RunResult.TimeOut:
+                        console.write(color.useRed("Time out"))
+                    else:
+                        console.write()
                 isSuccess = False
     return isSuccess

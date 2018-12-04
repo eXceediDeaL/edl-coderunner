@@ -182,8 +182,9 @@ class WorkManager:
             file = titem.name
             fileNameWithoutExt, fileext = cast(
                 Tuple[str, str], os.path.splitext(file))
-            lang = fileextToLanguage[fileext[1:]]
-            cmds = self.executorMap[lang]
+            ext = fileext[1:]
+            lang = fileextToLanguage[ext] if ext in fileextToLanguage else None
+            cmds = self.executorMap[lang] if lang else []
             formats = {
                 defaultData.CMDVAR_FileName: file,
                 defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,
@@ -201,8 +202,6 @@ class WorkManager:
         else:  # directory
             cmds = titem.run
             formats = {
-                defaultData.CMDVAR_FileName: file,
-                defaultData.CMDVAR_FileNameWithoutExt: fileNameWithoutExt,
             }
 
             console.info(f"Running {titem.name}")
@@ -220,14 +219,11 @@ class WorkManager:
         return False
 
     def judge(self, item: Optional[WorkItem] = None,
-              reexecute: bool = False, judger: Optional[str] = None) -> bool:
+              judger: Optional[str] = None) -> bool:
         if not item:
             item = self.currentFile
         if not judger:
             judger = self.defaultJudger
-        if reexecute:
-            if not self.execute(defaultData.CIO_FIFO, item):
-                return False
 
         console = ui.getConsole()
         titem: WorkItem = cast(WorkItem, item)
@@ -253,8 +249,6 @@ class WorkManager:
             cmds = titem.test
             formats = {
                 defaultData.CMDVAR_JudgerDir: ecrpath.getJudgerPath(self.getConfigPath()),
-                defaultData.CMDVAR_ExpectFile: ecrpath.getFileStdPath(self.getConfigPath()),
-                defaultData.CMDVAR_RealFile: ecrpath.getFileOutputPath(self.getConfigPath()),
             }
 
             console.info(f"Judging {titem.name}")

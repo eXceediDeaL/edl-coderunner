@@ -24,6 +24,7 @@ class NewCommand(Command):
 
         if result:
             tman.currentFile = result
+            tman.updateCurrent()
             printFileCreate(file)
             if args.edit:
                 return cmd_edit.EditCommand.default(Namespace(file=file, now=False))

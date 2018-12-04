@@ -1,2 +1,4 @@
-test: null
-run: null
+run:
+- g++ -O2 -Wall -std=c++14 main.cpp -o main -lm
+- main
+test: []

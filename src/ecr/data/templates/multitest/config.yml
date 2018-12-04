@@ -1,0 +1,5 @@
+run:
+- g++ -O2 -Wall -std=c++14 main.cpp -o main -lm
+- python -u tools/runner.py main 5
+test:
+- python -u tools/judger.py

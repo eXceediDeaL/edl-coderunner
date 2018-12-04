@@ -32,8 +32,11 @@ def getFileNames()->Tuple[str, str]:
     return sys.argv[1], sys.argv[2]
 
 
-def getFileContents() -> Tuple[List[str], List[str]]:
-    expectedFile, realFile = getFileNames()
+def getFileContents(expectedFile=None, realFile=None) -> Tuple[List[str], List[str]]:
+    if not expectedFile:
+        expectedFile = getFileNames()[0]
+    if not realFile:
+        expectedFile = getFileNames()[1]
     expectedData: List[str] = []
     realData: List[str] = []
     with open(expectedFile, "r", encoding='utf-8') as f:
