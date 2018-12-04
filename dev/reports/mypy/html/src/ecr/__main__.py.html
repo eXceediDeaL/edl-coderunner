@@ -213,6 +213,7 @@
 <span id="L203" class="lineno"><a class="lineno" href="#L203">203</a></span>
 <span id="L204" class="lineno"><a class="lineno" href="#L204">204</a></span>
 <span id="L205" class="lineno"><a class="lineno" href="#L205">205</a></span>
+<span id="L206" class="lineno"><a class="lineno" href="#L206">206</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-precise" title="No Anys on this line!">import os</span>
 <span class="line-empty" title="No Anys on this line!">import shlex</span>
@@ -301,7 +302,8 @@ Unannotated (x1)">        console.error(retCode)</span>
 <span class="line-precise" title="No Anys on this line!">def mainInit()-&gt;None:</span>
 <span class="line-empty" title="No Anys on this line!">    global itParser</span>
 <span class="line-empty" title="No Anys on this line!">    from prompt_toolkit import PromptSession</span>
-<span class="line-empty" title="No Anys on this line!">    from pygments.lexers.shell import BashLexer</span>
+<span class="line-empty" title="No Anys on this line!">    # from pygments.lexers.shell import BashLexer</span>
+<span class="line-empty" title="No Anys on this line!">    from .ui.helper.BashLexer import BashLexer</span>
 <span class="line-empty" title="No Anys on this line!">    from prompt_toolkit.lexers import PygmentsLexer</span>
 <span class="line-empty" title="No Anys on this line!">    from prompt_toolkit.auto_suggest import AutoSuggestFromHistory</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -315,7 +317,8 @@ Unannotated (x1)">    shared.setCwd(os.getcwd())</span>
 Unimported (x3)">    cliInputSession = PromptSession(</span>
 <span class="line-precise" title="No Anys on this line!">        message=defaultPrompt,</span>
 <span class="line-any" title="Any Types on this line: 
-Unimported (x3)">        lexer=PygmentsLexer(BashLexer),</span>
+Unimported (x2)
+Special Form (x2)">        lexer=PygmentsLexer(BashLexer),</span>
 <span class="line-any" title="Any Types on this line: 
 Unimported (x2)">        auto_suggest=AutoSuggestFromHistory())</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -462,7 +465,7 @@ Unimported (x2)">                completer=getCommandCompleter(), complete_in_th
 <span class="line-empty" title="No Anys on this line!">            break</span>
 <span class="line-precise" title="No Anys on this line!">        if helper.varFormatRE.fullmatch(_oricmd):</span>
 <span class="line-precise" title="Any Types on this line: 
-Unannotated (x2)">            console.write(oricmd)</span>
+Unannotated (x2)">            console.write(oricmd.strip("'"))</span>
 <span class="line-empty" title="No Anys on this line!">        else:</span>
 <span class="line-precise" title="No Anys on this line!">            retcode = executeCommand(oricmd)</span>
 <span class="line-any" title="Any Types on this line: 

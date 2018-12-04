@@ -48,13 +48,11 @@
 <span id="L38" class="lineno"><a class="lineno" href="#L38">38</a></span>
 <span id="L39" class="lineno"><a class="lineno" href="#L39">39</a></span>
 <span id="L40" class="lineno"><a class="lineno" href="#L40">40</a></span>
-<span id="L41" class="lineno"><a class="lineno" href="#L41">41</a></span>
-<span id="L42" class="lineno"><a class="lineno" href="#L42">42</a></span>
 </pre></td>
 <td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import Tuple, cast</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!">from .. import shared, ui</span>
-<span class="line-empty" title="No Anys on this line!">from ..core import WorkItem, WorkItemType, WorkManager</span>
+<span class="line-empty" title="No Anys on this line!">from ..core import WorkItem, WorkManager</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui import color</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui.command import Namespace</span>
 <span class="line-empty" title="No Anys on this line!"></span>
@@ -96,13 +94,10 @@ Explicit (x1)">    if args.file:</span>
 <span class="line-any" title="Any Types on this line: 
 Explicit (x2)">            args.file, args.dir)</span>
 <span class="line-empty" title="No Anys on this line!">    else:</span>
-<span class="line-precise" title="No Anys on this line!">        item = tman.getWorkItem(</span>
-<span class="line-precise" title="No Anys on this line!">            cast(WorkItem, tman.currentFile).name,</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">            cast(WorkItem, tman.currentFile).type == WorkItemType.Directory)</span>
-<span class="line-precise" title="No Anys on this line!">        tman.currentFile = item</span>
-<span class="line-precise" title="No Anys on this line!">    file = cast(WorkItem, item).name</span>
-<span class="line-precise" title="No Anys on this line!">    return cast(WorkItem, item), file</span>
+<span class="line-precise" title="No Anys on this line!">        item = cast(WorkItem, tman.currentFile)</span>
+<span class="line-precise" title="No Anys on this line!">    assert item</span>
+<span class="line-precise" title="No Anys on this line!">    file = item.name</span>
+<span class="line-precise" title="No Anys on this line!">    return item, file</span>
 </pre></td>
 </tr></tbody>
 </table>

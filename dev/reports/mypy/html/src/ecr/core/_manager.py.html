@@ -4,9 +4,9 @@
 <link rel="stylesheet" type="text/css" href="../../../../mypy-html.css">
 </head>
 <body>
-<h2>ecr.commands.cmd_now</h2>
+<h2>ecr.core._manager</h2>
 <table>
-<caption>src/ecr/commands/cmd_now.py</caption>
+<caption>src/ecr/core/_manager.py</caption>
 <tbody><tr>
 <td class="table-lines"><pre><span id="L1" class="lineno"><a class="lineno" href="#L1">1</a></span>
 <span id="L2" class="lineno"><a class="lineno" href="#L2">2</a></span>
@@ -40,50 +40,51 @@
 <span id="L30" class="lineno"><a class="lineno" href="#L30">30</a></span>
 <span id="L31" class="lineno"><a class="lineno" href="#L31">31</a></span>
 <span id="L32" class="lineno"><a class="lineno" href="#L32">32</a></span>
+<span id="L33" class="lineno"><a class="lineno" href="#L33">33</a></span>
+<span id="L34" class="lineno"><a class="lineno" href="#L34">34</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import cast</span>
+<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from typing import Dict, List</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">from .. import log, shared, ui</span>
-<span class="line-empty" title="No Anys on this line!">from ..core import WorkManager</span>
-<span class="line-empty" title="No Anys on this line!">from ..ui.command import Command, Namespace, ReturnCode</span>
-<span class="line-empty" title="No Anys on this line!">from .helper import assertInited</span>
+<span class="line-empty" title="No Anys on this line!">from prompt_toolkit.application import run_in_terminal</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">fileextToLanguage: Dict[str, str] = {</span>
+<span class="line-empty" title="No Anys on this line!">    "c": "c",</span>
+<span class="line-empty" title="No Anys on this line!">    "cpp": "cpp",</span>
+<span class="line-empty" title="No Anys on this line!">    "cs": "csharp",</span>
+<span class="line-empty" title="No Anys on this line!">    "fs": "fsharp",</span>
+<span class="line-empty" title="No Anys on this line!">    "py": "python",</span>
+<span class="line-empty" title="No Anys on this line!">    "java": "java",</span>
+<span class="line-empty" title="No Anys on this line!">    "pas": "pascal",</span>
+<span class="line-empty" title="No Anys on this line!">    "m": "objective-c",</span>
+<span class="line-empty" title="No Anys on this line!">    "js": "javascript",</span>
+<span class="line-empty" title="No Anys on this line!">    "rb": "ruby",</span>
+<span class="line-empty" title="No Anys on this line!">    "go": "go",</span>
+<span class="line-empty" title="No Anys on this line!">    "php": "php",</span>
+<span class="line-empty" title="No Anys on this line!">    "sh": "shellscript",</span>
+<span class="line-empty" title="No Anys on this line!">    "ps1": "powershell",</span>
+<span class="line-empty" title="No Anys on this line!">}</span>
+<span class="line-empty" title="No Anys on this line!"></span>
+<span class="line-precise" title="No Anys on this line!">languageToFileext: Dict[str, str] = {</span>
+<span class="line-precise" title="No Anys on this line!">    v: k for k, v in fileextToLanguage.items()}</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">class NowCommand(Command):</span>
-<span class="line-empty" title="No Anys on this line!">    @staticmethod</span>
-<span class="line-precise" title="No Anys on this line!">    def default(args: Namespace)-&gt;ReturnCode:  # pylint: disable=W0613</span>
-<span class="line-precise" title="No Anys on this line!">        if not assertInited():</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">            return ReturnCode.UNLOADED</span>
-<span class="line-precise" title="No Anys on this line!">        tman: WorkManager = cast(WorkManager, shared.getManager())</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x2)">        if tman.setCurrent(args.file, args.dir):</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">            return ReturnCode.OK</span>
-<span class="line-empty" title="No Anys on this line!">        else:</span>
-<span class="line-precise" title="No Anys on this line!">            msg = "Load work-item failed"</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x4)">            log.error(msg)</span>
-<span class="line-precise" title="Any Types on this line: 
-Unannotated (x1)">            ui.getConsole().error(msg)</span>
-<span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">            return ReturnCode.ERROR</span>
+Unannotated (x1)">def getSystemCommand(cmd: str, man=None) -&gt; str:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x3)">    if not man or not man.defaultShell:</span>
+<span class="line-precise" title="No Anys on this line!">        return cmd</span>
+<span class="line-empty" title="No Anys on this line!">    else:</span>
+<span class="line-any" title="Any Types on this line: 
+Unannotated (x2)
+Explicit (x2)">        return " ".join([man.defaultShell, f'"{cmd}"'])</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-any" title="No Anys on this line!">    def __init__(self):</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x2)">        super().__init__("now", help="Change current file", func=NowCommand.default)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-any" title="No Anys on this line!">    def createParser(self, parsers):</span>
+<span class="line-imprecise" title="Any Types on this line: 
+Omitted Generics (x1)">def safeOutput(*values: List)-&gt;None:</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x3)">        cmd = super().createParser(parsers)</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x3)">        cmd.add_argument("file", nargs="?", default=None, type=str,</span>
-<span class="line-empty" title="No Anys on this line!">                         help="Set current file (clear for none)")</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x3)">        cmd.add_argument("-d", "--dir", action="store_true",</span>
-<span class="line-empty" title="No Anys on this line!">                         default=False, help="As directory")</span>
-<span class="line-any" title="Any Types on this line: 
-Unannotated (x1)">        return cmd</span>
+Unimported (x2)
+Explicit (x1)
+Omitted Generics (x1)">    run_in_terminal(lambda: print(*values, end=""))</span>
 </pre></td>
 </tr></tbody>
 </table>

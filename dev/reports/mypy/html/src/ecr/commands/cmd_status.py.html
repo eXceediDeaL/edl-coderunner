@@ -4,9 +4,9 @@
 <link rel="stylesheet" type="text/css" href="../../../../mypy-html.css">
 </head>
 <body>
-<h2>ecr.commands.cmd_reload</h2>
+<h2>ecr.commands.cmd_status</h2>
 <table>
-<caption>src/ecr/commands/cmd_reload.py</caption>
+<caption>src/ecr/commands/cmd_status.py</caption>
 <tbody><tr>
 <td class="table-lines"><pre><span id="L1" class="lineno"><a class="lineno" href="#L1">1</a></span>
 <span id="L2" class="lineno"><a class="lineno" href="#L2">2</a></span>
@@ -32,40 +32,37 @@
 <span id="L22" class="lineno"><a class="lineno" href="#L22">22</a></span>
 <span id="L23" class="lineno"><a class="lineno" href="#L23">23</a></span>
 <span id="L24" class="lineno"><a class="lineno" href="#L24">24</a></span>
-<span id="L25" class="lineno"><a class="lineno" href="#L25">25</a></span>
-<span id="L26" class="lineno"><a class="lineno" href="#L26">26</a></span>
 </pre></td>
-<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from .. import shared</span>
-<span class="line-empty" title="No Anys on this line!">from ..helper import loadMan, printHead</span>
+<td class="table-code"><pre><span class="line-empty" title="No Anys on this line!">from .. import shared, ui</span>
 <span class="line-empty" title="No Anys on this line!">from ..ui.command import Command, Namespace, ReturnCode</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-empty" title="No Anys on this line!"></span>
-<span class="line-empty" title="No Anys on this line!">class ReloadCommand(Command):</span>
+<span class="line-empty" title="No Anys on this line!">class StatusCommand(Command):</span>
 <span class="line-empty" title="No Anys on this line!">    @staticmethod</span>
-<span class="line-precise" title="No Anys on this line!">    def default(args: Namespace) -&gt; ReturnCode:  # pylint: disable=W0613</span>
+<span class="line-precise" title="No Anys on this line!">    def default(args: Namespace)-&gt;ReturnCode:  # pylint: disable=W0613</span>
+<span class="line-precise" title="No Anys on this line!">        console = ui.getConsole()</span>
 <span class="line-any" title="Any Types on this line: 
-Explicit (x1)">        if args.current:</span>
-<span class="line-precise" title="No Anys on this line!">            man = shared.getManager()</span>
-<span class="line-precise" title="No Anys on this line!">            if man:</span>
-<span class="line-precise" title="No Anys on this line!">                man.updateCurrent()</span>
+Explicit (x1)">        if args.var:</span>
+<span class="line-precise" title="No Anys on this line!">            vs = shared.getVariables()</span>
+<span class="line-precise" title="No Anys on this line!">            nameLen = 10</span>
+<span class="line-precise" title="No Anys on this line!">            for k, v in vs.items():</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x1)">            return ReturnCode.OK</span>
-<span class="line-empty" title="No Anys on this line!">        else:</span>
-<span class="line-precise" title="No Anys on this line!">            loadMan()</span>
-<span class="line-precise" title="No Anys on this line!">            printHead()</span>
+Unannotated (x1)">                console.info(k.ljust(nameLen), end=" ")</span>
 <span class="line-precise" title="Any Types on this line: 
-Explicit (x2)">            return ReturnCode.OK if shared.getManager() else ReturnCode.UNLOADED</span>
+Unannotated (x2)">                console.write(v)</span>
+<span class="line-precise" title="Any Types on this line: 
+Explicit (x1)">        return ReturnCode.OK</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="No Anys on this line!">    def __init__(self):</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x2)">        super().__init__("reload", help="Reload ECR data", func=ReloadCommand.default)</span>
+Unannotated (x2)">        super().__init__("status", help="Get status", func=StatusCommand.default)</span>
 <span class="line-empty" title="No Anys on this line!"></span>
 <span class="line-any" title="No Anys on this line!">    def createParser(self, parsers):</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x3)">        cmd = super().createParser(parsers)</span>
 <span class="line-any" title="Any Types on this line: 
-Unannotated (x3)">        cmd.add_argument("-c", "--current", action="store_true",</span>
-<span class="line-empty" title="No Anys on this line!">                         default=False, help="Reload current workitem")</span>
+Unannotated (x3)">        cmd.add_argument("-v", "--var", action="store_true",</span>
+<span class="line-empty" title="No Anys on this line!">                         default=False, help="Show all variables")</span>
 <span class="line-any" title="Any Types on this line: 
 Unannotated (x1)">        return cmd</span>
 </pre></td>
