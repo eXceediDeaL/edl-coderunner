@@ -7,28 +7,28 @@ from ..types import CommandList
 from .path import getConfigPath, getConfigFile
 
 CONST_rootPath: str = "rootPath"
-CONST_beforeCreate: str = "beforeCreate"
-CONST_afterCreate: str = "afterCreate"
+CONST_after: str = "after"
+CONST_subject: str = "subject"
 
 
 class Template:
-    def __init__(self, rootpath: str):
+    def __init__(self, subject: str, rootpath: str):
+        self.subject: str = subject
         self.rootPath: str = rootpath
-        self.beforeCreate: CommandList = []
-        self.afterCreate: CommandList = []
+        self.after: CommandList = []
 
 
 def load(basepath: str) -> Tuple[Optional[Template], Optional[Exception]]:
     if not os.path.isdir(getConfigPath(basepath)) or not os.path.isfile(getConfigFile(basepath)):
-        return Template(basepath), None
-    ret = Template("")
+        return Template(os.path.split(basepath)[-1], basepath), None
+    ret = Template("", "")
     exp = None
     try:
         with open(getConfigFile(basepath), "r", encoding='utf-8') as f:
             config = yaml.load(f.read())
+            ret.subject = config[CONST_subject]
             ret.rootPath = os.path.join(basepath, config[CONST_rootPath])
-            ret.beforeCreate = config[CONST_beforeCreate]
-            ret.afterCreate = config[CONST_afterCreate]
+            ret.after = config[CONST_after]
     except Exception as e:
         log.errorWithException(f"Loading template failed from {basepath}")
         exp = e
@@ -53,9 +53,9 @@ def initialize(basepath: str)->None:
     oipath = getConfigPath(basepath)
     os.mkdir(oipath)
 
-    config = {CONST_rootPath: "",
-              CONST_beforeCreate: [],
-              CONST_afterCreate: [], }
+    config = {CONST_subject: os.path.split(basepath)[-1],
+              CONST_rootPath: "",
+              CONST_after: [], }
 
     with open(getConfigFile(basepath), "w", encoding='utf-8') as f:
         f.write(yaml.dump(config, indent=4,

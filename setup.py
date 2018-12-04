@@ -14,7 +14,7 @@ long_description = read('README.md')
 
 setup(
     name="edl-cr",
-    version="0.0.3",
+    version="0.0.3.1",
     description="A CLI tool to run code",
     long_description=long_description,
     long_description_content_type="text/markdown",

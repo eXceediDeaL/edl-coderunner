@@ -1,7 +1,11 @@
 import subprocess
 import time
 from enum import Enum
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple, Callable
+
+from .. import log, ui
+from ..types import CommandList
+from ..ui import color
 
 
 class RunResult(Enum):
@@ -62,3 +66,68 @@ class Runner:
         if self.proc.returncode != 0:
             return (RunResult.Error, self.proc.returncode)
         return (RunResult.Success, self.proc.returncode)
+
+
+def runCommands(io: str, commands: CommandList, variables: Dict[str, str], wdir: str, getSystemCommand: Callable[[str], str], inputFile: str, outputFile: str, defaultTimeLimit: Optional[int] = None) -> bool:
+    errf = color.useRed("×")
+    passf = color.useGreen("√")
+    isSuccess = True
+    sumStep = len(commands)
+    cwd = wdir
+    console = ui.getConsole()
+    for ind, bcmd in enumerate(commands):
+        if not isSuccess:
+            break
+        cmd, timelimit = None, None
+        if not isinstance(bcmd, str):
+            cmd, timelimit = bcmd
+        else:
+            cmd, timelimit = bcmd, defaultTimeLimit
+        _cmd = cmd.format(**variables)
+        console.write(
+            "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
+        proc = None
+        rresult, retcode = None, None
+        runner = None
+        try:
+            rcmd = getSystemCommand(_cmd)
+            if ind == sumStep - 1:  # last command
+                if io[0] == "s":  # stdin
+                    timelimit = None
+                console.write("-"*20)
+                proc = subprocess.Popen(
+                    rcmd,
+                    cwd=cwd,
+                    stdin=None if io[0] == "s"
+                    else open(inputFile, "r"),
+                    stdout=None if io[1] == "s"
+                    else open(outputFile, "w"),
+                    stderr=None)
+            else:
+                proc = subprocess.Popen(
+                    rcmd,
+                    cwd=cwd,
+                    stdin=None, stdout=None, stderr=None)
+
+            runner = Runner(proc=proc, io=io, timelimit=timelimit)
+            rresult, retcode = runner.run()
+        except BaseException:
+            log.errorWithException(f"Run command failed: {rcmd}")
+            isSuccess = False
+        finally:
+            if ind == sumStep - 1:  # last command
+                console.write("-"*20)
+            console.write(
+                "   ->",
+                passf if retcode == 0 else errf,
+                f"{round(runner.usedTime*1000)/1000}s")
+            if rresult != RunResult.Success:
+                console.write(
+                    "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
+                    _cmd, " -> ", color.useRed(str(retcode)), sep="", end=" ")
+                if rresult == RunResult.TimeOut:
+                    console.write(color.useRed("Time out"))
+                else:
+                    console.write()
+                isSuccess = False
+    return isSuccess

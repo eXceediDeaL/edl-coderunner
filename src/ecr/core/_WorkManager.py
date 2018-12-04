@@ -1,20 +1,18 @@
 import os
 import platform
 import shutil
-import subprocess
 from enum import Enum
-from typing import Callable, Dict, List, Optional, Tuple, cast
+from typing import Callable, List, Optional, Tuple, cast
 
 import click
 import yaml
 
-from ._manager import getSystemCommand, fileextToLanguage, languageToFileext
-from ._WorkItem import WorkItem, WorkItemType, loadCodeDirectory, initializeCodeDirectory
-from ._Runner import Runner, RunResult
+from ._manager import fileextToLanguage, languageToFileext, getSystemCommand
+from ._WorkItem import WorkItem, WorkItemType, loadCodeDirectory, initializeCodeDirectory, initializeCodeDirectoryWithTemplate
+from ._Runner import runCommands
 from . import defaultData
 from . import path as ecrpath
 from .. import log, ui
-from ..ui import color
 from ..types import CommandList, CommandMapping, ExecutorMapping, JudgerMapping, CodeTemplateMapping
 
 CONST_tempFileFilter: str = "tempFileFilter"
@@ -52,7 +50,6 @@ class WorkManager:
         self.defaultJudger: str = defaultData.judger
         self.defaultTemplate: CodeTemplateMapping = defaultData.templates
         self.state: WorkManagerState = WorkManagerState.Empty
-        self.runner: Optional[Runner] = None
         self.defaultEditor: Optional[str] = None
         from . import __version__
         self.eVersion: str = __version__
@@ -63,10 +60,10 @@ class WorkManager:
         else:
             return self.workingDirectory
 
-    def getWorkItem(self, name: str, isdir: bool) -> Optional[WorkItem]:
+    def getWorkItem(self, name: str, isdir: bool, renew: bool = False) -> Optional[WorkItem]:
         path = os.path.join(self.workingDirectory, name)
         if isdir:
-            if not os.path.isdir(path):
+            if renew or not os.path.isdir(path):
                 return WorkItem(path, name, WorkItemType.Directory)
             else:
                 return loadCodeDirectory(path, name)
@@ -106,7 +103,16 @@ class WorkManager:
                         self.getConfigPath()), f"{template}")
                 if tempPath:
                     if os.path.isdir(tempPath):
-                        shutil.copytree(tempPath, dstPath)
+                        from .. import template as tp
+                        tem, exp = tp.load(tempPath)
+                        if exp:
+                            log.warning(
+                                f"Template loading failed: {tempPath}", extra=exp)
+                            shutil.copytree(tempPath, dstPath,
+                                            ignore=tp.default_ignore)
+                        else:
+                            initializeCodeDirectoryWithTemplate(
+                                self, tem, tempPath, dstPath)
                     else:
                         log.warning(
                             f"Template directory not found: {tempPath}")
@@ -164,71 +170,6 @@ class WorkManager:
                 except:
                     log.warning(f"Clean failed: {pat}", exc_info=True)
 
-    def __runCommands(self, io: str, commands: CommandList, variables: Dict[str, str], wdir: Optional[str] = None) -> bool:
-        errf = color.useRed("×")
-        passf = color.useGreen("√")
-        isSuccess = True
-        sumStep = len(commands)
-        cwd = wdir if wdir else self.workingDirectory
-        console = ui.getConsole()
-        for ind, bcmd in enumerate(commands):
-            if not isSuccess:
-                break
-            cmd, timelimit = None, None
-            if not isinstance(bcmd, str):
-                cmd, timelimit = bcmd
-            else:
-                cmd, timelimit = bcmd, self.defaultTimeLimit
-            _cmd = cmd.format(**variables)
-            console.write(
-                "(", color.useYellow(str(ind+1)), f"/{sumStep}) ", _cmd, sep="")
-            proc = None
-            rresult, retcode = None, None
-            try:
-                rcmd = getSystemCommand(_cmd, self)
-                if ind == sumStep - 1:  # last command
-                    if io[0] == "s":  # stdin
-                        timelimit = None
-                    console.write("-"*20)
-                    proc = subprocess.Popen(
-                        rcmd,
-                        cwd=cwd,
-                        stdin=None if io[0] == "s"
-                        else open(ecrpath.getFileInputPath(self.getConfigPath()), "r"),
-                        stdout=None if io[1] == "s"
-                        else open(ecrpath.getFileOutputPath(self.getConfigPath()), "w"),
-                        stderr=None)
-                else:
-                    proc = subprocess.Popen(
-                        rcmd,
-                        cwd=cwd,
-                        stdin=None, stdout=None, stderr=None)
-
-                self.runner = Runner(proc=proc, io=io, timelimit=timelimit)
-                rresult, retcode = self.runner.run()
-            except BaseException:
-                log.errorWithException(f"Run command failed: {rcmd}")
-                isSuccess = False
-            finally:
-                if ind == sumStep - 1:  # last command
-                    console.write("-"*20)
-                console.write(
-                    "   ->",
-                    passf if retcode == 0 else errf,
-                    f"{round(cast(Runner,self.runner).usedTime*1000)/1000}s")
-                if rresult != RunResult.Success:
-                    console.write(
-                        "(", color.useRed(str(ind + 1)), f"/{sumStep}) ",
-                        _cmd, " -> ", color.useRed(str(retcode)), sep="", end=" ")
-                    if rresult == RunResult.TimeOut:
-                        console.write(color.useRed("Time out"))
-                    else:
-                        console.write()
-                    self.runner = None
-                    isSuccess = False
-        self.runner = None
-        return isSuccess
-
     def execute(self, io: Optional[str] = None, item: Optional[WorkItem] = None)->bool:
         if not io:
             io = self.defaultIO
@@ -249,7 +190,14 @@ class WorkManager:
             }
 
             console.info(f"Running {file}")
-            return self.__runCommands(io, cmds, formats)
+            return runCommands(io=io, commands=cmds, variables=formats, wdir=self.workingDirectory,
+                               getSystemCommand=lambda p: getSystemCommand(
+                                   p, self),
+                               inputFile=ecrpath.getFileInputPath(
+                                   self.getConfigPath()),
+                               outputFile=ecrpath.getFileOutputPath(
+                                   self.getConfigPath()),
+                               defaultTimeLimit=self.defaultTimeLimit)
         else:  # directory
             cmds = titem.run
             formats = {
@@ -259,7 +207,14 @@ class WorkManager:
 
             console.info(f"Running {titem.name}")
             if cmds:
-                return self.__runCommands(io, cmds, formats, wdir=titem.path)
+                return runCommands(io=io, commands=cmds, variables=formats, wdir=titem.path,
+                                   getSystemCommand=lambda p: getSystemCommand(
+                                       p, self),
+                                   inputFile=ecrpath.getFileInputPath(
+                                       self.getConfigPath()),
+                                   outputFile=ecrpath.getFileOutputPath(
+                                       self.getConfigPath()),
+                                   defaultTimeLimit=self.defaultTimeLimit)
             else:
                 return True
         return False
@@ -286,7 +241,14 @@ class WorkManager:
             }
 
             console.info(f"Judging {titem.name}")
-            return self.__runCommands(defaultData.CIO_SISO, cmds, formats)
+            return runCommands(io=defaultData.CIO_SISO, commands=cmds, variables=formats, wdir=self.workingDirectory,
+                               getSystemCommand=lambda p: getSystemCommand(
+                                   p, self),
+                               inputFile=ecrpath.getFileInputPath(
+                                   self.getConfigPath()),
+                               outputFile=ecrpath.getFileOutputPath(
+                                   self.getConfigPath()),
+                               defaultTimeLimit=self.defaultTimeLimit)
         else:  # directory
             cmds = titem.test
             formats = {
@@ -297,7 +259,14 @@ class WorkManager:
 
             console.info(f"Judging {titem.name}")
             if cmds:
-                return self.__runCommands(defaultData.CIO_SISO, cmds, formats, wdir=titem.path)
+                return runCommands(io=defaultData.CIO_SISO, commands=cmds, variables=formats, wdir=titem.path,
+                                   getSystemCommand=lambda p: getSystemCommand(
+                                       p, self),
+                                   inputFile=ecrpath.getFileInputPath(
+                                       self.getConfigPath()),
+                                   outputFile=ecrpath.getFileOutputPath(
+                                       self.getConfigPath()),
+                                   defaultTimeLimit=self.defaultTimeLimit)
             else:
                 return True
 

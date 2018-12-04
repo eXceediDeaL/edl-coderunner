@@ -132,7 +132,7 @@ Not only use files, you can also use directories to create a unique environment 
 @project> test
 ```
 
-For `run` and `test` commands, it will use the command list in `config.yml` in the directory. You can write your own commands in it.
+For `run` and `test` commands, it will use the command list in `config.yml` in the directory. You can write your own commands in it. And these command works in the directory of current work-item.
 
 ```yaml
 test: null
@@ -179,10 +179,6 @@ You can use builtin variables just like in bash:
 |`config`|Config file|
 |`globaldir`|Get global ecr directory|
 
-### Global
-
-When ecr starts, it will initialize global data and config at `~` (if it doesn't exist), and you can use `init -g` , `clear -g` to re-initialize and clear that.
-
 ### Commands
 
 These are builtin commands. You can use system command in `importedCommand` list.
@@ -207,7 +203,41 @@ If you want to call a system command that isn't in `importedCommand` list, use `
 |`exit`|Exit|
 |`-h --help`|Get help|
 |`status [-v --var]`|Get status|
+|`template [new clear remove clear]`|Template tools|
 |`debug [-os --os] [-c --current] [-e --ecr] [-l --log] [-o file]`|Show debug data|
+
+# Global
+
+When ecr starts, it will initialize global data and config at `~` (if it doesn't exist), and you can use `init -g` , `clear -g` to re-initialize and clear that.
+
+# Template
+
+You can write your own templates for dir-workitem.
+
+```sh
+> template new mytemp
+```
+
+It will create a new folder `mytemp` at template folder `.ecr/templates`, and generate config files.
+
+The files in directory `.template` are the template config files. They will not be copied to destination.
+
+## .template/config.yml
+
+This file defines the config for the template.
+
+```yaml
+# commands to execute after copying files
+# the commands will be executed with working directory = destination
+after: []
+
+# relative path of the directory to be copied to destination
+# the base path is the current template path
+rootPath: ''
+
+# template's subject
+subject: test
+```
 
 # Config
 

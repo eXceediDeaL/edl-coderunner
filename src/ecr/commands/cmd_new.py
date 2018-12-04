@@ -20,7 +20,7 @@ class NewCommand(Command):
         file = args.file if args.file else cast(
             WorkItem, tman.currentFile).name
         result = tman.newCode(tman.getWorkItem(
-            args.file, args.dir) if args.file else None, args.template)
+            args.file, args.dir, renew=True) if args.file else None, args.template)
 
         if result:
             tman.currentFile = result
