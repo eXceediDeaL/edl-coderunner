@@ -1,0 +1,4 @@
+after:
+- git init
+rootPath: ''
+subject: git
